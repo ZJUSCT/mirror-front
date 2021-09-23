@@ -3,12 +3,14 @@ import Search from "../components/search"
 import Footer from "../components/footer"
 
 const IndexPage = () => (
-  <div>
-    <h1>
-      ZJU Mirror
-    </h1>
+  <div style={{minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
     <div>
-      <Search />
+      <h1>
+        ZJU Mirror
+      </h1>
+      <div>
+        <Search />
+      </div>
     </div>
     <Footer />
   </div>
