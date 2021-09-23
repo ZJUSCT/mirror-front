@@ -80,7 +80,10 @@ class Search extends Component {
           <form onSubmit={this.handleSubmit}>
             <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between"}}>
               <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
-                <label htmlFor="Search" style={{ paddingRight: "10px" }}/>
+                <label htmlFor="Search" style={{ paddingRight: "10px" }}>
+                  Number of items:
+                  {queryResults.length}
+                </label>
               </div>
               <input
                 id="Search"
@@ -92,8 +95,6 @@ class Search extends Component {
             </div>
           </form>
           <div>
-            Number of items:
-            {queryResults.length}
             <SearchTable queryResults={queryResults}/>
           </div>
         </div>

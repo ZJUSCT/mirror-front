@@ -13,7 +13,7 @@ export default () => (
         PostgreSQL, Qubes, RFC, Stackage, Ubuntu 等项目源的镜像，以服务于教育和科学研究为目的，提倡自由、平等、协作、共享的精神。
       </p>
     </div>
-    <div style={{width: "400px"}}>
+    <div style={{width: "100px"}}>
       <h3>
         Contact us
       </h3>
