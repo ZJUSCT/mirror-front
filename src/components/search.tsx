@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import JSONData from "../../resource/mirrorz-demo.json"
 import * as JsSearch from "js-search"
 import SearchTable from "./search-table"
+import MirrorIcon from "../../resource/icons/mirror.svg"
 
 class Search extends Component {
   state: any = {
@@ -77,16 +78,19 @@ class Search extends Component {
       <div>
         <div style={{ margin: "0 auto" }}>
           <form onSubmit={this.handleSubmit}>
-            <div style={{ margin: "0 auto" }}>
-              <label htmlFor="Search" style={{ paddingRight: "10px" }}>
-                Enter your search here
-              </label>
+            <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between"}}>
+              <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
+                <MirrorIcon />
+                <label htmlFor="Search" style={{ paddingRight: "10px" }}>
+                  Image list
+                </label>
+              </div>
               <input
                 id="Search"
                 value={searchQuery}
                 onChange={this.searchData}
-                placeholder="Enter your search here"
-                style={{ margin: "0 auto", width: "400px" }}
+                placeholder="Enter your image name here"
+                style={{ width: "400px" }}
               />
             </div>
           </form>

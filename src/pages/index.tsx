@@ -1,14 +1,16 @@
 import React from "react"
 import Search from "../components/search"
+import Footer from "../components/footer"
 
 const IndexPage = () => (
   <div>
-    <h1 style={{ marginTop: `3em`, textAlign: `center` }}>
+    <h1>
       ZJU Mirror
     </h1>
     <div>
       <Search />
     </div>
+    <Footer />
   </div>
 )
 

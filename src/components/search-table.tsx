@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from "react"
-import styles from "./search-table.module.css"
+import * as styles from "./search-table.module.css"
 import { Link } from "gatsby"
 
 export default (props: { queryResults: Record<string, string>[] }) => (
