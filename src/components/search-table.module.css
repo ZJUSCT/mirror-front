@@ -1,0 +1,6 @@
+.outer-flex {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+

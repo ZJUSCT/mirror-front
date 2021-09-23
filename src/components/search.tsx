@@ -1,8 +1,7 @@
 import React, { Component } from "react"
 import JSONData from "../../resource/mirrorz-demo.json"
 import * as JsSearch from "js-search"
-import { Link } from "gatsby"
-import * as styles from "./search.module.css"
+import SearchTable from "./search-table"
 
 class Search extends Component {
   state: any = {
@@ -72,6 +71,8 @@ class Search extends Component {
   render() {
     const { mirrors, searchResults, searchQuery } = this.state
     const queryResults: Record<string, string>[] = searchQuery === "" ? mirrors : searchResults
+    // @ts-ignore
+    // @ts-ignore
     return (
       <div>
         <div style={{ margin: "0 auto" }}>
@@ -92,45 +93,7 @@ class Search extends Component {
           <div>
             Number of items:
             {queryResults.length}
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                borderRadius: "4px",
-                border: "1px solid #d3d3d3",
-              }}
-            >
-              <thead style={{ border: "1px solid #808080" }}>
-              <tr>
-                <th className={styles.th}>
-                  Name
-                </th>
-                <th className={styles.th}>
-                  Description
-                </th>
-                <th className={styles.th}>
-                  Help
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              {queryResults.map(item => {
-                return (
-                  <tr key={`row_${item.cname}`}>
-                    <td className={styles.td}>
-                      <a href={item.url}>{item.cname}</a>
-                    </td>
-                    <td className={styles.td}>
-                      {item.desc}
-                    </td>
-                    <td className={styles.td}>
-                      <Link to={item.help}>help</Link>
-                    </td>
-                  </tr>
-                )
-              })}
-              </tbody>
-            </table>
+            <SearchTable queryResults={queryResults}/>
           </div>
         </div>
       </div>
