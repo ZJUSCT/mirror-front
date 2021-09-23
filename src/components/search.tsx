@@ -11,15 +11,16 @@ class Search extends Component {
     searchResults: [],
     isLoading: true,
     isError: false,
-    searchQuery: "",
+    searchQuery: ""
   }
+
   /**
    * React lifecycle method to fetch the data
    */
   async componentDidMount() {
     try {
       this.rebuildIndex()
-    } catch(err) {
+    } catch (err) {
       this.setState({ isError: true })
       console.log("====================================")
       console.log(`Something bad happened while fetching the data\n${err}`)
@@ -75,31 +76,31 @@ class Search extends Component {
     // @ts-ignore
     // @ts-ignore
     return (
-      <div>
-        <div style={{ margin: "0 auto" }}>
-          <form onSubmit={this.handleSubmit}>
-            <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between"}}>
-              <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
-                <label htmlFor="Search" style={{ paddingRight: "10px" }}>
-                  Number of items:
-                  {queryResults.length}
-                </label>
-              </div>
-              <input
-                id="Search"
-                value={searchQuery}
-                onChange={this.searchData}
-                placeholder="Enter your image name here"
-                style={{ width: "400px" }}
-              />
+      <div className="mx-8 my-2">
+        <div className="flex justify-center">
+          <div className="shadow stats bg-neutral m-2 ">
+            <div className="stat bg-neutral">
+              <div className="stat-title">Number of Items</div>
+              <div className="stat-value">{queryResults.length}</div>
+              <form onSubmit={this.handleSubmit}>
+                <label htmlFor="Search" />
+                <input
+                  id="Search"
+                  value={searchQuery}
+                  onChange={this.searchData}
+                  placeholder="Enter the name of a mirror"
+                  className="input input-primary input-bordered"
+                />
+              </form>
             </div>
-          </form>
-          <div>
-            <SearchTable queryResults={queryResults}/>
           </div>
+        </div>
+        <div>
+          <SearchTable queryResults={queryResults} />
         </div>
       </div>
     )
   }
 }
+
 export default Search

@@ -1,34 +1,31 @@
 import React, { Component } from "react"
-import * as styles from "./search-item-card.module.css"
-import MirrorIcon from "../../resource/icons/mirror"
-import HelpIcon from "../../resource/icons/help"
 
 class SearchItemCard extends Component<{queryItem: any}> {
   generateStatusCircle() {
     const statusString: string = this.props.queryItem.status;
     if (statusString === "") {
       return (
-        <div className={styles.circle} style={{background: "gray"}}/>
+        <div className="badge badge-ghost">success</div>
       );
     } else if (statusString[0] === "S") {
       return (
-        <div className={styles.circle} style={{background: "green"}}/>
+        <div className="badge badge-success">success</div>
       )
     } else if (statusString[0] === "Y") {
       return (
-        <div className={styles.circle} style={{background: "orange"}}/>
+        <div className="badge badge-warning">syncing</div>
       )
     } else if (statusString[0] === "F") {
       return (
-        <div className={styles.circle} style={{background: "red"}}/>
+        <div className="badge badge-error">failed</div>
       )
     } else if (statusString[0] === "P") {
       return (
-        <div className={styles.circle} style={{background: "lightblue"}}/>
+        <div className="badge badge-warning">paused</div>
       )
     } else {
       return (
-        <div className={styles.circle} style={{background: "gray"}}/>
+        <div className="badge badge-warning">unknown</div>
       );
     }
   }
@@ -36,23 +33,26 @@ class SearchItemCard extends Component<{queryItem: any}> {
   render() {
     const statusHTML = this.generateStatusCircle();
     return (
-      <div className={styles.box}>
-        <div className={styles.content}>
+      <div className="card shadow-2xl bg-neutral m-2">
+        <div className="card-body flex-col justify-between">
           <div>
-            <div className={styles.titleLine}>
-              <div className={styles.titleLineLeft}>
-                <MirrorIcon size={"20"} />
-                <a href={this.props.queryItem.url} className={styles.a}>{this.props.queryItem.cname}</a>
+            <div className="card-title flex justify-between">
+              <div className="flex items-center">
+                <a href={this.props.queryItem.url} className="link link-primary link-hover">{this.props.queryItem.cname}</a>
               </div>
-              <a href={this.props.queryItem.help}>
-                <HelpIcon size={"24"} />
-              </a>
+              <div>
+                <a href={this.props.queryItem.help}>
+                  <div className="badge badge-accent badge-outline">help</div>
+                </a>
+              </div>
             </div>
-            <div className={styles.description}>
+            <div className="mb-3">
               {this.props.queryItem.desc}
             </div>
           </div>
-          {statusHTML}
+          <div>
+            {statusHTML}
+          </div>
         </div>
       </div>
     )

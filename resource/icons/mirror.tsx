@@ -2,7 +2,7 @@ import React, { Component } from "react"
 
 export default (props: { size: string }) => (
   <svg viewBox="0 0 1024 1024" version="1.1"
-       xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size}>
+       xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} className="stroke-current">
     <path
       d="M403.29 775.26H172.9a73.44 73.44 0 0 1-73.44-73.44v-532.2a73.44 73.44 0 0 1 73.44-73.45h230.39a73.44 73.44 0 0 1 73.44 73.45v532.2a73.44 73.44 0 0 1-73.44 73.44z m-2-75.46V171.63H174.92V699.8z"
     />
