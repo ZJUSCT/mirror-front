@@ -1,0 +1,37 @@
+.box {
+    margin: 8px;
+    /*height: 120px;
+
+     */
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.title-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title-line-left {
+    display: flex;
+    align-items: center;
+}
+
+.description {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.a {
+    margin-left: 8px;
+    text-decoration: none;
+    color: darkred;
+}

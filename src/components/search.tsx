@@ -80,10 +80,7 @@ class Search extends Component {
           <form onSubmit={this.handleSubmit}>
             <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between"}}>
               <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
-                <MirrorIcon />
-                <label htmlFor="Search" style={{ paddingRight: "10px" }}>
-                  Image list
-                </label>
+                <label htmlFor="Search" style={{ paddingRight: "10px" }}/>
               </div>
               <input
                 id="Search"

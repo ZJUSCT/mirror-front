@@ -44,6 +44,15 @@
       "status": "S1612195849X1612196849N",
       "help": "/help/AUR/",
       "upstream": "https://aur.archlinux.org/"
+    },
+    {
+      "cname": "AOSP-neo",
+      "desc": "仅仅是一个测试仅仅是一个测试仅仅是一个测试",
+      "url": "/AOSP-neo",
+      "status": "S",
+      "help": "/help/AOSP-neo/",
+      "upstream": "https://android.googlesource.com/mirror/manifest",
+      "size": "600G"
     }
   ]
 }
