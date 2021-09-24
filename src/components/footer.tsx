@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { Link } from "gatsby"
 
 export default () => (
-  <footer style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between"}} className="p-10 footer bg-base-200 text-base-content">
+  <footer style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between"}} className="p-10 footer bg-neutral text-neutral-content">
     <div style={{width: "400px"}}>
       <p>
         浙江大学开源镜像站是一个以普及开源软件，方便浙江省内的用户高效访问开源项目的各种资源的非盈利计划。

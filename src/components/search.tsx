@@ -78,8 +78,8 @@ class Search extends Component {
     return (
       <div className="mx-8 my-2">
         <div className="flex justify-center">
-          <div className="shadow stats bg-neutral m-2 ">
-            <div className="stat bg-neutral">
+          <div className="shadow stats bg-base-200 m-2 ">
+            <div className="stat bg-base-200">
               <div className="stat-title">Number of Items</div>
               <div className="stat-value">{queryResults.length}</div>
               <form onSubmit={this.handleSubmit}>

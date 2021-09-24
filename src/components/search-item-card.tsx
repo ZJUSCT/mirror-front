@@ -33,7 +33,7 @@ class SearchItemCard extends Component<{queryItem: any}> {
   render() {
     const statusHTML = this.generateStatusCircle();
     return (
-      <div className="card shadow-2xl bg-neutral m-2">
+      <div className="card shadow-2xl bg-base-200 m-2">
         <div className="card-body flex-col justify-between">
           <div>
             <div className="card-title flex justify-between">
