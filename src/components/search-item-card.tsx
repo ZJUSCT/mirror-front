@@ -36,12 +36,12 @@ class SearchItemCard extends Component<{queryItem: any}> {
       <div className="card shadow-2xl bg-base-200 m-2">
         <div className="card-body flex-col justify-between">
           <div>
-            <div className="card-title flex justify-between">
+            <div className="card-title flex justify-between items-center">
               <div className="flex items-center">
                 <a href={this.props.queryItem.url} className="link link-primary link-hover">{this.props.queryItem.cname}</a>
               </div>
               <div>
-                <a href={this.props.queryItem.help}>
+                <a href={this.props.queryItem.help} className="flex content-center">
                   <div className="badge badge-accent badge-outline">help</div>
                 </a>
               </div>
