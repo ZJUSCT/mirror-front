@@ -16,7 +16,7 @@
   "dependencies": {
     "axios": "^0.22.0",
     "daisyui": "^1.14.0",
-    "gatsby": "^3.13.1",
+    "gatsby": "^4.0.0",
     "js-search": "^2.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
