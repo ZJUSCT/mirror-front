@@ -6,7 +6,10 @@
 
 module.exports = {
   /* Your site config here */
-  plugins: ['gatsby-plugin-postcss'],
+  plugins: [
+    'gatsby-plugin-postcss',
+    `gatsby-plugin-mdx`,
+  ],
   proxy: {
     prefix: "/Mirrors",
     url: "http://127.0.0.1:2345",
