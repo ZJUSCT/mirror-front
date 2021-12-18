@@ -4,31 +4,31 @@ import SearchTable from "./search-table";
 import Axios from "axios";
 
 class Search extends Component {
-
   state: any = {
     mirrors: [],
     search: [],
     searchResults: [],
     isLoading: true,
     isError: false,
-    searchQuery: ""
-  }
+    searchQuery: "",
+  };
 
   /**
    * React lifecycle method to fetch the data
    */
   async componentDidMount() {
-    Axios.get('/Mirrors/')
+    Axios.get("/Mirrors/")
       .then(result => {
         const data: any = result.data;
         this.setState({ mirrors: data.mirrors });
         this.rebuildIndex();
-      }).catch (err => {
-      this.setState({ isError: true });
-      console.log("====================================");
-      console.log(`Something bad happened while fetching the data\n${err}`);
-      console.log("====================================");
-    });
+      })
+      .catch(err => {
+        this.setState({ isError: true });
+        console.log("====================================");
+        console.log(`Something bad happened while fetching the data\n${err}`);
+        console.log("====================================");
+      });
   }
 
   /**
@@ -58,7 +58,7 @@ class Search extends Component {
 
     dataToSearch.addDocuments(mirrors); // adds the data to be searched
     this.setState({ search: dataToSearch, isLoading: false });
-  }
+  };
 
   /**
    * handles the input change and perform a search with js-search
@@ -68,14 +68,15 @@ class Search extends Component {
     const { search } = this.state;
     const queryResult = search.search(e.target.value);
     this.setState({ searchQuery: e.target.value, searchResults: queryResult });
-  }
+  };
   handleSubmit: React.FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-  }
+  };
 
   render() {
     const { mirrors, searchResults, searchQuery } = this.state;
-    const queryResults: Record<string, string>[] = searchQuery === "" ? mirrors : searchResults;
+    const queryResults: Record<string, string>[] =
+      searchQuery === "" ? mirrors : searchResults;
     // @ts-ignore
     // @ts-ignore
     return (
