@@ -1,6 +1,6 @@
 module.exports = {
   mode: 'jit',
-  purge: ['./src/**/*.{js,jsx,ts,tsx}'],
+  purge: ['./src/**/*.{js,jsx,ts,tsx,mdx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
@@ -10,5 +10,6 @@ module.exports = {
   },
   plugins: [
     require('daisyui'),
+    require('@tailwindcss/typography'),
   ],
 }

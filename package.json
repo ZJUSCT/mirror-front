@@ -25,7 +25,9 @@
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.0",
     "@types/js-search": "^1.4.0",
+    "@types/mdx": "^2.0.1",
     "autoprefixer": "^10.3.5",
     "gatsby-plugin-postcss": "^4.14.0",
     "postcss": "^8.3.7",
