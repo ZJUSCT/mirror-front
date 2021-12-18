@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 
 class SearchItemCard extends Component<{queryItem: any}> {
   generateStatusCircle() {
@@ -55,8 +55,8 @@ class SearchItemCard extends Component<{queryItem: any}> {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default SearchItemCard
+export default SearchItemCard;

@@ -2,9 +2,9 @@
 // and persist across page changes. This behavior is controlled
 // by 'gatsby-plugin-layout' in 'gatsby-config.js'.
 
-import * as React from "react"
-import Menu from "../components/menu"
-import Footer from "../components/footer"
+import * as React from "react";
+import Menu from "../components/menu";
+import Footer from "../components/footer";
 
 const Layout: React.FC = props => (
   <div
@@ -21,6 +21,6 @@ const Layout: React.FC = props => (
     </div>
     <Footer />
   </div>
-)
+);
 
-export default Layout
+export default Layout;

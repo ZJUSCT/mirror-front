@@ -1,7 +1,7 @@
-import React, { Component } from "react"
-import * as JsSearch from "js-search"
-import SearchTable from "./search-table"
-import Axios from "axios"
+import React, { Component } from "react";
+import * as JsSearch from "js-search";
+import SearchTable from "./search-table";
+import Axios from "axios";
 
 class Search extends Component {
 
@@ -70,7 +70,7 @@ class Search extends Component {
     this.setState({ searchQuery: e.target.value, searchResults: queryResult });
   }
   handleSubmit: React.FormEventHandler<HTMLFormElement> = e => {
-    e.preventDefault()
+    e.preventDefault();
   }
 
   render() {
@@ -102,8 +102,8 @@ class Search extends Component {
           <SearchTable queryResults={queryResults} />
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default Search
+export default Search;

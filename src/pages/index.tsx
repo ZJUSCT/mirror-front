@@ -1,8 +1,8 @@
-import React from "react"
-import Search from "../components/search"
+import React from "react";
+import Search from "../components/search";
 
 const IndexPage = () => (
   <Search />
-)
+);
 
-export default IndexPage
+export default IndexPage;

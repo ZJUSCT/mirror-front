@@ -1,5 +1,5 @@
-import React, { Component, ReactNode } from "react"
-import SearchItemCard from "../components/search-item-card"
+import React from "react";
+import SearchItemCard from "../components/search-item-card";
 
 export default (props: { queryResults: Record<string, string>[] }) => (
   <div className="flex justify-center">
@@ -12,4 +12,4 @@ export default (props: { queryResults: Record<string, string>[] }) => (
     </div>
 
   </div>
-)
+);

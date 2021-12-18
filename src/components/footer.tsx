@@ -1,5 +1,4 @@
-import React, { Component } from "react"
-import { Link } from "gatsby"
+import React from "react";
 
 export default () => (
   <footer style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between"}} className="p-10 footer bg-neutral text-neutral-content">
@@ -28,4 +27,4 @@ export default () => (
       <img src="https://www.zjusct.io/css/images/ZJUSCT_Header_Logo.png" style={{width: "200px", height:"auto"}}/>
     </div>
   </footer>
-)
+);

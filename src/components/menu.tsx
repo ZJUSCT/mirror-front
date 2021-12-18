@@ -1,5 +1,4 @@
-import React, { Component } from "react"
-import { defaults } from "autoprefixer"
+import React from "react";
 
 export default () => (
   <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content">
@@ -48,4 +47,4 @@ export default () => (
       </button>
     </div>
   </div>
-)
+);
