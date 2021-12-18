@@ -11,8 +11,4 @@ module.exports = {
     'gatsby-plugin-mdx',
     'gatsby-plugin-layout',
   ],
-  proxy: {
-    prefix: "/Mirrors",
-    url: "http://127.0.0.1:2345",
-  },
 }

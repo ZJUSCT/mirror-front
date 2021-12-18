@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as JsSearch from "js-search";
 import SearchTable from "./search-table";
 import Axios from "axios";
+import config from "../../config";
 
 class Search extends Component {
   state: any = {
@@ -17,7 +18,7 @@ class Search extends Component {
    * React lifecycle method to fetch the data
    */
   async componentDidMount() {
-    Axios.get("/Mirrors/")
+    Axios.get(`${config.apiServerUrl}/mirrors/`)
       .then(result => {
         const data: any = result.data;
         this.setState({ mirrors: data.mirrors });

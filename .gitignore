@@ -70,3 +70,6 @@ yarn-error.log
 
 # JetBrains IDE config
 .idea/
+
+# config file
+config.ts

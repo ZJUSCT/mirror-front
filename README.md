@@ -2,9 +2,12 @@
 
 back-end JSON format: [mirrorz-json](https://github.com/mirrorz-org/mirrorz#data-format-v15-draft)
 
-## Working Environment Initialization
+## Configuration
 
-Create a ssh tunnel, forwarding remote api port to `localhost:2345`:  
-```shell
-ssh -L 2345:localhost:${remote_port} ${remote_user}@${remote_host}
+Create a file named `config.ts` in the project root directory. Then, write:  
+
+```ts
+export default {
+  apiServerUrl: 'your API server URL here',
+}
 ```
