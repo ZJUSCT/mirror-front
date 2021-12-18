@@ -8,7 +8,8 @@ module.exports = {
   /* Your site config here */
   plugins: [
     'gatsby-plugin-postcss',
-    `gatsby-plugin-mdx`,
+    'gatsby-plugin-mdx',
+    'gatsby-plugin-layout',
   ],
   proxy: {
     prefix: "/Mirrors",
