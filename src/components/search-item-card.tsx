@@ -1,6 +1,7 @@
 import React from "react";
+import type { Mirror } from "../types/mirrorz";
 
-export default (props: { queryItem: any }) => {
+export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
     if (statusString === "") {

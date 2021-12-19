@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import * as JsSearch from "js-search";
 import SearchTable from "../components/search-table";
-import Axios from "axios";
+import axios from "axios";
+import type { Mirror, Mirrorz } from "../types/mirrorz";
 
 export default () => {
-  const [mirrors, setMirrors] = useState<Record<string, string>[]>([]);
   const [search, setSearch] = useState<JsSearch.Search>();
-  const [searchResults, setSearchResults] = useState<Record<string, string>[]>(
-    []
-  );
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [mirrors, setMirrors] = useState<Mirror[]>([]);
+  const [searchResults, setSearchResults] = useState<Mirror[]>(
+    []
+  );
+
   useEffect(() => {
-    Axios.get("/mirrors/")
+    axios.get<Mirrorz>("/mirrors")
       .then(result => {
-        const data: any = result.data;
-        console.log(result.data);
-        setMirrors(data.mirrors);
+        setMirrors(result.data.mirrors);
         rebuildIndex();
       })
       .catch(err => {
@@ -63,9 +63,8 @@ export default () => {
    * in which the results will be added to the state
    */
   const searchData = e => {
-    const queryResult = search.search(e.target.value);
     setSearchQuery(e.target.value);
-    setSearchResults(queryResult as Record<string, string>[]);
+    setSearchResults(search.search(e.target.value) as Mirror[]);
   };
   const handleSubmit = e => {
     e.preventDefault();
