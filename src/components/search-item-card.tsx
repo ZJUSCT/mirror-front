@@ -32,11 +32,15 @@ export default (props: { queryItem: Mirror }) => {
                 {props.queryItem.cname}
               </a>
             </div>
-            <div>
-              <a href={props.queryItem.help} className="flex content-center">
-                <div className="badge badge-accent badge-outline">help</div>
-              </a>
-            </div>
+            {props.queryItem.help === undefined ? (
+              <></>
+            ) : (
+              <div>
+                <a href={props.queryItem.help} className="flex content-center">
+                  <div className="badge badge-accent badge-outline">help</div>
+                </a>
+              </div>
+            )}
           </div>
           <div className="mb-3">{props.queryItem.desc}</div>
         </div>
