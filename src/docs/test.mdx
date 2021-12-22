@@ -6,7 +6,7 @@ Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的�
 
 如果遇到无法拉取 https 源的情况，请先使用 http 源并安装: 
 
-```
+```sh
 $ sudo apt install apt-transport-https ca-certificates
 ```
 
@@ -14,7 +14,7 @@ $ sudo apt install apt-transport-https ca-certificates
 
 选择你的 Debian 版本: 
 
-```
+```sh
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free

@@ -16,7 +16,7 @@ export default () => {
   );
 
   useEffect(() => {
-    axios.get<Mirrorz>("/mirrors")
+    axios.get<Mirrorz>("/mirrors/")
       .then(result => {
         setMirrors(result.data.mirrors);
         rebuildIndex();
