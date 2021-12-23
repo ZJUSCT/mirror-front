@@ -21,15 +21,15 @@ export default () => (
     </div>
     <div>
       <span className="footer-title">About Us</span>
-      <a className="link link-hover">E-mail</a>
-      <a className="link link-hover">GitHub</a>
-      <a className="link link-hover">Blog</a>
+      <a className="link link-hover" href="mailto:mail@zjusct.io">e-mail</a>
+      <a className="link link-hover" href="https://github.com/ZJUSCT">GitHub</a>
+      <a className="link link-hover" href="https://www.zjusct.io">Blog</a>
     </div>
     <div>
       <span className="footer-title">Special Thanks</span>
-      <a className="link link-hover">ZJU QSC</a>
-      <a className="link link-hover">ZJU Info Center</a>
-      <a className="link link-hover">THU TNUA</a>
+      <a className="link link-hover" href="http://zuits.zju.edu.cn">ZJU Info Center</a>
+      <a className="link link-hover" href="https://www.qsc.zju.edu.cn">ZJU QSC</a>
+      <a className="link link-hover" href="https://tuna.moe">THU TNUA</a>
     </div>
 
     <div>
