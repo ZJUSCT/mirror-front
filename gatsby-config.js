@@ -3,6 +3,7 @@
  *
  * See: https://www.gatsbyjs.com/docs/gatsby-config/
  */
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = {
   /* Your site config here */
@@ -11,8 +12,18 @@ module.exports = {
     'gatsby-plugin-mdx',
     'gatsby-plugin-layout',
   ],
-  proxy: {
-    prefix: "/mirrors",
-    url: "http://127.0.0.1:2345",
-  },
+  developMiddleware: app => {
+    app.use(
+      '/api',
+      createProxyMiddleware({
+        router: {
+          '/': 'http://mirrorhost',
+        },
+        onProxyReq: (proxyRes, req, res) => {
+          proxyRes.setHeader('host', 'newmirrors.zju.edu.cn');
+          console.log(proxyRes)
+        },
+      }),
+    );
+  }
 }
