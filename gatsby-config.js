@@ -10,7 +10,14 @@ module.exports = {
   assetPrefix: `/assets`,
   plugins: [
     'gatsby-plugin-postcss',
-    'gatsby-plugin-mdx',
+    {
+      resolve: 'gatsby-plugin-mdx',
+      options: {
+        defaultLayouts: {
+          default: require.resolve('./src/layouts/doc.tsx')
+        }
+      }
+    },
     'gatsby-plugin-layout',
   ],
   developMiddleware: app => {
