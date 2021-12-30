@@ -1,5 +1,4 @@
 import React from "react";
-import SearchTable from "../components/search-table";
 import DataContext from "../context/DataContext";
 
 export default () => {
@@ -8,9 +7,7 @@ export default () => {
       {data => (
         <div className="mx-8 my-2">
           <div>
-            <SearchTable
-              queryResults={data.mirrorInfo}
-            />
+              {JSON.stringify(data.releaseInfo)}
           </div>
         </div>
       )}

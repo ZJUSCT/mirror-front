@@ -5,12 +5,13 @@ import { MirrorData } from "../types/mirrorz";
 
 const defaultData: Data = {
   mirrorInfo: null,
+  releaseInfo: null,
 };
 
 const DataContext = React.createContext(defaultData);
 
 const DataProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<Data>({mirrorInfo: null});
+  const [data, setData] = useState<Data>({mirrorInfo: null, releaseInfo: null});
   useEffect(() => {
     axios
       .get<MirrorData>("/api/mirrors")
@@ -18,6 +19,7 @@ const DataProvider: React.FC = ({ children }) => {
         setData({
           ...data,
           mirrorInfo: result.data.mirrors,
+          releaseInfo: result.data.info,
         });
       })
       .catch(err => {
