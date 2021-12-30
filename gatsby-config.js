@@ -21,7 +21,7 @@ module.exports = {
         },
         onProxyReq: (proxyRes, req, res) => {
           proxyRes.setHeader('host', 'newmirrors.zju.edu.cn');
-          console.log(proxyRes)
+          // console.log(proxyRes)
         },
       }),
     );
