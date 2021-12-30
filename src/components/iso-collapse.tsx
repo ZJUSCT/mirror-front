@@ -3,7 +3,7 @@ import type { Info } from "../types/mirrorz";
 
 export default ({ isoInfo }: { isoInfo: Info }) => {
     return (
-        <div className="border collapse rounded-box border-base-300 collapse-arrow">
+        <div className="m-2 border shadow-md collapse rounded-box border-base-300 collapse-arrow">
             <input type="checkbox" />
             <div className="text-xl font-medium collapse-title">
                 {isoInfo.distro}
