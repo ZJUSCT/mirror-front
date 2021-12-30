@@ -7,6 +7,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = {
   /* Your site config here */
+  pathPrefix: `/new-site`,
   plugins: [
     'gatsby-plugin-postcss',
     'gatsby-plugin-mdx',
