@@ -8,7 +8,6 @@ import Footer from "../components/footer";
 
 const Layout: React.FC = props => (
   <div
-    data-theme="corporate"
     style={{
       minHeight: "100vh",
       display: "flex",
