@@ -1,23 +1,42 @@
-import React from "react";
+import * as React from "react";
 import type { Mirror } from "../types/mirrorz";
 
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
+    var statusCircle: React.ReactNode;
     switch (statusString[0]) {
       case "S":
-        return <div className="badge badge-success">success</div>;
+        statusCircle =  <div className="badge badge-success">success</div>;
+        break;
       case "Y":
-        return <div className="badge badge-info">syncing</div>;
+        statusCircle = <div className="badge badge-info">syncing</div>;
+        break;
       case "F":
-        return <div className="badge badge-error">failed</div>;
+        statusCircle = <div className="badge badge-error">failed</div>;
+        break;
       case "P":
-        return <div className="badge badge-info">paused</div>;
+        statusCircle = <div className="badge badge-info">paused</div>;
+        break;
       case "C":
-        return <div className="badge badge-info">cached</div>;
+        statusCircle = <div className="badge badge-info">cached</div>;
+        break;
       default:
-        return <div className="badge badge-warning">unknown</div>;
+        statusCircle = <div className="badge badge-warning">unknown</div>;
     }
+    // console.log(statusString.substring(1, 11));
+    var timeString: string = statusString.substring(1, 11);
+    if (timeString.length !== 0) {
+      var timeString = new Date(parseInt(timeString) * 1000).toLocaleString("zh-CN");
+      return (
+        <div data-tip={timeString} className="tooltip tooltip-right">
+          {statusCircle}
+        </div>
+      );
+    } else {
+      return statusCircle;
+    }
+    
   };
 
   return (
