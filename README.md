@@ -4,8 +4,4 @@ back-end JSON format: [mirrorz-json](https://github.com/mirrorz-org/mirrorz#data
 
 ## Development Environment Configuration
 
-Create a ssh tunnel, forwarding remote api port to `localhost:2345`:
-
-```shell
-ssh -L 2345:localhost:${remote_port} ${remote_user}@${remote_host}
-```
+Set a correct ip for `mirrorhost`.

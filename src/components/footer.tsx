@@ -20,16 +20,16 @@ export default () => (
       </p>
     </div>
     <div>
-      <span className="footer-title">About Us</span>
-      <a className="link link-hover" href="mailto:mail@zjusct.io">e-mail</a>
-      <a className="link link-hover" href="https://github.com/ZJUSCT">GitHub</a>
+      <span className="footer-title">关于我们</span>
+      <a className="link link-hover" href="mailto:mail@zjusct.io">E-mail</a>
+      <a className="link link-hover" href="https://github.com/zjusct">GitHub</a>
       <a className="link link-hover" href="https://www.zjusct.io">Blog</a>
     </div>
     <div>
-      <span className="footer-title">Special Thanks</span>
-      <a className="link link-hover" href="http://zuits.zju.edu.cn">ZJU Info Center</a>
-      <a className="link link-hover" href="https://www.qsc.zju.edu.cn">ZJU QSC</a>
+      <span className="footer-title">特别鸣谢</span>
+      <a className="link link-hover" href="http://zuits.zju.edu.cn">浙江大学信息技术中心</a>
       <a className="link link-hover" href="https://tuna.moe">THU TNUA</a>
+      <a className="link link-hover" href="https://mirrorz.org/">MirrorZ Project</a>
     </div>
 
     <div>
