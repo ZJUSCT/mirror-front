@@ -3,7 +3,7 @@ import React from "react";
 export default () => (
   <div className="mb-2 shadow-lg navbar bg-neutral text-neutral-content">
     <div className="flex-1 px-2 mx-2">
-      <span className="text-lg font-bold">ZJU Mirror</span>
+      <a href="/" className="text-lg font-bold">ZJU Mirror</a>
     </div>
     <div className="flex-none hidden px-2 mx-2 lg:flex">
       <div className="flex items-stretch">
