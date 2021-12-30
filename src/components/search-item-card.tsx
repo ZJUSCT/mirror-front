@@ -4,7 +4,7 @@ import type { Mirror } from "../types/mirrorz";
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
-    switch (statusString) {
+    switch (statusString[0]) {
       case "S":
         return <div className="badge badge-success">success</div>;
       case "Y":
@@ -14,17 +14,17 @@ export default (props: { queryItem: Mirror }) => {
       case "P":
         return <div className="badge badge-info">paused</div>;
       case "C":
-        return <div className="badge badge-success">cached</div>;
+        return <div className="badge badge-info">cached</div>;
       default:
         return <div className="badge badge-warning">unknown</div>;
     }
   };
 
   return (
-    <div className="card shadow-2xl bg-base-200 m-2">
-      <div className="card-body flex-col justify-between">
+    <div className="m-2 shadow-2xl card bg-base-200">
+      <div className="flex-col justify-between card-body">
         <div>
-          <div className="card-title flex justify-between items-center">
+          <div className="flex items-center justify-between card-title">
             <div className="flex items-center">
               <a
                 href={props.queryItem.url}
