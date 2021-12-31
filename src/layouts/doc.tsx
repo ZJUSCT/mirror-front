@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export default ({ children }: { children: React.ReactNode }) => (
-  <article className="prose dark:prose-invert max-w-none m-8">
+  <article className="m-8 prose dark:prose-invert max-w-none">
     {children}
   </article>
 );
