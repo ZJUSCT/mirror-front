@@ -70,3 +70,9 @@ export type ParsedMirror = {
   source: string;
   note: string | undefined;
 };
+
+// Beta Type
+export type VersionData = {
+  versionName: string[];
+  versionDetail: string[];
+};

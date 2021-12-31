@@ -1,3 +1,40 @@
+<!-- import {Select} from '../../components/select' -->
+import { useState } from 'react' 
+export let option = 0
+export const verData = {"versionName": ["sid", "testing", "bullseye", "buster", "stretch", "jessie"], "versionDetail":[`        # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+`]}
+
+export const detailInfo = () => {
+    const [option, setOption] = useState(0)
+    return (
+        <div>选择你的 Debian 版本: 
+            <select id="selectBox" style="color:black" onChange={() => setOption(document.getElementById("selectBox").selectedIndex)}>
+        {
+            verData.versionName.map((item, index) => {
+                return <option key={index}>{item}</option>
+            })
+        }
+            </select>
+            <code>{verData.versionDetail[option]}</code>
+        </div>
+    )
+}
+
+export const changeOption = () =>{
+    let a = document.getElementById("selectBox")
+    let so = a.selectedIndex
+    option = so
+    console.log(option)
+}
+
 # Debian 镜像使用帮助
 
 **这个文档取自 TUNA 的 Debian 文档，仅做技术验证用途。**
@@ -12,18 +49,21 @@ $ sudo apt install apt-transport-https ca-certificates
 
 再使用 TUNA 的软件源镜像。
 
-选择你的 Debian 版本: 
+<!-- Version I -->
 
-```sh
-# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+<!-- <detailInfo /> -->
 
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+<!-- Version II -->
 
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
-```
+<div>选择你的 Debian 版本: 
+    <select id="selectBox" style="color:black" onChange={changeOption}>
+        {
+            verData.versionName.map((item, index) => {
+                return <option key={index}>{item}</option>
+            })
+        }
+    </select>
+</div>
+
+<code><pre>{verData.versionDetail[option]}</pre></code>
+
