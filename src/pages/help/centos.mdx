@@ -1,0 +1,19 @@
+# CentOS 镜像使用帮助
+该镜像只提供 CentOS 7 与 8，架构仅为 x86_64。
+
+使用以下命令切换源并备份原始配置：
+
+```sh
+sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+         -e 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.zju.edu.cn|g' \
+         -i.bak \
+         /etc/yum.repos.d/CentOS-*.repo
+```
+注意其中的*通配符，如果只需要替换一些文件中的源，请自行增删。
+
+如果需要启用其中一些 repo，需要将其中的 enabled=0 改为 enabled=1。
+
+然后，更新软件包缓存
+```sh
+sudo yum makecache
+```
