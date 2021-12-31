@@ -5,8 +5,8 @@ export default () => (
     <div className="flex-1 h-full px-2 mx-2">
       <div className="flex flex-col flex-1 h-full">
         <div className="flex-1 grow" />
-        <a href="/" className="m-2 font-mono font-bold text-7xl">ZJU Mirror</a>
-        <a href="/" className="m-2 text-3xl font-bold">浙江大学开源软件镜像站</a>
+        <a href="/" className="m-2 font-mono text-5xl font-bold sm:text-7xl">ZJU Mirror</a>
+        <a href="/" className="m-2 text-xl font-bold sm:text-3xl">浙江大学开源软件镜像站</a>
       </div>
     </div>
     <div className="flex flex-col h-full">
