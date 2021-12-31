@@ -29,7 +29,7 @@ export default (props: { queryItem: Mirror }) => {
     if (timeString.length !== 0) {
       var timeString = new Date(parseInt(timeString) * 1000).toLocaleString("zh-CN");
       return (
-        <div data-tip={timeString} className="tooltip tooltip-right tooltip-info">
+        <div data-tip={timeString} className="tooltip tooltip-right tooltip-secondary">
           {statusCircle}
         </div>
       );

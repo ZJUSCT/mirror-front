@@ -20,7 +20,7 @@ module.exports = {
            'primary-focus' : '#000F29',     /* Primary color - focused */
            'primary-content' : '#ffffff',   /* Foreground content color to use on primary color */
 
-           'secondary' : '#f6d860',         /* Secondary color */
+           'secondary' : '#737373',         /* Secondary color */
            'secondary-focus' : '#f3cc30',   /* Secondary color - focused */
            'secondary-content' : '#ffffff', /* Foreground content color to use on secondary color */
 
@@ -46,7 +46,7 @@ module.exports = {
           "primary": "#f3f4f6",
           "primary-focus": "#e2e8f0",
           "primary-content": "#ffffff",
-          "secondary": "#f000b8",
+          "secondary": "#737373",
           "secondary-focus": "#bd0091",
           "secondary-content": "#ffffff",
           "accent": "#37cdbe",
