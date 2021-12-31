@@ -11,7 +11,9 @@ export default ({ promptString, versionList, configGen }: { promptString: string
                     })
                 }
             </select>
-            <pre>{configGen(version)}</pre>
+            <pre>
+                <code>{configGen(version)}</code>
+            </pre>
         </div>
     )
 }
