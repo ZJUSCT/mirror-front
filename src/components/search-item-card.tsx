@@ -58,7 +58,7 @@ export default (props: { queryItem: Mirror }) => {
             ) : (
               <div>
                 <Link to={props.queryItem.help} className="flex content-center">
-                  <div className="badge badge-accent badge-outline">help</div>
+                  <div className="badge badge-secondary badge-outline">help</div>
                 </Link>
               </div>
             )}
