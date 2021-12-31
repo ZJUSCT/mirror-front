@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "gatsby";
 
 export default () => (
   <div className="h-64 pb-8 mb-2 navbar bg-neutral text-neutral-content">
@@ -13,7 +14,7 @@ export default () => (
       <div className="flex-1 grow" />
       <div className="flex-none hidden px-2 mx-2 lg:flex">
         <div className="flex items-stretch">
-          <a href="/iso" className="btn btn-ghost btn-sm rounded-btn">
+          <Link to="/iso" className="btn btn-ghost btn-sm rounded-btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -28,11 +29,11 @@ export default () => (
               />
             </svg>
             ISO
-          </a>
+          </Link>
         </div>
       </div>
       <div className="flex-none lg:hidden">
-        <a href="/iso">
+        <Link to="/iso">
           <button className="btn btn-square btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +49,7 @@ export default () => (
               />
             </svg>
           </button>
-        </a>
+        </Link>
       </div>
     </div>
   </div>

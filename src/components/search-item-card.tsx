@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
 
 export default (props: { queryItem: Mirror }) => {
@@ -56,9 +57,9 @@ export default (props: { queryItem: Mirror }) => {
               <></>
             ) : (
               <div>
-                <a href={props.queryItem.help} className="flex content-center">
+                <Link to={props.queryItem.help} className="flex content-center">
                   <div className="badge badge-accent badge-outline">help</div>
-                </a>
+                </Link>
               </div>
             )}
           </div>
