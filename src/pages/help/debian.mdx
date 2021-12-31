@@ -1,69 +1,50 @@
-<!-- import {Select} from '../../components/select' -->
-import { useState } from 'react' 
-export let option = 0
-export const verData = {"versionName": ["sid", "testing", "bullseye", "buster", "stretch", "jessie"], "versionDetail":[`        # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
-        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
-        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
-        # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
-`]}
+import { useState } from 'react'
 
-export const detailInfo = () => {
-    const [option, setOption] = useState(0)
+export const GenDebianConfig = (version) => {
+    if (version === 'sid') {
+        return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free`
+    }
+    return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version} main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version} main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-updates main contrib non-free\n
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-backports main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-backports main contrib non-free\n
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security main contrib non-free`
+}
+
+export const DebianConfigGenerator = () => {
+    const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch", "jessie"]
+    const configData = ""
+    const [version, setVersion] = useState(debianVersions[0])
     return (
-        <div>选择你的 Debian 版本: 
-            <select id="selectBox" style="color:black" onChange={() => setOption(document.getElementById("selectBox").selectedIndex)}>
-        {
-            verData.versionName.map((item, index) => {
-                return <option key={index}>{item}</option>
-            })
-        }
+        <div>选择你的 Debian 版本：
+            <select id="selectBox" style="color:black" onChange={(event) => {setVersion(event.target.value)}}>
+                {
+                    debianVersions.map((item) => {
+                        return <option key={item}>{item}</option>
+                    })
+                }
             </select>
-            <code>{verData.versionDetail[option]}</code>
+            <pre>{GenDebianConfig(version)}</pre>
         </div>
     )
 }
 
-export const changeOption = () =>{
-    let a = document.getElementById("selectBox")
-    let so = a.selectedIndex
-    option = so
-    console.log(option)
-}
-
 # Debian 镜像使用帮助
-
-**这个文档取自 TUNA 的 Debian 文档，仅做技术验证用途。**
 
 Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。
 
 如果遇到无法拉取 https 源的情况，请先使用 http 源并安装: 
 
 ```sh
-$ sudo apt install apt-transport-https ca-certificates
+sudo apt install apt-transport-https ca-certificates
 ```
 
-再使用 TUNA 的软件源镜像。
+再使用我们的软件源镜像。
 
-<!-- Version I -->
-
-<!-- <detailInfo /> -->
-
-<!-- Version II -->
-
-<div>选择你的 Debian 版本: 
-    <select id="selectBox" style="color:black" onChange={changeOption}>
-        {
-            verData.versionName.map((item, index) => {
-                return <option key={index}>{item}</option>
-            })
-        }
-    </select>
-</div>
-
-<code><pre>{verData.versionDetail[option]}</pre></code>
-
+<DebianConfigGenerator />
