@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import ConfigGenerator from '../../components/config-generator'
+
+export const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch", "jessie"]
 
 export const GenDebianConfig = (version) => {
     if (version === 'sid') {
@@ -17,24 +19,6 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security mai
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security main contrib non-free`
 }
 
-export const DebianConfigGenerator = () => {
-    const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch", "jessie"]
-    const configData = ""
-    const [version, setVersion] = useState(debianVersions[0])
-    return (
-        <div>选择你的 Debian 版本：
-            <select id="selectBox" style="color:black" onChange={(event) => {setVersion(event.target.value)}}>
-                {
-                    debianVersions.map((item) => {
-                        return <option key={item}>{item}</option>
-                    })
-                }
-            </select>
-            <pre>{GenDebianConfig(version)}</pre>
-        </div>
-    )
-}
-
 # Debian 镜像使用帮助
 
 Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。
@@ -47,4 +31,4 @@ sudo apt install apt-transport-https ca-certificates
 
 再使用我们的软件源镜像。
 
-<DebianConfigGenerator />
+<ConfigGenerator promptString="请选择您的debian版本" versionList={debianVersions} configGen={GenDebianConfig} />
