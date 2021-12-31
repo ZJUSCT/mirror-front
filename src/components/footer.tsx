@@ -12,7 +12,7 @@ export default () => (
   >
     <div style={{ width: "400px" }}>
       <p>
-        浙江大学开源镜像站是一个以普及开源软件，方便浙江省内的用户高效访问开源项目的各种资源的非盈利计划。
+        浙江大学开源软件镜像站是一个以普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。
       </p>
       <p>
         本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
@@ -28,7 +28,7 @@ export default () => (
     <div>
       <span className="footer-title">特别鸣谢</span>
       <a className="link link-hover" href="http://zuits.zju.edu.cn">浙江大学信息技术中心</a>
-      <a className="link link-hover" href="https://tuna.moe">THU TNUA</a>
+      <a className="link link-hover" href="https://tuna.moe">清华大学 TUNA 协会</a>
       <a className="link link-hover" href="https://mirrorz.org/">MirrorZ Project</a>
     </div>
 
