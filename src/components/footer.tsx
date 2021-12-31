@@ -29,7 +29,7 @@ export default () => (
       <span className="footer-title">特别鸣谢</span>
       <a className="link link-hover" href="http://zuits.zju.edu.cn">浙江大学信息技术中心</a>
       <a className="link link-hover" href="https://tuna.moe">清华大学 TUNA 协会</a>
-      <a className="link link-hover" href="https://mirrorz.org/">MirrorZ Project</a>
+      <a className="link link-hover" href="https://lug.ustc.edu.cn">中国科学技术大学 Linux 用户协会</a>
     </div>
 
     <div>

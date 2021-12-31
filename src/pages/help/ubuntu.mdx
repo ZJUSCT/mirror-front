@@ -1,0 +1,35 @@
+import ConfigGenerator from '../../components/config-generator'
+
+export const ubuntuVersionMap = {
+    "12.04 LTS": "precise",
+    "14.04 LTS": "trusty",
+    "16.04 LTS": "xenial",
+    "18.04 LTS": "bionic",
+    "20.04 LTS": "focal",
+    "21.04": "hirsute",
+    "21.10": "impish"
+}
+
+export const GenUbuntuConfig = (version) => {
+    var ubuntuName = ubuntuVersionMap[version]
+    return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse\n
+# 预发布软件源，不建议启用
+# deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse`
+}
+
+
+# Ubuntu 镜像使用帮助
+Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
+
+<ConfigGenerator promptString="请选择您的ubuntu版本：" versionList={Object.keys(ubuntuVersionMap)} configGen={GenUbuntuConfig} />
+
+本镜像仅包含 32/64 位 x86 架构处理器的软件包，在 ARM(arm64, armhf)、PowerPC(ppc64el)、RISC-V(riscv64) 和 S390x 等架构的设备上（对应官方源为`ports.ubuntu.com`）请使用 [ubuntu-ports](/ubuntu-ports) 镜像。

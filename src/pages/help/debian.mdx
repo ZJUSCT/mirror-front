@@ -5,18 +5,18 @@ export const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch"
 export const GenDebianConfig = (version) => {
     if (version === 'sid') {
         return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ sid main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ sid main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ sid main contrib non-free`
     }
     return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version} main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version} main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-updates main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-updates main contrib non-free\n
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-backports main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ ${version}-backports main contrib non-free\n
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security main contrib non-free
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security ${version}-security main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+deb https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free`
 }
 
 # Debian 镜像使用帮助
