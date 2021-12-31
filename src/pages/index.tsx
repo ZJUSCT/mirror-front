@@ -6,7 +6,7 @@ export default () => {
   return (
     <DataContext.Consumer>
       {data => (
-        <div className="mx-8 my-2">
+        <div className="mx-6 my-2">
           <div>
             <SearchTable
               queryResults={data.mirrorInfo}

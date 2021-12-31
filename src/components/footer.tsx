@@ -21,7 +21,7 @@ export default () => (
     </div>
     <div>
       <span className="footer-title">关于我们</span>
-      <a className="link link-hover" href="mailto:mail@zjusct.io">E-mail</a>
+      <a className="link link-hover" href="mailto:mail@zjusct.io">Email</a>
       <a className="link link-hover" href="https://github.com/zjusct">GitHub</a>
       <a className="link link-hover" href="https://www.zjusct.io">Blog</a>
     </div>
