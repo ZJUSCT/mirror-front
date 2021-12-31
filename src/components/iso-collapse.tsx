@@ -9,9 +9,9 @@ export default ({ isoInfo }: { isoInfo: Info }) => {
                 {isoInfo.distro}
             </div>
             <div className="collapse-content">
-                {isoInfo.urls.map(item => {
+                {isoInfo.urls.map((item, i) => {
                     return (
-                        <p>
+                        <p key={i}>
                             <a href={item.url} className="link link-primary">{item.name}</a>
                         </p>
                     )
