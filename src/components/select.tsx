@@ -1,5 +1,5 @@
 import React from "react";
-import type {VersionData} from "../types/mirrorz";
+import type {VersionData} from "../types/version";
 
 const changeOption = () => {
 
