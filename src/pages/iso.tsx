@@ -6,7 +6,7 @@ export default () => {
     return (
         <DataContext.Consumer>
             {data => (
-                <div className="mx-8 my-2">
+                <div className="mx-8 my-2 mt-6 mb-6">
                     {data.releaseInfo?.map(item => {
                         return <ISOCollapse isoInfo={item}/>
                     })}

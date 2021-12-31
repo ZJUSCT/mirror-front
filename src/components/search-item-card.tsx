@@ -40,7 +40,7 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <div className="m-2 shadow-md card bg-base-200">
+    <div className="m-2 border-4 rounded-sm card bg-base-200">
       <div className="flex-col justify-between card-body">
         <div>
           <div className="flex items-center justify-between card-title">
