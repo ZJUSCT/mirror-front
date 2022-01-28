@@ -1,12 +1,6 @@
 import * as React from "react";
-import Chip from "@mui/material/Chip";
-import Tooltip from "@mui/material/Tooltip";
-import Card from "@mui/material/Card";
-import Box from "@mui/material/Box";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { CardActionArea } from "@mui/material";
+import { Chip, Tooltip, Card, Box, CardContent, Typography, CardActionArea } from "@mui/material";
 import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
 
@@ -33,7 +27,6 @@ export default (props: { queryItem: Mirror }) => {
       default:
         statusCircle = <Chip label="unknown" color="warning" size="small" />;
     }
-    // console.log(statusString.substring(1, 11));
     var timeString: string = statusString.substring(1, 11);
     if (timeString.length !== 0) {
       var timeString = new Date(parseInt(timeString) * 1000).toLocaleString(
@@ -50,7 +43,7 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <Card sx={{ m: 1 }}>
+    <Card>
       <CardActionArea onClick={() => navigate(props.queryItem.url)}>
         <CardContent>
           <Box
