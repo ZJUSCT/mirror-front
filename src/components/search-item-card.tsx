@@ -1,77 +1,81 @@
 import * as React from "react";
-import { Link } from "gatsby";
+import Chip from "@mui/material/Chip";
+import Tooltip from "@mui/material/Tooltip";
+import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { CardActionArea } from "@mui/material";
+import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
 
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
-    var statusCircle: React.ReactNode;
+    let statusCircle: any;
     switch (statusString[0]) {
       case "S":
-        statusCircle = <div className="badge badge-success">success</div>;
+        statusCircle = <Chip label="success" color="success" size="small" />;
         break;
       case "Y":
-        statusCircle = <div className="badge badge-info">syncing</div>;
+        statusCircle = <Chip label="syncing" color="warning" size="small" />;
         break;
       case "F":
-        statusCircle = <div className="badge badge-error">failed</div>;
+        statusCircle = <Chip label="failed" color="error" size="small" />;
         break;
       case "P":
-        statusCircle = <div className="badge badge-info">paused</div>;
+        statusCircle = <Chip label="paused" color="warning" size="small" />;
         break;
       case "C":
-        statusCircle = <div className="badge badge-info">cached</div>;
+        statusCircle = <Chip label="cached" color="info" size="small" />;
         break;
       default:
-        statusCircle = <div className="badge badge-warning">unknown</div>;
+        statusCircle = <Chip label="unknown" color="warning" size="small" />;
     }
     // console.log(statusString.substring(1, 11));
     var timeString: string = statusString.substring(1, 11);
     if (timeString.length !== 0) {
-      var timeString = new Date(parseInt(timeString) * 1000).toLocaleString("zh-CN");
+      var timeString = new Date(parseInt(timeString) * 1000).toLocaleString(
+        "zh-CN"
+      );
       return (
-        <div data-tip={timeString} className="tooltip tooltip-right tooltip-secondary">
+        <Tooltip title={timeString} placement="right">
           {statusCircle}
-        </div>
+        </Tooltip>
       );
     } else {
       return statusCircle;
     }
-
   };
 
   return (
-    <div className="m-2 rounded-sm shadow-md border-sm card bg-base-200">
-      <div className="flex-col justify-between card-body">
-        <div>
-          <div className="flex items-center justify-between card-title">
-            <div className="flex items-center">
-              <a
-                href={props.queryItem.url}
-                className="link link-primary link-hover"
-              >
-                {props.queryItem.cname}
-              </a>
-            </div>
+    <Card sx={{ m: 1 }}>
+      <CardActionArea onClick={() => navigate(props.queryItem.url)}>
+        <CardContent>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              bgcolor: "background.paper",
+              borderRadius: 1,
+            }}
+          >
+            <Typography gutterBottom variant="h5" component="div">
+              {props.queryItem.cname}
+            </Typography>
             {props.queryItem.help === undefined ? (
               <></>
             ) : (
-              <div>
-                <Link to={props.queryItem.help} className="flex content-center">
-                  {/* <div className="badge badge-secondary badge-outline">help</div> */}
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="w-6 h-6 mt-1 stroke-secondary">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </Link>
-              </div>
+              <HelpOutlineIcon onClick={() => navigate(props.queryItem.help)} />
             )}
-          </div>
-          <div className="mb-3">{props.queryItem.desc}</div>
-        </div>
-        <div className="">
-          <div>{generateStatusCircle()}</div>
-        </div>
-      </div>
-    </div>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            {props.queryItem.desc}
+          </Typography>
+          {generateStatusCircle()}
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
