@@ -25,7 +25,7 @@ module.exports = {
       '/api',
       createProxyMiddleware({
         router: {
-          '/': 'http://mirrorhost',
+          '/': 'http://mirrors.zju.edu.cn/api/',
         },
         onProxyReq: (proxyRes, req, res) => {
           proxyRes.setHeader('host', 'newmirrors.zju.edu.cn');
