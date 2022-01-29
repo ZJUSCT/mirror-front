@@ -15,10 +15,7 @@ const Layout: React.FC = props => (
       justifyContent: "space-between",
     }}
   >
-    <div>
-      <Menu />
-      <div>{props.children}</div>
-    </div>
+    <div>{props.children}</div>
     <Footer />
   </div>
 );

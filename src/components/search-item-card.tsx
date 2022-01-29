@@ -1,6 +1,15 @@
 import * as React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Chip, Tooltip, Card, Box, CardContent, Typography, CardActionArea } from "@mui/material";
+import {
+  Chip,
+  Tooltip,
+  Card,
+  Box,
+  CardContent,
+  Typography,
+  CardActionArea,
+  IconButton,
+} from "@mui/material";
 import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
 
@@ -51,7 +60,7 @@ export default (props: { queryItem: Mirror }) => {
               display: "flex",
               justifyContent: "space-between",
               bgcolor: "background.paper",
-              borderRadius: 1,
+              elevation: 4,
             }}
           >
             <Typography gutterBottom variant="h5" component="div">
@@ -60,7 +69,9 @@ export default (props: { queryItem: Mirror }) => {
             {props.queryItem.help === undefined ? (
               <></>
             ) : (
-              <HelpOutlineIcon onClick={() => navigate(props.queryItem.help)} />
+              <IconButton onClick={() => navigate(props.queryItem.help)}>
+                <HelpOutlineIcon />
+              </IconButton>
             )}
           </Box>
           <Typography variant="body2" color="text.secondary">
