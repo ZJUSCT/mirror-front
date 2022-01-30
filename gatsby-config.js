@@ -18,6 +18,14 @@ module.exports = {
         }
       }
     },
+    {
+      resolve: "gatsby-plugin-react-svg",
+      options: {
+        rule: {
+          include: /icons/
+        }
+      }
+    },
     'gatsby-plugin-layout',
   ],
   developMiddleware: app => {

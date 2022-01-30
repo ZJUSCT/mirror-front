@@ -1,42 +1,10 @@
 import React from "react";
 import SearchTable from "../components/search-table";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
-import type { mirrorBrief } from "../components/frequently-used-mirror-card";
 import { Alert, Grid, Typography } from "@mui/material";
 import { fetchMirrorData } from "../utils/DataSource";
+import { frequentlyUsedMirror } from "../utils/frequentlyUsedMirrorList";
 
-const frequentlyUsedMirror: mirrorBrief[] = [
-  {
-    name: "Ubuntu",
-    img: "https://simpleicons.org/icons/ubuntu.svg",
-    desc: "Ubuntu 软件包",
-  },
-  {
-    name: "NPM",
-    img: "https://simpleicons.org/icons/npm.svg",
-    desc: "Node.JS 程序库",
-  },
-  {
-    name: "PyPI",
-    img: "https://simpleicons.org/icons/python.svg",
-    desc: "Python PIP 程序库",
-  },
-  {
-    name: "Arch Linux",
-    img: "https://simpleicons.org/icons/archlinux.svg",
-    desc: "Arch Linux 软件包",
-  },
-  {
-    name: "CentOS",
-    img: "https://simpleicons.org/icons/centos.svg",
-    desc: "CentOS 软件包",
-  },
-  {
-    name: "Docker",
-    img: "https://simpleicons.org/icons/docker.svg",
-    desc: "Docker 应用镜像",
-  },
-];
 
 export default ({ serverData }) => (
   <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>

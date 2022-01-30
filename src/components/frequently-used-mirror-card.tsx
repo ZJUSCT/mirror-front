@@ -11,7 +11,7 @@ import { Info } from "@mui/icons-material";
 
 export type mirrorBrief = {
   name: string;
-  img: string;
+  img: React.ReactNode;
   desc: string;
 };
 
@@ -23,13 +23,7 @@ export default (props: { info: mirrorBrief }) => (
       justifyContent="flex-start"
       alignItems="center"
     >
-      <Box sx={{ pt: 4, maxWidth: "4rem" }}>
-        <CardMedia
-          component="img"
-          image={props.info.img}
-          alt={props.info.name}
-        />
-      </Box>
+      <Box sx={{ pt: 4 }}>{props.info.img}</Box>
       <CardContent>
         <Grid
           container
