@@ -52,7 +52,7 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <Card>
+    <Card sx={{ boxShadow: 6 }}>
       <CardActionArea onClick={() => navigate(props.queryItem.url)}>
         <CardContent>
           <Box
@@ -63,7 +63,7 @@ export default (props: { queryItem: Mirror }) => {
               elevation: 4,
             }}
           >
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography gutterBottom variant="h6" component="div">
               {props.queryItem.cname}
             </Typography>
             {props.queryItem.help === undefined ? (
