@@ -8,6 +8,18 @@ export const theme = createTheme({
     neutral: {
       main: "#f2f7f9",
     },
+    success: {
+      main: "#27a881"
+    },
+    warning: {
+      main: "#37adc7",
+    },
+    info: {
+      main: "#6780da"
+    },
+    error: {
+      main: "#e44918"
+    },
   },
   typography: {
     h2: {

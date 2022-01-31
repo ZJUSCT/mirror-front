@@ -1,7 +1,8 @@
 import * as React from "react";
 import {
   Chip,
-  Tooltip,
+  Grid,
+  Box,
   Card,
   CardContent,
   Typography,
@@ -9,43 +10,56 @@ import {
 } from "@mui/material";
 import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
+import CircleIcon from "@mui/icons-material/Circle";
 
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
-    let statusCircle: any;
+    let content: string;
+    let color: "inherit" | "disabled" | "action" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
     switch (statusString[0]) {
       case "S":
-        statusCircle = <Chip label="success" color="success" size="small" />;
+        content = "success";
+        color = "success";
         break;
       case "Y":
-        statusCircle = <Chip label="syncing" color="warning" size="small" />;
+        content = "syncing";
+        color = "warning";
         break;
       case "F":
-        statusCircle = <Chip label="failed" color="error" size="small" />;
+        content = "failed";
+        color = "error";
         break;
       case "P":
-        statusCircle = <Chip label="paused" color="warning" size="small" />;
+        content = "paused";
+        color = "warning";
         break;
       case "C":
-        statusCircle = <Chip label="cached" color="info" size="small" />;
+        content = "cached";
+        color = "info";
         break;
       default:
-        statusCircle = <Chip label="unknown" color="warning" size="small" />;
+        content = "unknown";
+        color = "warning";
     }
-    var timeString: string = statusString.substring(1, 11);
-    if (timeString.length !== 0) {
-      var timeString = new Date(parseInt(timeString) * 1000).toLocaleString(
-        "zh-CN"
-      );
-      return (
-        <Tooltip title={timeString} placement="right">
-          {statusCircle}
-        </Tooltip>
-      );
-    } else {
-      return statusCircle;
-    }
+    return (
+      <Grid
+        container
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="baseline"
+        spacing={0.5}
+      >
+        <Grid item>
+          <CircleIcon sx={{ fontSize: 8 }} color={color} />
+        </Grid>
+        <Grid item>
+          <Typography variant="body2" component="div" color={`${color}.main`} fontWeight={500} fontSize={12}>
+            {content.toUpperCase()}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
   };
 
   return (
@@ -54,7 +68,7 @@ export default (props: { queryItem: Mirror }) => {
         onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
       >
         <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
+          <Typography variant="h6" component="div">
             {props.queryItem.cname}
           </Typography>
           <Typography variant="body2" color="text.secondary">

@@ -23,9 +23,6 @@ export default ({ serverData }) => (
         </Grid>
       </Grid>
       <Grid item xs={1}>
-        <Alert severity="info">浙江大学开源软件镜像站试运行中...</Alert>
-      </Grid>
-      <Grid item xs={1}>
         <Typography gutterBottom variant="h5" component="div">
           常用镜像
         </Typography>
