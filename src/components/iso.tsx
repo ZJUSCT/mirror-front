@@ -3,7 +3,7 @@ import { Card, Grid, Typography } from "@mui/material";
 import AlbumIcon from "@mui/icons-material/Album";
 
 export default (props: { info: any }) => (
-  <Card className="zju-mirror-card" sx={{ p: 2 }}>
+  <Card className="zju-mirror-card" sx={{ p: 2 }} style={{ height: "100%" }}>
     <Grid
       container
       direction="row"

@@ -16,7 +16,16 @@ export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
     let content: string;
-    let color: "inherit" | "disabled" | "action" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
+    let color:
+      | "inherit"
+      | "disabled"
+      | "action"
+      | "primary"
+      | "secondary"
+      | "error"
+      | "info"
+      | "success"
+      | "warning";
     switch (statusString[0]) {
       case "S":
         content = "success";
@@ -54,7 +63,13 @@ export default (props: { queryItem: Mirror }) => {
           <CircleIcon sx={{ fontSize: 8 }} color={color} />
         </Grid>
         <Grid item>
-          <Typography variant="body2" component="div" color={`${color}.main`} fontWeight={500} fontSize={12}>
+          <Typography
+            variant="body2"
+            component="div"
+            color={`${color}.main`}
+            fontWeight={500}
+            fontSize={12}
+          >
             {content.toUpperCase()}
           </Typography>
         </Grid>
@@ -63,18 +78,29 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <Card className="zju-mirror-card">
+    <Card className="zju-mirror-card" style={{ height: "100%" }}>
       <CardActionArea
         onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
+        style={{ height: "100%" }}
       >
-        <CardContent>
-          <Typography variant="h6" component="div">
-            {props.queryItem.cname}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {props.queryItem.desc}
-          </Typography>
-          {generateStatusCircle()}
+        <CardContent style={{ height: "100%" }}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            height="100%"
+          >
+            <Grid item>
+              <Typography variant="h6" component="div">
+                {props.queryItem.cname}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {props.queryItem.desc}
+              </Typography>
+            </Grid>
+            <Grid item>{generateStatusCircle()}</Grid>
+          </Grid>
         </CardContent>
       </CardActionArea>
     </Card>

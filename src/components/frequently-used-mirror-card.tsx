@@ -17,7 +17,7 @@ export type mirrorBrief = {
 };
 
 export default (props: { info: mirrorBrief }) => (
-  <Card className="zju-mirror-card">
+  <Card className="zju-mirror-card" style={{ height: "100%" }}>
     <CardActionArea
       onClick={() => navigate(`/info?name=${props.info.name}`)}
     >
