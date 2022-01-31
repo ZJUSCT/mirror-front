@@ -3,7 +3,6 @@
 // by 'gatsby-plugin-layout' in 'gatsby-config.js'.
 
 import * as React from "react";
-import Menu from "../components/menu";
 import Footer from "../components/footer";
 
 const Layout: React.FC = props => (

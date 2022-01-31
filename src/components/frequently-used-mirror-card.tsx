@@ -7,7 +7,6 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { Info } from "@mui/icons-material";
 
 export type mirrorBrief = {
   name: string;
