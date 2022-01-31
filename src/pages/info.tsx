@@ -23,7 +23,7 @@ export default ({ serverData }) => {
   }, []);
   return (
     <Box>
-      <Box sx={{ backgroundColor: "#F2F7F9", p: 4 }}>
+      <Box sx={{ backgroundColor: "#f2f7f9", p: 8 }}>
         <Grid
           container
           direction="column"
@@ -47,7 +47,7 @@ export default ({ serverData }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{p: 4 }}>
+      <Box sx={{p: 8 }}>
         <Grid
           container
           direction="column"
@@ -55,7 +55,7 @@ export default ({ serverData }) => {
           alignItems="flex-start"
         >
           <Typography gutterBottom variant="h5" component="div">
-            安装盘
+            使用说明
           </Typography>
           <Ubuntu />
         </Grid>

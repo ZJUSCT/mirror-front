@@ -1,14 +1,11 @@
 import * as React from "react";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {
   Chip,
   Tooltip,
   Card,
-  Box,
   CardContent,
   Typography,
   CardActionArea,
-  IconButton,
 } from "@mui/material";
 import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
@@ -52,28 +49,14 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <Card sx={{ boxShadow: 6 }}>
-      <CardActionArea onClick={() => navigate(props.queryItem.url)}>
+    <Card sx={{ boxShadow: "0rem 0.2rem 0.4rem #00000020" }}>
+      <CardActionArea
+        onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
+      >
         <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              bgcolor: "background.paper",
-              elevation: 4,
-            }}
-          >
-            <Typography gutterBottom variant="h6" component="div">
-              {props.queryItem.cname}
-            </Typography>
-            {props.queryItem.help === undefined ? (
-              <></>
-            ) : (
-              <IconButton onClick={() => navigate(props.queryItem.help)}>
-                <HelpOutlineIcon />
-              </IconButton>
-            )}
-          </Box>
+          <Typography gutterBottom variant="h6" component="div">
+            {props.queryItem.cname}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
             {props.queryItem.desc}
           </Typography>
