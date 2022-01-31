@@ -11,12 +11,12 @@ export default ({ serverData }) => (
       <Grid item xs={1}>
         <Grid container columns={{ xs: 1 }}>
           <Grid item xs={1}>
-            <Typography variant="h3" component="div">
+            <Typography variant="h3" component="div" color="primary">
               ZJU Mirror
             </Typography>
           </Grid>
           <Grid item xs={1}>
-            <Typography variant="subtitle1" component="div">
+            <Typography variant="subtitle1" component="div" color="primary">
               浙江大学开源软件镜像站
             </Typography>
           </Grid>

@@ -15,14 +15,12 @@ export const theme = createTheme({
     },
     h3: {
       fontWeight: 500,
-      color: "#157684",
     },
     h5: {
       fontWeight: 1000,
     },
     subtitle1: {
       fontWeight: 1000,
-      color: "#157684",
     },
   },
 });

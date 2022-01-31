@@ -49,7 +49,7 @@ export default (props: { queryItem: Mirror }) => {
   };
 
   return (
-    <Card sx={{ boxShadow: "0rem 0.2rem 0.4rem #00000020" }}>
+    <Card className="zju-mirror-card">
       <CardActionArea
         onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
       >

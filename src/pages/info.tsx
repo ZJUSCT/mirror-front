@@ -24,6 +24,9 @@ export default ({ serverData }) => {
   return (
     <Box>
       <Box sx={{ backgroundColor: "#f2f7f9", p: 8 }}>
+        <Typography variant="h5" component="div" color="primary">
+          ZJU Mirror
+        </Typography>
         <Grid
           container
           direction="column"
@@ -47,7 +50,7 @@ export default ({ serverData }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{p: 8 }}>
+      <Box sx={{ p: 8 }}>
         <Grid
           container
           direction="column"

@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import '../styles/card.sass';
 
 export type mirrorBrief = {
   name: string;
@@ -16,7 +17,7 @@ export type mirrorBrief = {
 };
 
 export default (props: { info: mirrorBrief }) => (
-  <Card sx={{ boxShadow: "0rem 0.2rem 0.4rem #00000020" }}>
+  <Card className="zju-mirror-card">
     <CardActionArea
       onClick={() => navigate(`/info?name=${props.info.name}`)}
     >
