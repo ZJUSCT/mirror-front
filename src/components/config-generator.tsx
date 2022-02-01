@@ -42,8 +42,8 @@ export default ({
                 setVersion(event.target.value as string);
               }}
             >
-              {versionList.map(item => {
-                return <MenuItem value={item}>{item}</MenuItem>;
+              {versionList.map((item, i) => {
+                return <MenuItem key={i} value={item}>{item}</MenuItem>;
               })}
             </Select>
           </FormControl>
