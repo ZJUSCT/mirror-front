@@ -85,7 +85,7 @@ export default ({ serverData }) => {
               <></>
             )}
           </Grid>
-          <Grid item>
+          <Grid item width="100%">
             {releaseInfo !== undefined ? (
               <Box>
                 <Typography gutterBottom variant="h5" component="div">
