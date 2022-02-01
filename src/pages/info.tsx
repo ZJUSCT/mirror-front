@@ -1,8 +1,8 @@
-import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import { fetchMirrorData } from "../utils/DataSource";
 import Iso from "../components/iso";
-import Ubuntu from "./help/ubuntu.mdx";
+import Usage from "../components/usage";
 
 export default ({ serverData }) => {
   const [name, setName] = React.useState("");
@@ -36,32 +36,28 @@ export default ({ serverData }) => {
           <Typography gutterBottom variant="h2" component="div">
             {name}
           </Typography>
-          <Typography gutterBottom variant="h5" component="div">
-            安装盘
-          </Typography>
-          <Grid container spacing={{ xs: 1 }} columns={{ xs: 1, md: 2 }}>
-            {releaseInfo?.urls
-              .filter((_, i) => i < 4)
-              .map((e, i) => (
-                <Grid item xs={1} key={i}>
-                  <Iso info={e} />
-                </Grid>
-              ))}
-          </Grid>
+          {releaseInfo !== null ? (
+            <Box>
+              <Typography gutterBottom variant="h5" component="div">
+                安装盘
+              </Typography>
+              <Grid container spacing={{ xs: 1 }} columns={{ xs: 1, md: 2 }}>
+                {releaseInfo.urls
+                  .filter((_, i) => i < 4)
+                  .map((e, i) => (
+                    <Grid item xs={1} key={i}>
+                      <Iso info={e} />
+                    </Grid>
+                  ))}
+              </Grid>
+            </Box>
+          ) : (
+            <Box></Box>
+          )}
         </Grid>
       </Box>
       <Box sx={{ p: 8 }}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Typography gutterBottom variant="h5" component="div">
-            使用说明
-          </Typography>
-          <Ubuntu />
-        </Grid>
+        <Usage name={name} />
       </Box>
     </Box>
   );

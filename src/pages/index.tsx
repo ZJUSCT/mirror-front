@@ -26,7 +26,7 @@ export default ({ serverData }) => (
         <Typography gutterBottom variant="h5" component="div">
           常用镜像
         </Typography>
-        <Grid container spacing={{ xs: 2 }} columns={{ xs: 3, md: 6 }}>
+        <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
           {frequentlyUsedMirror.map((e, i) => (
             <Grid item xs={1} key={i}>
               <FrequentlyUsedMirrorCard info={e} />
