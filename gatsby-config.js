@@ -9,7 +9,6 @@ module.exports = {
   /* Your site config here */
   assetPrefix: `/assets`,
   plugins: [
-    'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
     {
       resolve: 'gatsby-plugin-mdx',
