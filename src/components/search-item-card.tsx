@@ -9,11 +9,13 @@ import {
 import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
 import CircleIcon from "@mui/icons-material/Circle";
+import { height } from "@mui/system";
 
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
     const statusInfo: statusInfo = getStatusInfo(statusString);
+    console.log(statusInfo);
     return (
       <Grid
         container
@@ -46,13 +48,13 @@ export default (props: { queryItem: Mirror }) => {
         onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
         style={{ height: "100%" }}
       >
-        <CardContent style={{ height: "100%" }}>
           <Grid
             container
             direction="column"
             justifyContent="space-between"
             alignItems="flex-start"
             height="100%"
+            padding={2}
           >
             <Grid item>
               <Typography variant="h6" component="div">
@@ -64,7 +66,6 @@ export default (props: { queryItem: Mirror }) => {
             </Grid>
             <Grid item>{generateStatusCircle()}</Grid>
           </Grid>
-        </CardContent>
       </CardActionArea>
     </Card>
   );
@@ -85,24 +86,34 @@ export type statusInfo = {
 };
 
 export const getStatusInfo = (statusString: string): statusInfo => {
-  const status = statusString?.at(0)
-  return status === "S" ? {
-    content: "success",
-    color: "success",
-  } : status === "Y" ? {
-    content: "syncing",
-    color: "warning",
-  } : status === "F" ? {
-    content: "failed",
-    color: "error",
-  } : status === "P" ? {
-    content: "paused",
-    color: "warning",
-  } : status === "C" ? {
-    content: "cached",
-    color: "info",
-  } : {
-    content: "unknown",
-    color: "warning",
-  };
-}
+  const status = statusString?.at(0);
+  return status === "S"
+    ? {
+        content: "success",
+        color: "success",
+      }
+    : status === "Y"
+    ? {
+        content: "syncing",
+        color: "warning",
+      }
+    : status === "F"
+    ? {
+        content: "failed",
+        color: "error",
+      }
+    : status === "P"
+    ? {
+        content: "paused",
+        color: "warning",
+      }
+    : status === "C"
+    ? {
+        content: "cached",
+        color: "info",
+      }
+    : {
+        content: "unknown",
+        color: "warning",
+      };
+};
