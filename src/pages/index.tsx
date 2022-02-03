@@ -38,7 +38,7 @@ export default ({ serverData }) => (
         <Typography gutterBottom variant="h5" component="div">
           所有镜像
         </Typography>
-        <SearchTable queryResults={serverData.mirrorInfo} />
+        <SearchTable queryResults={serverData.mirrorInfo?.sort((l, r) => l.cname < r.cname ? -1 : 1)} />
       </Grid>
     </Grid>
   </Box>
