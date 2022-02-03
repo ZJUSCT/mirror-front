@@ -19,11 +19,12 @@ export default ({ serverData }) => {
     const params = new URLSearchParams(location.search);
     const name = params.get("name");
     setName(name);
+    console.log(serverData.releaseInfo);
     const target = serverData.releaseInfo.find(
       item => item.distro.substring(0, name.length) === name
     );
     setReleaseInfo(target);
-    setIsoUrl(longestCommonPrefix(target.urls.map(x => x.url)));
+    setIsoUrl(longestCommonPrefix(target?.urls.map(x => x.url)));
 
     const mirror = serverData.mirrorInfo.find(
       item => item.cname === name
@@ -143,7 +144,7 @@ export default ({ serverData }) => {
 };
 
 const longestCommonPrefix = (urlArray: string[]): string => {
-  if (urlArray.length === 0) {
+  if (urlArray === undefined || urlArray.length === 0) {
     return "";
   }
   return urlArray.reduce((prev, curr) => {
