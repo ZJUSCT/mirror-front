@@ -30,9 +30,11 @@ export default ({ serverData }) => {
       item => item.cname === name
     ) as Mirror;
 
-    setUrl(mirror.url);
-    setTimeString(getTime(mirror.status));
-    setStatusInfo(getStatusInfo(mirror.status));
+    if (mirror !== undefined) {
+      setUrl(mirror.url);
+      setTimeString(getTime(mirror.status));
+      setStatusInfo(getStatusInfo(mirror.status));
+    }
   }, []);
 
   return (
@@ -51,7 +53,12 @@ export default ({ serverData }) => {
         >
           <Grid item>
             <Typography variant="h2" component="div">
-              <Link color="inherit" underline="hover" href={url} fontWeight={400}>
+              <Link
+                color="inherit"
+                underline="hover"
+                href={url}
+                fontWeight={400}
+              >
                 {name}
               </Link>
             </Typography>
