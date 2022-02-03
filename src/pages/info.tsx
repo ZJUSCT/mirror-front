@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Link } from "@mui/material";
 import { fetchMirrorData } from "../utils/DataSource";
 import Iso from "../components/iso";
 import Usage from "../components/usage";
@@ -12,6 +12,7 @@ export default ({ serverData }) => {
   const [releaseInfo, setReleaseInfo] = React.useState<any>(undefined);
   const [timeString, setTimeString] = React.useState<string>("");
   const [statusInfo, setStatusInfo] = React.useState<statusInfo>(undefined);
+  const [isoUrl, setIsoUrl] = React.useState<string>("");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -20,7 +21,9 @@ export default ({ serverData }) => {
     const target = serverData.releaseInfo.find(
       item => item.distro.substring(0, name.length) === name
     );
+    console.log(target);
     setReleaseInfo(target);
+    setIsoUrl(longestCommonPrefix(target.urls.map(x => x.url)));
 
     const mirror = serverData.mirrorInfo.find(
       item => item.cname === name
@@ -88,9 +91,27 @@ export default ({ serverData }) => {
           <Grid item width="100%">
             {releaseInfo !== undefined ? (
               <Box>
-                <Typography gutterBottom variant="h5" component="div">
-                  安装盘
-                </Typography>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Grid item>
+                    <Typography gutterBottom variant="h5" component="div">
+                      安装盘
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      gutterBottom
+                      variant="subtitle1"
+                      component="div"
+                    >
+                      <Link color="primary" underline="hover" href={isoUrl}>更多安装盘</Link>
+                    </Typography>
+                  </Grid>
+                </Grid>
                 <Grid container spacing={{ xs: 1 }} columns={{ xs: 1, md: 2 }}>
                   {releaseInfo?.urls
                     .filter((_, i) => i < 4)
@@ -113,6 +134,18 @@ export default ({ serverData }) => {
     </Box>
   );
 };
+
+const longestCommonPrefix = (urlArray: string[]): string => {
+  if (urlArray.length === 0) {
+    return "";
+  }
+  return urlArray.reduce((prev, curr) => {
+    const length = Math.min(prev.length, curr.length);
+    let index = 0;
+    for (; index < length && prev.at(index) === curr.at(index); index++);
+    return prev.substring(0, index);
+  });
+}
 
 const getTime = (statusString: string): string => {
   let timeString: string = statusString.substring(1, 11);
