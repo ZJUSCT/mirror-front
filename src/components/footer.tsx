@@ -41,7 +41,7 @@ export default () => (
               columnSpacing={8}
             >
               <Grid item>
-                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={1000}>
+                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
                   关于我们
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -73,7 +73,7 @@ export default () => (
                 </Typography>
               </Grid>
               <Grid item>
-                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={1000}>
+                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
                   特别鸣谢
                 </Typography>
                 <Typography gutterBottom variant="body2">
