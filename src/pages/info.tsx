@@ -128,7 +128,7 @@ export default ({ serverData }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ p: 8 }}>
+      <Box sx={{ backgroundColor: "#ffffff", p: 8 }}>
         <Usage name={name} />
       </Box>
     </Box>
