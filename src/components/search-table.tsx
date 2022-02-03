@@ -1,13 +1,21 @@
 import React from "react";
 import SearchItemCard from "../components/search-item-card";
 import type { Mirror } from "../types/mirrorz";
+import { Box, Grid } from "@mui/material";
 
 export default (props: { queryResults: Mirror[] }) => (
-  <div className="flex justify-center">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Grid
+      container
+      spacing={{ xs: 2 }}
+      columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+      alignItems="stretch"
+    >
       {props.queryResults?.map((item, i) => (
-        <SearchItemCard queryItem={item} key={i} />
+        <Grid item xs={1} key={i}>
+          <SearchItemCard queryItem={item} />
+        </Grid>
       ))}
-    </div>
-  </div>
+    </Grid>
+  </Box>
 );

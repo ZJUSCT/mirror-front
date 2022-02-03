@@ -1,4 +1,4 @@
-import ConfigGenerator from '../../components/config-generator'
+import ConfigGenerator from '../src/components/config-generator'
 
 export const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch", "jessie"]
 
@@ -36,8 +36,6 @@ deb https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-fre
 deb https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free
 # deb-src https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free`
 }
-
-# Debian 镜像使用帮助
 
 Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 

@@ -1,4 +1,4 @@
-import ConfigGenerator from '../../components/config-generator'
+import ConfigGenerator from '../src/components/config-generator'
 
 export const ubuntuVersionMap = {
     "12.04 LTS": "precise",
@@ -27,7 +27,6 @@ deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted un
 }
 
 
-# Ubuntu 镜像使用帮助
 Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 
 <ConfigGenerator promptString="请选择您的ubuntu版本：" versionList={Object.keys(ubuntuVersionMap)} configGen={GenUbuntuConfig} />

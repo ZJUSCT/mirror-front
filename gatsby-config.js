@@ -9,12 +9,20 @@ module.exports = {
   /* Your site config here */
   assetPrefix: `/assets`,
   plugins: [
-    'gatsby-plugin-postcss',
+    'gatsby-plugin-sass',
     {
       resolve: 'gatsby-plugin-mdx',
       options: {
         defaultLayouts: {
           default: require.resolve('./src/layouts/doc.tsx')
+        }
+      }
+    },
+    {
+      resolve: "gatsby-plugin-react-svg",
+      options: {
+        rule: {
+          include: /icons/
         }
       }
     },
@@ -25,7 +33,7 @@ module.exports = {
       '/api',
       createProxyMiddleware({
         router: {
-          '/': 'http://mirrorhost',
+          '/': 'http://mirrors.zju.edu.cn/api/',
         },
         onProxyReq: (proxyRes, req, res) => {
           proxyRes.setHeader('host', 'newmirrors.zju.edu.cn');

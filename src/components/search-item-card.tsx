@@ -1,77 +1,119 @@
 import * as React from "react";
-import { Link } from "gatsby";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  CardActionArea,
+} from "@mui/material";
+import { navigate } from "gatsby";
 import type { Mirror } from "../types/mirrorz";
+import CircleIcon from "@mui/icons-material/Circle";
+import { height } from "@mui/system";
 
 export default (props: { queryItem: Mirror }) => {
   const generateStatusCircle = () => {
     const statusString: string = props.queryItem.status;
-    var statusCircle: React.ReactNode;
-    switch (statusString[0]) {
-      case "S":
-        statusCircle = <div className="badge badge-success">success</div>;
-        break;
-      case "Y":
-        statusCircle = <div className="badge badge-info">syncing</div>;
-        break;
-      case "F":
-        statusCircle = <div className="badge badge-error">failed</div>;
-        break;
-      case "P":
-        statusCircle = <div className="badge badge-info">paused</div>;
-        break;
-      case "C":
-        statusCircle = <div className="badge badge-info">cached</div>;
-        break;
-      default:
-        statusCircle = <div className="badge badge-warning">unknown</div>;
-    }
-    // console.log(statusString.substring(1, 11));
-    var timeString: string = statusString.substring(1, 11);
-    if (timeString.length !== 0) {
-      var timeString = new Date(parseInt(timeString) * 1000).toLocaleString("zh-CN");
-      return (
-        <div data-tip={timeString} className="tooltip tooltip-right tooltip-secondary">
-          {statusCircle}
-        </div>
-      );
-    } else {
-      return statusCircle;
-    }
-
+    const statusInfo: statusInfo = getStatusInfo(statusString);
+    console.log(statusInfo);
+    return (
+      <Grid
+        container
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="baseline"
+        spacing={0.5}
+      >
+        <Grid item>
+          <CircleIcon sx={{ fontSize: 8 }} color={statusInfo.color} />
+        </Grid>
+        <Grid item>
+          <Typography
+            variant="subtitle2"
+            component="div"
+            color={`${statusInfo.color}.main`}
+            fontWeight={1000}
+            fontSize={12}
+          >
+            {statusInfo.content.toUpperCase()}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
   };
 
   return (
-    <div className="m-2 rounded-sm shadow-md border-sm card bg-base-200">
-      <div className="flex-col justify-between card-body">
-        <div>
-          <div className="flex items-center justify-between card-title">
-            <div className="flex items-center">
-              <a
-                href={props.queryItem.url}
-                className="link link-primary link-hover"
-              >
+    <Card className="zju-mirror-card" style={{ height: "100%" }}>
+      <CardActionArea
+        onClick={() => navigate(`/info?name=${props.queryItem.cname}`)}
+        style={{ height: "100%" }}
+      >
+          <Grid
+            container
+            direction="column"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            height="100%"
+            padding={2}
+          >
+            <Grid item>
+              <Typography variant="h6" component="div">
                 {props.queryItem.cname}
-              </a>
-            </div>
-            {props.queryItem.help === undefined ? (
-              <></>
-            ) : (
-              <div>
-                <Link to={props.queryItem.help} className="flex content-center">
-                  {/* <div className="badge badge-secondary badge-outline">help</div> */}
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="w-6 h-6 mt-1 stroke-secondary">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </Link>
-              </div>
-            )}
-          </div>
-          <div className="mb-3">{props.queryItem.desc}</div>
-        </div>
-        <div className="">
-          <div>{generateStatusCircle()}</div>
-        </div>
-      </div>
-    </div>
+              </Typography>
+              <Typography gutterBottom variant="body2" color="text.secondary">
+                {props.queryItem.desc}
+              </Typography>
+            </Grid>
+            <Grid item>{generateStatusCircle()}</Grid>
+          </Grid>
+      </CardActionArea>
+    </Card>
   );
+};
+
+export type statusInfo = {
+  content: string;
+  color:
+    | "inherit"
+    | "disabled"
+    | "action"
+    | "primary"
+    | "secondary"
+    | "error"
+    | "info"
+    | "success"
+    | "warning";
+};
+
+export const getStatusInfo = (statusString: string): statusInfo => {
+  const status = statusString?.at(0);
+  return status === "S"
+    ? {
+        content: "success",
+        color: "success",
+      }
+    : status === "Y"
+    ? {
+        content: "syncing",
+        color: "warning",
+      }
+    : status === "F"
+    ? {
+        content: "failed",
+        color: "error",
+      }
+    : status === "P"
+    ? {
+        content: "paused",
+        color: "warning",
+      }
+    : status === "C"
+    ? {
+        content: "cached",
+        color: "info",
+      }
+    : {
+        content: "unknown",
+        color: "warning",
+      };
 };

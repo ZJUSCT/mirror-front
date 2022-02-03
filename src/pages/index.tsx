@@ -1,21 +1,47 @@
 import React from "react";
 import SearchTable from "../components/search-table";
+import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
+import { Alert, Grid, Typography, Box } from "@mui/material";
 import { fetchMirrorData } from "../utils/DataSource";
+import { frequentlyUsedMirror } from "../utils/frequentlyUsedMirrorList";
 
 export default ({ serverData }) => (
-  <div className="mx-6 my-2">
-    <div>
-      <div className="mx-2 mt-4 mb-2 rounded-sm alert alert-info">
-        <div className="flex-1">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 mx-2 stroke-current">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <label>浙江大学开源软件镜像站试运行中...</label>
-        </div>
-      </div>
-      <SearchTable queryResults={serverData.mirrorInfo} />
-    </div>
-  </div>
+  <Box sx={{ backgroundColor: "#f2f7f9" }}>
+    <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>
+      <Grid item xs={1}>
+        <Grid container columns={{ xs: 1 }}>
+          <Grid item xs={1}>
+            <Typography variant="h3" component="div" color="primary">
+              ZJU Mirror
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Typography variant="subtitle1" component="div" color="primary">
+              浙江大学开源软件镜像站
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={1}>
+        <Typography gutterBottom variant="h5" component="div">
+          常用镜像
+        </Typography>
+        <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+          {frequentlyUsedMirror.map((e, i) => (
+            <Grid item xs={1} key={i}>
+              <FrequentlyUsedMirrorCard info={e} />
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+      <Grid item xs={1}>
+        <Typography gutterBottom variant="h5" component="div">
+          所有镜像
+        </Typography>
+        <SearchTable queryResults={serverData.mirrorInfo?.sort((l, r) => l.cname < r.cname ? -1 : 1)} />
+      </Grid>
+    </Grid>
+  </Box>
 );
 
 export async function getServerData() {
