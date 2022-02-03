@@ -61,7 +61,7 @@ export default ({ serverData }) => {
                     variant="body1"
                     component="div"
                     color={`${statusInfo?.color}.main`}
-                    fontWeight={500}
+                    fontWeight={1000}
                   >
                     {statusInfo.content.toUpperCase()}
                   </Typography>

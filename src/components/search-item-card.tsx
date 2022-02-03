@@ -32,7 +32,7 @@ export default (props: { queryItem: Mirror }) => {
             variant="body2"
             component="div"
             color={`${statusInfo.color}.main`}
-            fontWeight={500}
+            fontWeight={1000}
             fontSize={12}
           >
             {statusInfo.content.toUpperCase()}
@@ -60,7 +60,7 @@ export default (props: { queryItem: Mirror }) => {
               <Typography variant="h6" component="div">
                 {props.queryItem.cname}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography gutterBottom variant="body2" color="text.secondary">
                 {props.queryItem.desc}
               </Typography>
             </Grid>
