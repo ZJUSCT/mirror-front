@@ -29,7 +29,7 @@ export default (props: { queryItem: Mirror }) => {
         </Grid>
         <Grid item>
           <Typography
-            variant="body2"
+            variant="subtitle2"
             component="div"
             color={`${statusInfo.color}.main`}
             fontWeight={1000}

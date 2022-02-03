@@ -51,7 +51,7 @@ export default ({ serverData }) => {
         >
           <Grid item>
             <Typography variant="h2" component="div">
-              <Link color="inherit" underline="hover" href={url}>
+              <Link color="inherit" underline="hover" href={url} fontWeight={400}>
                 {name}
               </Link>
             </Typography>
@@ -67,10 +67,9 @@ export default ({ serverData }) => {
               >
                 <Grid item>
                   <Typography
-                    variant="body1"
+                    variant="subtitle1"
                     component="div"
                     color={`${statusInfo?.color}.main`}
-                    fontWeight={1000}
                   >
                     {statusInfo.content.toUpperCase()}
                   </Typography>
@@ -78,10 +77,9 @@ export default ({ serverData }) => {
                 {timeString !== "" ? (
                   <Grid item>
                     <Typography
-                      variant="body2"
+                      variant="subtitle1"
                       component="div"
                       color="text.disabled"
-                      fontWeight={1000}
                     >
                       最近更新于 {timeString}
                     </Typography>

@@ -18,16 +18,16 @@ export default (props: { info: any }) => (
         </Grid>
         <Grid item>
           <Typography
-            variant="body1"
+            variant="subtitle1"
             component="div"
-            fontWeight={1000}
             color="primary"
+            fontWeight={400}
           >
             ISO
           </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="body1" component="div" fontWeight={1000}>
+          <Typography variant="subtitle1" component="div">
             {props.info.name}
           </Typography>
         </Grid>

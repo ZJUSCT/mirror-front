@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import "../styles/font.sass";
 
 export const theme = createTheme({
   palette: {
@@ -9,33 +10,42 @@ export const theme = createTheme({
       main: "#f2f7f9",
     },
     success: {
-      main: "#27a881"
+      main: "#27a881",
     },
     warning: {
       main: "#37adc7",
     },
     info: {
-      main: "#6780da"
+      main: "#6780da",
     },
     error: {
-      main: "#e44918"
+      main: "#e44918",
     },
   },
   typography: {
     h2: {
-      fontWeight: 500,
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
     },
     h3: {
-      fontWeight: 500,
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
     },
     h5: {
-      fontWeight: 1000,
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
     },
     h6: {
-      fontWeight: 1000,
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
     },
     subtitle1: {
-      fontWeight: 1000,
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
+    },
+    subtitle2: {
+      fontFamily: "'Metropolis', sans-serif",
+      fontWeight: 700,
     },
   },
 });
