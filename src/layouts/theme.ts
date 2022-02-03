@@ -31,6 +31,9 @@ export const theme = createTheme({
     h5: {
       fontWeight: 1000,
     },
+    h6: {
+      fontWeight: 1000,
+    },
     subtitle1: {
       fontWeight: 1000,
     },
