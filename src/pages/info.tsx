@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography, Link } from "@mui/material";
 import { fetchMirrorData } from "../utils/DataSource";
 import Iso from "../components/iso";
@@ -8,11 +8,12 @@ import { getStatusInfo } from "../components/search-item-card";
 import type { statusInfo } from "../components/search-item-card";
 
 export default ({ serverData }) => {
-  const [name, setName] = React.useState("");
-  const [releaseInfo, setReleaseInfo] = React.useState<any>(undefined);
-  const [timeString, setTimeString] = React.useState<string>("");
-  const [statusInfo, setStatusInfo] = React.useState<statusInfo>(undefined);
-  const [isoUrl, setIsoUrl] = React.useState<string>("");
+  const [name, setName] = useState("");
+  const [releaseInfo, setReleaseInfo] = useState<any>(undefined);
+  const [timeString, setTimeString] = useState<string>("");
+  const [statusInfo, setStatusInfo] = useState<statusInfo>(undefined);
+  const [isoUrl, setIsoUrl] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -21,7 +22,6 @@ export default ({ serverData }) => {
     const target = serverData.releaseInfo.find(
       item => item.distro.substring(0, name.length) === name
     );
-    console.log(target);
     setReleaseInfo(target);
     setIsoUrl(longestCommonPrefix(target.urls.map(x => x.url)));
 
@@ -29,6 +29,7 @@ export default ({ serverData }) => {
       item => item.cname === name
     ) as Mirror;
 
+    setUrl(mirror.url);
     setTimeString(getTime(mirror.status));
     setStatusInfo(getStatusInfo(mirror.status));
   }, []);
@@ -37,7 +38,9 @@ export default ({ serverData }) => {
     <Box>
       <Box sx={{ backgroundColor: "#f2f7f9", p: 8 }}>
         <Typography variant="h5" component="div" color="primary">
-          ZJU Mirror
+          <Link color="primary" underline="hover" href="/">
+            ZJU Mirror
+          </Link>
         </Typography>
         <Grid
           container
@@ -47,7 +50,9 @@ export default ({ serverData }) => {
         >
           <Grid item>
             <Typography variant="h2" component="div">
-              {name}
+              <Link color="inherit" underline="hover" href={url}>
+                {name}
+              </Link>
             </Typography>
           </Grid>
           <Grid item marginBottom={4}>
@@ -108,7 +113,9 @@ export default ({ serverData }) => {
                       variant="subtitle1"
                       component="div"
                     >
-                      <Link color="primary" underline="hover" href={isoUrl}>更多安装盘</Link>
+                      <Link color="primary" underline="hover" href={isoUrl}>
+                        更多安装盘
+                      </Link>
                     </Typography>
                   </Grid>
                 </Grid>
@@ -145,7 +152,7 @@ const longestCommonPrefix = (urlArray: string[]): string => {
     for (; index < length && prev.at(index) === curr.at(index); index++);
     return prev.substring(0, index);
   });
-}
+};
 
 const getTime = (statusString: string): string => {
   let timeString: string = statusString.substring(1, 11);
