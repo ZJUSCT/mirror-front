@@ -6,6 +6,7 @@ import {
   MenuItem,
   Box,
   Grid,
+  Typography,
 } from "@mui/material";
 
 export default ({
@@ -27,7 +28,7 @@ export default ({
         alignItems="flex-end"
       >
         <Grid item sx={{ mb: 1 }}>
-          {promptString}
+          <Typography component="p">{promptString}</Typography>
         </Grid>
         <Grid item>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -43,7 +44,11 @@ export default ({
               }}
             >
               {versionList.map((item, i) => {
-                return <MenuItem key={i} value={item}>{item}</MenuItem>;
+                return (
+                  <MenuItem key={i} value={item}>
+                    {item}
+                  </MenuItem>
+                );
               })}
             </Select>
           </FormControl>
