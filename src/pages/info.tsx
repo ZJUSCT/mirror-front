@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Typography, Link } from "@mui/material";
+import { Box, Grid, Typography, Link, Button } from "@mui/material";
+import FolderIcon from "@mui/icons-material/Folder";
 import { fetchMirrorData } from "../utils/DataSource";
 import Iso from "../components/iso";
 import Usage from "../components/usage";
 import { Mirror } from "../types/mirrorz";
 import { getStatusInfo } from "../components/search-item-card";
 import type { statusInfo } from "../components/search-item-card";
+import { navigate } from "gatsby";
 
 export default ({ serverData }) => {
   const [name, setName] = useState("");
@@ -40,30 +42,22 @@ export default ({ serverData }) => {
   return (
     <Box>
       <Box sx={{ backgroundColor: "#f2f7f9", p: 8 }}>
-        <Typography variant="h5" component="div" color="primary">
-          <Link color="primary" underline="hover" href="/">
-            ZJU Mirror
-          </Link>
-        </Typography>
         <Grid
           container
           direction="column"
+          spacing={4}
           justifyContent="flex-start"
           alignItems="flex-start"
         >
           <Grid item>
-            <Typography variant="h2" component="div">
-              <Link
-                color="inherit"
-                underline="hover"
-                href={url}
-                fontWeight={400}
-              >
-                {name}
+            <Typography variant="h5" component="div" color="primary">
+              <Link color="primary" underline="hover" href="/">
+                ZJU Mirror
               </Link>
             </Typography>
-          </Grid>
-          <Grid item marginBottom={4}>
+            <Typography variant="h2" fontWeight={400} component="div">
+              {name}
+            </Typography>
             {statusInfo !== undefined ? (
               <Grid
                 container
@@ -99,8 +93,9 @@ export default ({ serverData }) => {
               <></>
             )}
           </Grid>
-          <Grid item width="100%">
-            {releaseInfo !== undefined ? (
+
+          {releaseInfo !== undefined ? (
+            <Grid item width="100%">
               <Box>
                 <Grid
                   container
@@ -135,9 +130,23 @@ export default ({ serverData }) => {
                     ))}
                 </Grid>
               </Box>
-            ) : (
-              <Box></Box>
-            )}
+            </Grid>
+          ) : (
+            <Box></Box>
+          )}
+
+          <Grid item>
+            <Button
+              color="primary"
+              size="large"
+              variant="contained"
+              startIcon={<FolderIcon />}
+              onClick={() => {
+                navigate(url);
+              }}
+            >
+              文件列表
+            </Button>
           </Grid>
         </Grid>
       </Box>
