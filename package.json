@@ -1,6 +1,6 @@
 {
   "name": "zju-mirror",
-  "private": true,
+  "private": false,
   "description": "ZJU open source mirror site",
   "version": "0.1.0",
   "license": "MIT",
