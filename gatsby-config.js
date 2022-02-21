@@ -8,6 +8,20 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 module.exports = {
   /* Your site config here */
   plugins: [
+    {
+      resolve: `gatsby-theme-material-ui`,
+      options: {
+        webFontsConfig: {
+          fonts: {
+            google: [
+              {
+                family: `Metrophobic`
+              },
+            ],
+          },
+        },
+      }
+    },
     'gatsby-plugin-sass',
     {
       resolve: 'gatsby-plugin-mdx',
@@ -24,8 +38,7 @@ module.exports = {
           include: /icons/
         }
       }
-    },
-    'gatsby-plugin-layout',
+    }
   ],
   developMiddleware: app => {
     app.use(
