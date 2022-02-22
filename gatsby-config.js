@@ -22,6 +22,13 @@ module.exports = {
         },
       }
     },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'mirrors',
+        path: `${__dirname}/doc`,
+      }
+    },
     'gatsby-plugin-sass',
     {
       resolve: 'gatsby-plugin-mdx',
