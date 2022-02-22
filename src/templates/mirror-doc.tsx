@@ -151,9 +151,19 @@ export default ({ data, serverData }) => {
         </Grid>
       </Box>
       <Box sx={{ backgroundColor: "#ffffff", p: 8 }}>
-        <MDXProvider>
-          <MDXRenderer>{data.document.body}</MDXRenderer>
-        </MDXProvider>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+        >
+          <Typography gutterBottom variant="h5" component="div">
+            使用说明
+          </Typography>
+          <MDXProvider>
+            <MDXRenderer>{data.document.body}</MDXRenderer>
+          </MDXProvider>
+        </Grid>
       </Box>
     </Box>
   );
