@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import { CardActionArea } from "gatsby-theme-material-ui";
 import * as React from "react";
-import "../styles/card.sass";
+
 
 export type mirrorBrief = {
   name: string;

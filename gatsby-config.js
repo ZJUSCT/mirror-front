@@ -26,18 +26,10 @@ module.exports = {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'mirrors',
-        path: `${__dirname}/doc`,
+        path: `${__dirname}/docs`,
       }
     },
-    'gatsby-plugin-sass',
-    {
-      resolve: 'gatsby-plugin-mdx',
-      options: {
-        defaultLayouts: {
-          default: require.resolve('./src/layouts/doc.tsx')
-        }
-      }
-    },
+    'gatsby-plugin-mdx',
     {
       resolve: "gatsby-plugin-react-svg",
       options: {
@@ -56,7 +48,6 @@ module.exports = {
         },
         onProxyReq: (proxyRes, req, res) => {
           proxyRes.setHeader('host', 'newmirrors.zju.edu.cn');
-          // console.log(proxyRes)
         },
       }),
     );

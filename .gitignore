@@ -73,3 +73,5 @@ yarn-error.log
 
 # config file
 config.ts
+
+.vscode/
