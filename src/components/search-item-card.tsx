@@ -1,39 +1,11 @@
-import CircleIcon from "@mui/icons-material/Circle";
 import { Card, Grid, Typography } from "@mui/material";
 import { CardActionArea } from "gatsby-theme-material-ui";
 import * as React from "react";
 import { Mirror } from "../types/mirror";
+import StatusIndicator from "./status-indicator";
 
 export default (props: { queryItem: Mirror }) => {
-  const generateStatusCircle = () => {
-    const statusString: string = props.queryItem.status;
-    const statusInfo: statusInfo = getStatusInfo(statusString);
-    console.log(statusInfo);
-    return (
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="baseline"
-        spacing={0.5}
-      >
-        <Grid item>
-          <CircleIcon sx={{ fontSize: 8 }} color={statusInfo.color} />
-        </Grid>
-        <Grid item>
-          <Typography
-            variant="subtitle2"
-            component="div"
-            color={`${statusInfo.color}.main`}
-            fontWeight={1000}
-            fontSize={12}
-          >
-            {statusInfo.content.toUpperCase()}
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  };
+
 
   return (
     <Card className="zju-mirror-card" style={{ height: "100%" }}>
@@ -58,56 +30,11 @@ export default (props: { queryItem: Mirror }) => {
               {props.queryItem.desc['zh']}
             </Typography>
           </Grid>
-          <Grid item>{generateStatusCircle()}</Grid>
+          <Grid item>
+            <StatusIndicator status={props.queryItem.status} fontSize={12} />
+          </Grid>
         </Grid>
       </CardActionArea>
     </Card>
   );
-};
-
-export type statusInfo = {
-  content: string;
-  color:
-  | "inherit"
-  | "disabled"
-  | "action"
-  | "primary"
-  | "secondary"
-  | "error"
-  | "info"
-  | "success"
-  | "warning";
-};
-
-export const getStatusInfo = (statusString: string): statusInfo => {
-  const status = statusString?.at(0);
-  return status === "S"
-    ? {
-      content: "success",
-      color: "success",
-    }
-    : status === "Y"
-      ? {
-        content: "syncing",
-        color: "warning",
-      }
-      : status === "F"
-        ? {
-          content: "failed",
-          color: "error",
-        }
-        : status === "P"
-          ? {
-            content: "paused",
-            color: "warning",
-          }
-          : status === "C"
-            ? {
-              content: "cached",
-              color: "info",
-            }
-            : {
-              content: "unknown",
-              color: "warning",
-            };
 };

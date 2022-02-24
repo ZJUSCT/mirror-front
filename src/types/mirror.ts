@@ -9,6 +9,7 @@ export interface MirrorDto{
     lastUpdated: string;
     nextScheduled: string;
     lastSuccess: string;
+    url: string;
     isoDict: Record<string, string>;
 }
 
