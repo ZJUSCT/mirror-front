@@ -6,5 +6,6 @@ module.exports = {
       template: `./src/templates/mirror-doc.tsx`
     }
   },
-  defaultLanguage: 'zh'
+  defaultLanguage: 'zh',
+  apiBaseUrl: 'https://mirrors.zju.edu.cn/api'
 };

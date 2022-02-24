@@ -1,54 +1,102 @@
 import React from "react";
 import SearchTable from "../components/search-table";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
-import { Alert, Grid, Typography, Box } from "@mui/material";
-import { fetchMirrorData } from "../utils/DataSource";
+import { Grid, Typography, Box } from "@mui/material";
 import { frequentlyUsedMirror } from "../utils/frequentlyUsedMirrorList";
+import { getMirrors } from "../utils/api";
+import { Mirror, MirrorDto } from "../types/mirror";
+import { graphql } from "gatsby";
 
-export default ({ serverData }) => (
-  <Box sx={{ backgroundColor: "#f2f7f9" }}>
-    <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>
-      <Grid item xs={1}>
-        <Grid container columns={{ xs: 1 }}>
-          <Grid item xs={1}>
-            <Typography variant="h3" component="div" color="primary">
-              ZJU Mirror
-            </Typography>
-          </Grid>
-          <Grid item xs={1}>
-            <Typography variant="subtitle1" component="div" color="primary">
-              浙江大学开源软件镜像站
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={1}>
-        <Typography gutterBottom variant="h5" component="div">
-          常用镜像
-        </Typography>
-        <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
-          {frequentlyUsedMirror.map((e, i) => (
-            <Grid item xs={1} key={i}>
-              <FrequentlyUsedMirrorCard info={e} />
+interface Data {
+  mirrorDocs: {
+    nodes: {
+      slug: string,
+      locale: string,
+      frontmatter?: {
+        mirrorId?: string,
+      }
+    }[]
+  }
+}
+
+interface ServerData{
+  mirrors: MirrorDto[]
+}
+
+export default ({ serverData, data }: { serverData: ServerData, data: Data }) => {
+  const mirrorDocUrls = React.useMemo<Record<string, string>>(() =>
+    Object.fromEntries(
+      data.mirrorDocs.nodes
+        .filter(d => d.frontmatter?.mirrorId) // TODO: filter locales
+        .map(d => [d.frontmatter.mirrorId, d.slug])
+    ),
+    [data]
+  );
+
+  const mirrors = React.useMemo<Mirror[]>(() =>
+  serverData.mirrors.map(dto => ({
+      ...dto,
+      docUrl: mirrorDocUrls[dto.id],
+    })),
+    [serverData, mirrorDocUrls]
+  );
+
+  return (
+    <Box sx={{ backgroundColor: "#f2f7f9" }}>
+      <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>
+        <Grid item xs={1}>
+          <Grid container columns={{ xs: 1 }}>
+            <Grid item xs={1}>
+              <Typography variant="h3" component="div" color="primary">
+                ZJU Mirror
+              </Typography>
             </Grid>
-          ))}
+            <Grid item xs={1}>
+              <Typography variant="subtitle1" component="div" color="primary">
+                浙江大学开源软件镜像站
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={1}>
+          <Typography gutterBottom variant="h5" component="div">
+            常用镜像
+          </Typography>
+          <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+            {frequentlyUsedMirror.map((e, i) => (
+              <Grid item xs={1} key={i}>
+                <FrequentlyUsedMirrorCard info={e} />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+        <Grid item xs={1}>
+          <Typography gutterBottom variant="h5" component="div">
+            所有镜像
+          </Typography>
+          <SearchTable queryResults={mirrors} />
         </Grid>
       </Grid>
-      <Grid item xs={1}>
-        <Typography gutterBottom variant="h5" component="div">
-          所有镜像
-        </Typography>
-        <SearchTable queryResults={serverData.mirrorInfo?.sort((l, r) => l.cname < r.cname ? -1 : 1)} />
-      </Grid>
-    </Grid>
-  </Box>
-);
+    </Box>
+  )
+};
+
+export const query = graphql`
+{
+  mirrorDocs: allDocument(filter: {source: {eq: "mirrors"}}) {
+    nodes {
+      frontmatter
+      slug
+      locale
+    }
+  }
+}
+`;
 
 export async function getServerData() {
-  const data = await fetchMirrorData();
   return {
     props: {
-      ...data,
+      mirrors: await getMirrors(),
     },
   };
 }

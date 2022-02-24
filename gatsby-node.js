@@ -35,6 +35,7 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
       tags: [String]!
       tableOfContents: JSON
       frontmatter: JSON
+      locale: String!
   }`);
 
   // MDX document implements Document interface
@@ -69,7 +70,10 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
         frontmatter: {
           type: `JSON`,
           resolve: mdxResolverPassthrough(`frontmatter`),
-        }
+        },
+        locale: {
+          type: `String!`,
+        },
       },
       interfaces: [`Node`, `Document`],
       extensions: {
@@ -95,10 +99,11 @@ exports.onCreateNode = async (
   if (!docConfig) reporter.panic(`Unknown source of documents ${source}`);
   const { folder: folderLayout, path: pathTemplate } = docConfig;
 
-  let slug;
+  let slug, locale;
   if (node.frontmatter.slug) {
     // a relative slug gets turned into a sub path
     slug = node.frontmatter.slug;
+    locale = match(pathTemplate)(path)?.params?.lang;
   } else {
     // otherwise use the filepath function from gatsby-source-filesystem
     const path = createFilePath({
@@ -110,6 +115,7 @@ exports.onCreateNode = async (
     if (!pathMatch) reporter.panic(`Path ${path} does not match the layout ${folderLayout}`);
 
     const params = pathMatch.params;
+    locale = params.lang;
     // remove default language from slug
     if (params.lang === config.defaultLanguage) params.lang = undefined;
     slug = compile(pathTemplate)(params);
@@ -123,6 +129,7 @@ exports.onCreateNode = async (
     tags: node.frontmatter.tags || [],
     slug,
     source,
+    locale,
     date: node.frontmatter.date
   };
 
@@ -153,6 +160,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           id
           slug
           source
+          frontmatter
         }
       }
     }
@@ -169,7 +177,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   docs.forEach((doc, index) => {
     const previous = index === docs.length - 1 ? null : docs[index + 1];
     const next = index === 0 ? null : docs[index - 1];
-    const { slug } = doc;
+    const { slug, frontmatter } = doc;
     createPage({
       path: slug,
       component: require.resolve(config.documentSources[doc.source]?.template),
@@ -177,6 +185,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         id: doc.id,
         previousId: previous ? previous.id : undefined,
         nextId: next ? next.id : undefined,
+        frontmatter
       },
     });
   })
