@@ -2,7 +2,7 @@ import React from "react";
 import SearchTable from "../components/search-table";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
 import { Grid, Typography, Box } from "@mui/material";
-import { frequentlyUsedMirror } from "../utils/frequentlyUsedMirrorList";
+import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 import { getMirrors } from "../utils/api";
 import { Mirror, MirrorDto } from "../types/mirror";
 import { graphql } from "gatsby";
@@ -19,7 +19,7 @@ interface Data {
   }
 }
 
-interface ServerData{
+interface ServerData {
   mirrors: MirrorDto[]
 }
 
@@ -33,11 +33,14 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
     [data]
   );
 
-  const mirrors = React.useMemo<Mirror[]>(() =>
-  serverData.mirrors.map(dto => ({
-      ...dto,
-      docUrl: mirrorDocUrls[dto.id],
-    })),
+  const mirrors = React.useMemo<{ [key in string]: Mirror }>(() =>
+    Object.fromEntries(
+      serverData.mirrors.map(dto => ([
+        dto.id, {
+          ...dto,
+          docUrl: mirrorDocUrls[dto.id],
+        }
+      ]))),
     [serverData, mirrorDocUrls]
   );
 
@@ -63,18 +66,28 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
             常用镜像
           </Typography>
           <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
-            {frequentlyUsedMirror.map((e, i) => (
-              <Grid item xs={1} key={i}>
-                <FrequentlyUsedMirrorCard info={e} />
-              </Grid>
-            ))}
+            {
+              frequentlyUsedMirror.map((e, i) => {
+                const mirror = mirrors[e.id];
+                return mirror && (
+                  <Grid item xs={1} key={i}>
+                    <FrequentlyUsedMirrorCard
+                      name={mirror.name['zh']}
+                      desc={mirror.desc['zh']}
+                      icon={e.icon}
+                      url={mirror.docUrl || mirror.url}
+                    />
+                  </Grid>
+                )
+              })
+            }
           </Grid>
         </Grid>
         <Grid item xs={1}>
           <Typography gutterBottom variant="h5" component="div">
             所有镜像
           </Typography>
-          <SearchTable queryResults={mirrors} />
+          <SearchTable queryResults={Object.values(mirrors)} />
         </Grid>
       </Grid>
     </Box>
@@ -96,7 +109,7 @@ export const query = graphql`
 export async function getServerData() {
   return {
     props: {
-      mirrors: await getMirrors(),
+      mirrors: await getMirrors()
     },
   };
 }
