@@ -45,7 +45,7 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
   );
 
   return (
-    <Box sx={{ backgroundColor: "#f2f7f9" }}>
+    <Box>
       <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>
         <Grid item xs={1}>
           <Grid container columns={{ xs: 1 }}>

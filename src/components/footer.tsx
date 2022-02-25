@@ -3,7 +3,7 @@ import { Grid, Typography, Box, Link } from "@mui/material";
 import Zjusct from "../../resource/icons/zjusct.svg";
 
 export default () => (
-  <Box sx={{ backgroundColor: "#f2f7f9", px: 8, py: 6 }}>
+  <Box sx={{ px: 8, py: 6 }}>
     <Grid
       container
       direction="row"

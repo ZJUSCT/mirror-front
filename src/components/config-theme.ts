@@ -2,26 +2,53 @@ import { PaletteMode, ThemeOptions } from "@mui/material";
 
 export default function configTheme(mode: PaletteMode): ThemeOptions {
   return {
-    palette: {
-      primary: {
-        main: "#157684",
+    palette:
+      mode === 'light' ? {
+        primary: {
+          main: "#157684",
+        },
+        neutral: {
+          main: "#f2f7f9",
+        },
+        success: {
+          main: "#27a881",
+        },
+        warning: {
+          main: "#37adc7",
+        },
+        info: {
+          main: "#6780da",
+        },
+        error: {
+          main: "#e44918",
+        },
+        background: {
+          default: "#f2f7f9",
+        }
+      } : {
+        primary: {
+          main: "#15BBC6",
+        },
+        neutral: {
+          main: "#070707",
+        },
+        success: {
+          main: "#27a881",
+        },
+        warning: {
+          main: "#37adc7",
+        },
+        info: {
+          main: "#6780da",
+        },
+        error: {
+          main: "#e44918",
+        },
+        background: {
+          default: "#070707",
+          paper: "#161718"
+        }
       },
-      neutral: {
-        main: "#f2f7f9",
-      },
-      success: {
-        main: "#27a881",
-      },
-      warning: {
-        main: "#37adc7",
-      },
-      info: {
-        main: "#6780da",
-      },
-      error: {
-        main: "#e44918",
-      },
-    },
     typography: {
       h2: {
         fontFamily: "'Metropolis', sans-serif",

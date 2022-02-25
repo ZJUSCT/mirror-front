@@ -1,6 +1,7 @@
 import { MDXProvider } from "@mdx-js/react";
 import FolderIcon from "@mui/icons-material/Folder";
 import { Box, Grid, Link, Typography } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import { graphql } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { Button } from "gatsby-theme-material-ui";
@@ -26,7 +27,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
 
   return (
     <Box>
-      <Box sx={{ backgroundColor: "#f2f7f9", p: 8 }}>
+      <Box sx={{ p: 8 }}>
         <Grid
           container
           direction="column"
@@ -99,7 +100,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ backgroundColor: "#ffffff", p: 8 }}>
+      <Paper sx={{ p: 8 }} elevation={0}>
         <Grid
           container
           direction="column"
@@ -113,7 +114,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
             <MDXRenderer>{data.document.body}</MDXRenderer>
           </MDXProvider>
         </Grid>
-      </Box>
+      </Paper>
     </Box >
   );
 };
