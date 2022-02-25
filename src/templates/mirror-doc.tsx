@@ -9,6 +9,7 @@ import Iso from "../components/iso";
 import StatusIndicator from "../components/status-indicator";
 import { Mirror } from "../types/mirror";
 import { getMirror } from "../utils/api";
+import components from "./components";
 
 interface Data {
   document: {
@@ -108,7 +109,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
           <Typography gutterBottom variant="h5" component="div">
             使用说明
           </Typography>
-          <MDXProvider>
+          <MDXProvider components={components}>
             <MDXRenderer>{data.document.body}</MDXRenderer>
           </MDXProvider>
         </Grid>
