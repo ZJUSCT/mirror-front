@@ -6,6 +6,7 @@ import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 import { getMirrors } from "../utils/api";
 import { Mirror, MirrorDto } from "../types/mirror";
 import { graphql } from "gatsby";
+import ThemeIconButton from "../components/theme-icon-button";
 
 interface Data {
   mirrorDocs: {
@@ -46,18 +47,19 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
 
   return (
     <Box>
-      <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ p: 8 }}>
+      <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ px: { xs: 4, sm: 8 }, py: 8 }}>
         <Grid item xs={1}>
-          <Grid container columns={{ xs: 1 }}>
-            <Grid item xs={1}>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item>
               <Typography variant="h3" component="div" color="primary">
                 ZJU Mirror
               </Typography>
-            </Grid>
-            <Grid item xs={1}>
               <Typography variant="subtitle1" component="div" color="primary">
                 浙江大学开源软件镜像站
               </Typography>
+            </Grid>
+            <Grid item>
+              <ThemeIconButton />
             </Grid>
           </Grid>
         </Grid>
