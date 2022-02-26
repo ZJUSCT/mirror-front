@@ -3,9 +3,12 @@ module.exports = {
     mirrors: {
       folder: '/:lang/:segment+',
       path: '/:lang?/docs/:segment+',
-      template: `./src/templates/mirror-doc.tsx`
+      template: `./src/templates/mirror-doc.tsx`,
+      getLanguageFromPath: true
     }
   },
   defaultLanguage: 'zh',
-  apiBaseUrl: 'https://mirrors.zju.edu.cn/api'
+  locales: ['zh', 'en'],
+  apiBaseUrl: 'https://mirrors.zju.edu.cn/api',
+  siteUrl: 'https://mirrors.zju.edu.cn',
 };

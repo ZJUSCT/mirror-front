@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardActionArea, Grid, Typography } from "@mui/material";
 import AlbumIcon from "@mui/icons-material/Album";
 import { navigate } from "gatsby";
+import { Trans } from "gatsby-plugin-react-i18next";
 
 export default (props: { info: any }) => (
   <Card className="zju-mirror-card" style={{ height: "100%" }}>
@@ -23,7 +24,7 @@ export default (props: { info: any }) => (
             color="primary"
             fontWeight={400}
           >
-            ISO
+            <Trans>ISO</Trans>
           </Typography>
         </Grid>
         <Grid item>

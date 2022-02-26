@@ -1,5 +1,6 @@
+import { Box, Grid, Link, Typography } from "@mui/material";
+import { Trans } from "gatsby-plugin-react-i18next";
 import React from "react";
-import { Grid, Typography, Box, Link } from "@mui/material";
 import Zjusct from "../../resource/icons/zjusct.svg";
 
 export default () => (
@@ -23,11 +24,11 @@ export default () => (
           <Grid item xs={2} md={1}>
             <Box maxWidth={520}>
               <Typography gutterBottom variant="body2" color="text.secondary">
-                浙江大学开源软件镜像站是一个以普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。
+                <Trans>浙江大学开源软件镜像站是一个以普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。</Trans>
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
-                等项目源的镜像，以服务于教育和科学研究为目的，提倡自由、平等、协作、共享的精神。
+                <Trans>本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
+                  等项目源的镜像，以服务于教育和科学研究为目的，提倡自由、平等、协作、共享的精神。</Trans>
               </Typography>
             </Box>
           </Grid>
@@ -42,7 +43,7 @@ export default () => (
             >
               <Grid item>
                 <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
-                  关于我们
+                  <Trans>关于我们</Trans>
                 </Typography>
                 <Typography gutterBottom variant="body2">
                   <Link
@@ -50,7 +51,7 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    Email
+                    <Trans>Email</Trans>
                   </Link>
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -59,7 +60,7 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    GitHub
+                    <Trans>GitHub</Trans>
                   </Link>
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -68,13 +69,13 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    Blog
+                    <Trans>Blog</Trans>
                   </Link>
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
-                  特别鸣谢
+                  <Trans>特别鸣谢</Trans>
                 </Typography>
                 <Typography gutterBottom variant="body2">
                   <Link
@@ -82,7 +83,7 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    浙江大学信息技术中心
+                    <Trans>浙江大学信息技术中心</Trans>
                   </Link>
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -91,7 +92,7 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    清华大学 TUNA 协会
+                    <Trans>清华大学 TUNA 协会</Trans>
                   </Link>
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -100,7 +101,7 @@ export default () => (
                     color="text.secondary"
                     underline="hover"
                   >
-                    中国科学技术大学 Linux 用户协会
+                    <Trans>中国科学技术大学 Linux 用户协会</Trans>
                   </Link>
                 </Typography>
               </Grid>

@@ -1,12 +1,14 @@
-import React from "react";
-import SearchTable from "../components/search-table";
-import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
-import { Grid, Typography, Box } from "@mui/material";
-import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
-import { getMirrors } from "../utils/api";
-import { Mirror, MirrorDto } from "../types/mirror";
+import { Box, Grid, Typography } from "@mui/material";
 import { graphql } from "gatsby";
+import { Trans } from "gatsby-plugin-react-i18next";
+import React from "react";
+import Footer from "../components/footer";
+import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
+import SearchTable from "../components/search-table";
 import ThemeIconButton from "../components/theme-icon-button";
+import { Mirror, MirrorDto } from "../types/mirror";
+import { getMirrors } from "../utils/api";
+import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 
 interface Data {
   mirrorDocs: {
@@ -46,16 +48,21 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
   );
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+    }}>
       <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ px: { xs: 4, sm: 8 }, py: 8 }}>
         <Grid item xs={1}>
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography variant="h3" component="div" color="primary">
-                ZJU Mirror
+                <Trans>ZJU Mirror</Trans>
               </Typography>
               <Typography variant="subtitle1" component="div" color="primary">
-                浙江大学开源软件镜像站
+                <Trans>浙江大学开源软件镜像站</Trans>
               </Typography>
             </Grid>
             <Grid item>
@@ -65,7 +72,7 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
         </Grid>
         <Grid item xs={1}>
           <Typography gutterBottom variant="h5" component="div">
-            常用镜像
+            <Trans>常用镜像</Trans>
           </Typography>
           <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
             {
@@ -87,25 +94,35 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
         </Grid>
         <Grid item xs={1}>
           <Typography gutterBottom variant="h5" component="div">
-            所有镜像
+            <Trans>所有镜像</Trans>
           </Typography>
           <SearchTable queryResults={Object.values(mirrors)} />
         </Grid>
       </Grid>
+      <Footer />
     </Box>
   )
 };
 
 export const query = graphql`
-{
-  mirrorDocs: allDocument(filter: {source: {eq: "mirrors"}}) {
-    nodes {
-      frontmatter
-      slug
-      locale
+  query($language: String!) {
+    mirrorDocs: allDocument(filter: {source: {eq: "mirrors"}}) {
+      nodes {
+        frontmatter
+        slug
+        locale
+      }
+    },
+    locales: allLocale(filter: {language: {eq: $language}}) {
+      edges {
+        node {
+          ns
+          data
+          language
+        }
+      }
     }
   }
-}
 `;
 
 export async function getServerData() {
