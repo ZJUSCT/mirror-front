@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { graphql } from "gatsby";
-import { Trans } from "gatsby-plugin-react-i18next";
+import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import React from "react";
 import Footer from "../components/footer";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
@@ -27,13 +27,15 @@ interface ServerData {
 }
 
 export default ({ serverData, data }: { serverData: ServerData, data: Data }) => {
+  const { language } = useI18next();
+
   const mirrorDocUrls = React.useMemo<Record<string, string>>(() =>
     Object.fromEntries(
       data.mirrorDocs.nodes
-        .filter(d => d.frontmatter?.mirrorId) // TODO: filter locales
+        .filter(d => d.frontmatter?.mirrorId && d.locale === language)
         .map(d => [d.frontmatter.mirrorId, d.slug])
     ),
-    [data]
+    [data, language]
   );
 
   const mirrors = React.useMemo<{ [key in string]: Mirror }>(() =>
@@ -81,8 +83,8 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
                 return mirror && (
                   <Grid item xs={1} key={i}>
                     <FrequentlyUsedMirrorCard
-                      name={mirror.name['zh']}
-                      desc={mirror.desc['zh']}
+                      name={mirror.name[language]}
+                      desc={mirror.desc[language]}
                       icon={e.icon}
                       url={mirror.docUrl || mirror.url}
                     />

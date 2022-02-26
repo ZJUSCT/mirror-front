@@ -1,7 +1,7 @@
-import { Grid, Typography } from "@mui/material";
+import CircleIcon from "@mui/icons-material/Circle";
+import { Typography } from "@mui/material";
 import React from "react";
 import { MirrorStatus } from "../types/mirror";
-import CircleIcon from "@mui/icons-material/Circle";
 
 interface StatusInfo {
   content: string;
