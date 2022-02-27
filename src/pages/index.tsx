@@ -4,6 +4,7 @@ import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import React from "react";
 import Footer from "../components/footer";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
+import LanguageIconButton from "../components/language-icon-button";
 import SearchTable from "../components/search-table";
 import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror, MirrorDto } from "../types/mirror";
@@ -68,6 +69,7 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
               </Typography>
             </Grid>
             <Grid item>
+              <LanguageIconButton />
               <ThemeIconButton />
             </Grid>
           </Grid>
