@@ -1,10 +1,10 @@
 import { MDXProvider } from "@mdx-js/react";
 import FolderIcon from "@mui/icons-material/Folder";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { graphql } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
-import { Trans } from "gatsby-plugin-react-i18next";
+import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import { Button } from "gatsby-theme-material-ui";
 import React from "react";
 import Footer from '../components/footer';
@@ -12,6 +12,7 @@ import Iso from "../components/iso";
 import StatusIndicator from "../components/status-indicator";
 import { Mirror } from "../types/mirror";
 import { getMirror } from "../utils/api";
+import { Link } from "../utils/i18n-link";
 import components from "./components";
 
 interface Data {
@@ -25,6 +26,7 @@ interface ServerData {
 }
 
 export default ({ data, serverData }: { data: Data, serverData: ServerData }) => {
+  const { language } = useI18next();
   const mirror = serverData.mirror;
 
   return (
@@ -45,7 +47,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
           >
             <Grid item>
               <Typography variant="h5" component="div" color="primary">
-                <Link color="primary" underline="hover" href="/">
+                <Link color="primary" underline="hover" to="/">
                   <Trans>ZJU Mirror</Trans>
                 </Link>
               </Typography>
@@ -66,7 +68,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
                   color="text.disabled"
                   sx={{ ml: 1 }}
                 >
-                  <Trans>最近更新于 {new Date(mirror.lastUpdated).toLocaleString()}</Trans>
+                  <Trans>最近更新于 {{ date: new Date(mirror.lastUpdated).toLocaleString(language) }}</Trans>
                 </Typography>
               </Grid>
 
