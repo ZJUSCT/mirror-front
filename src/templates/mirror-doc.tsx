@@ -9,6 +9,7 @@ import { Button } from "gatsby-theme-material-ui";
 import React from "react";
 import Footer from '../components/footer';
 import Iso from "../components/iso";
+import Seo from "../components/seo";
 import StatusIndicator from "../components/status-indicator";
 import { Mirror } from "../types/mirror";
 import { getMirror } from "../utils/api";
@@ -28,6 +29,7 @@ interface ServerData {
 export default ({ data, serverData }: { data: Data, serverData: ServerData }) => {
   const { language } = useI18next();
   const mirror = serverData.mirror;
+  const name = mirror.name[language]
 
   return (
     <Box sx={{
@@ -36,6 +38,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
       flexDirection: "column",
       justifyContent: "space-between",
     }}>
+      <Seo title={`${name} | ZJU Mirror`} />
       <Box>
         <Box sx={{ p: 8 }}>
           <Grid
@@ -52,7 +55,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
                 </Link>
               </Typography>
               <Typography variant="h2" fontWeight={400} component="div">
-                {mirror.name['zh']}
+                {name}
               </Typography>
 
               <Grid

@@ -7,8 +7,13 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const config = require('./config');
 
 module.exports = {
-  /* Your site config here */
+  siteMetadata: {
+    title: 'ZJU Mirror',
+    description: 'ZJU Mirror is a non-profit program aimed at popularizing open source software and facilitating efficient access to various resources of open source projects by all users.',
+    author: 'ZJU SCT',
+  },
   plugins: [
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-theme-material-ui`,
       options: {

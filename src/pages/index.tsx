@@ -1,11 +1,13 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { graphql } from "gatsby";
 import { Trans, useI18next } from "gatsby-plugin-react-i18next";
+import { t } from "i18next";
 import React from "react";
 import Footer from "../components/footer";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
 import LanguageIconButton from "../components/language-icon-button";
 import SearchTable from "../components/search-table";
+import Seo from "../components/seo";
 import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror, MirrorDto } from "../types/mirror";
 import { getMirrors } from "../utils/api";
@@ -28,7 +30,7 @@ interface ServerData {
 }
 
 export default ({ serverData, data }: { serverData: ServerData, data: Data }) => {
-  const { language } = useI18next();
+  const { language, t } = useI18next();
 
   const mirrorDocUrls = React.useMemo<Record<string, string>>(() =>
     Object.fromEntries(
@@ -57,6 +59,7 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
       flexDirection: "column",
       justifyContent: "space-between",
     }}>
+      <Seo title="ZJU Mirror" />
       <Grid container spacing={{ xs: 6 }} columns={{ xs: 1 }} sx={{ px: { xs: 4, sm: 8 }, py: 8 }}>
         <Grid item xs={1}>
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
