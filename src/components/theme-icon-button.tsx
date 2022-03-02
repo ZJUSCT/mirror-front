@@ -4,20 +4,23 @@ import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
 import ToolTip from '@mui/material/Tooltip';
 import { IconButton } from 'gatsby-theme-material-ui';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ThemeMode, useMode } from './theme-context';
 
 export default function ThemeIconButton() {
+  const { t } = useTranslation();
+
   const modeMap = {
     light: {
-      name: '浅色',
+      name: t('浅色'),
       icon: BrightnessHighIcon,
     },
     dark: {
-      name: '深色',
+      name: t('深色'),
       icon: Brightness4Icon,
     },
     auto: {
-      name: '系统默认',
+      name: t('系统默认'),
       icon: BrightnessAutoIcon,
     }
   }
