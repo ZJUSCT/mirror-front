@@ -4,7 +4,7 @@ import React from "react";
 import Zjusct from "../../resource/icons/zjusct.svg";
 
 export default () => (
-  <Box sx={{ px: 8, py: 6 }}>
+  <Box sx={{ px: { xs: 4, sm: 8 }, py: 6 }}>
     <Grid
       container
       direction="row"

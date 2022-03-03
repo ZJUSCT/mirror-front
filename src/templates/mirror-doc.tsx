@@ -41,7 +41,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
     }}>
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
-        <Box sx={{ px: 8, py: 4 }}>
+        <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }}>
           <Grid
             container
             direction="column"
@@ -120,7 +120,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
             </Grid>
           </Grid>
         </Box>
-        <Paper sx={{ p: 8 }} elevation={0}>
+        <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
           <Typography gutterBottom variant="h5" component="div">
             <Trans>使用说明</Trans>
           </Typography>
