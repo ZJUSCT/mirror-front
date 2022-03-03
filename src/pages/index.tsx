@@ -67,15 +67,15 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
               <Typography variant="h3" component="div" color="primary">
                 <Trans>ZJU Mirror</Trans>
               </Typography>
-              <Typography variant="subtitle1" component="div" color="primary">
-                <Trans>浙江大学开源软件镜像站</Trans>
-              </Typography>
             </Grid>
             <Grid item>
               <LanguageIconButton />
               <ThemeIconButton />
             </Grid>
           </Grid>
+          <Typography variant="subtitle1" component="div" color="primary">
+            <Trans>浙江大学开源软件镜像站</Trans>
+          </Typography>
         </Grid>
         <Grid item xs={1}>
           <Typography gutterBottom variant="h5" component="div">
