@@ -10,8 +10,10 @@ import { Button } from "gatsby-theme-material-ui";
 import React from "react";
 import Footer from '../components/footer';
 import Iso from "../components/iso";
+import LanguageIconButton from "../components/language-icon-button";
 import Seo from "../components/seo";
 import StatusIndicator from "../components/status-indicator";
+import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror } from "../types/mirror";
 import { getMirror } from "../utils/api";
 import { Link } from "../utils/i18n-link";
@@ -37,7 +39,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
       minHeight: "100vh",
       display: "flex",
       flexDirection: "column",
-      justifyContent: "space-between",
+      justifyContent: "space-between"
     }}>
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
@@ -49,11 +51,16 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
             justifyContent="flex-start"
             alignItems="flex-start"
           >
-            <Grid item>
-              <Typography variant="h5" component="div" color="primary">
-                <Trans>ZJU Mirror</Trans>
-              </Typography>
-
+            <Grid item sx={{ width: "100%" }}>
+              <Grid container justifyContent="space-between">
+                <Typography variant="h5" component="div" color="primary">
+                  <Trans>ZJU Mirror</Trans>
+                </Typography>
+                <Grid item>
+                  <LanguageIconButton />
+                  <ThemeIconButton />
+                </Grid>
+              </Grid>
               <Link color="primary" underline="hover" to="/" sx={{ mt: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <ArrowBack sx={{ fontSize: "1em", mr: .5 }} />
                 <Typography variant="subtitle1">
