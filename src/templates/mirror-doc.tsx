@@ -1,4 +1,5 @@
 import { MDXProvider } from "@mdx-js/react";
+import { ArrowBack } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 import { Box, Grid, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -40,7 +41,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
     }}>
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
-        <Box sx={{ p: 8 }}>
+        <Box sx={{ px: 8, py: 4 }}>
           <Grid
             container
             direction="column"
@@ -50,10 +51,16 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
           >
             <Grid item>
               <Typography variant="h5" component="div" color="primary">
-                <Link color="primary" underline="hover" to="/">
-                  <Trans>ZJU Mirror</Trans>
-                </Link>
+                <Trans>ZJU Mirror</Trans>
               </Typography>
+
+              <Link color="primary" underline="hover" to="/" sx={{ mt: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <ArrowBack sx={{ fontSize: "1em", mr: .5 }} />
+                <Typography variant="subtitle1">
+                  <Trans>返回</Trans>
+                </Typography>
+              </Link>
+
               <Typography variant="h2" fontWeight={400} component="div">
                 {name}
               </Typography>
