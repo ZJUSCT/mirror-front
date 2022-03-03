@@ -110,7 +110,9 @@ export default () => (
         </Grid>
       </Grid>
       <Grid item marginTop={2}>
-        <Zjusct width="10rem" height="3rem" />
+        <Link href="https://www.zjusct.io">
+          <Zjusct width="10rem" height="3rem" />
+        </Link>
       </Grid>
     </Grid>
   </Box>
