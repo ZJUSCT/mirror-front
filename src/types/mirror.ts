@@ -1,6 +1,8 @@
 export type Locale = 'zh' | 'en';
 export type MirrorStatus = 'success' | 'syncing' | 'failed' | 'paused' | 'cached' | 'unknown';
 
+export type IsoDict = Record<string, string>;
+
 export interface MirrorDto{
     id: string;
     name: Record<Locale, string>;
@@ -10,7 +12,7 @@ export interface MirrorDto{
     nextScheduled: string;
     lastSuccess: string;
     url: string;
-    isoDict: Record<string, string>;
+    isoDict: IsoDict;
 }
 
 export interface Mirror extends MirrorDto {

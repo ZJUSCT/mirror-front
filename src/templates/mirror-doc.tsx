@@ -9,7 +9,7 @@ import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import { Button } from "gatsby-theme-material-ui";
 import React from "react";
 import Footer from '../components/footer';
-import Iso from "../components/iso";
+import IsoList from "../components/iso-list";
 import LanguageIconButton from "../components/language-icon-button";
 import Seo from "../components/seo";
 import StatusIndicator from "../components/status-indicator";
@@ -98,18 +98,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
                     <Trans>安装盘</Trans>
                   </Typography>
 
-                  {/* TODO: show more ISOs */}
-                  <Grid container spacing={{ xs: 1 }} columns={{ xs: 1, md: 2 }}>
-                    {
-                      Object.entries(mirror.isoDict)
-                        .filter((_, i) => i < 4)
-                        .map((e, i) => (
-                          <Grid item xs={1} key={i}>
-                            <Iso info={e} />
-                          </Grid>
-                        ))
-                    }
-                  </Grid>
+                  <IsoList isoDict={mirror.isoDict}/>
                 </Box>
               </Grid>
             )}
