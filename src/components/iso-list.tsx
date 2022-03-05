@@ -36,7 +36,7 @@ export default function IsoList({ isoDict }: IsoListProps) {
         onClick={() => setShowAll(!showAll)}
         startIcon={showAll ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       >
-        {showAll ? t("隐藏更多") : t("显示更多")}
+        {showAll ? t("折叠") : t("展开")}
       </Button>
     </Box>
   );
