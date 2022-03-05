@@ -2,22 +2,22 @@
 mirrorId: pypi
 ---
 
-pypi 镜像目前为清华 TUNA 镜像站的反代
+> pypi 镜像目前为清华 TUNA 镜像站的反代。
 
 ## 临时使用
-```sh
+```bash
 pip install -i https://mirrors.zju.edu.cn/pypi/simple some-package
 ```
-注意，simple 不能少，若使用 http 镜像需要加上 `--trusted-host mirrors.zju.edu.cn`
+注意，`simple` 不能少，若使用 http 镜像需要加上 `--trusted-host mirrors.zju.edu.cn`
 
 ## 设为默认
 升级 pip 到最新的版本 (>=10.0.0) 后进行配置：
 
-```sh
+```bash
 pip install pip -U
 pip config set global.index-url https://mirrors.zju.edu.cn/pypi/simple
 ```
 如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
-```sh
+```bash
 pip install -i https://mirrors.zju.edu.cn/pypi/simple pip -U
 ```

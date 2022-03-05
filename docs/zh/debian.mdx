@@ -45,10 +45,10 @@ Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的�
 
 如果遇到无法拉取 https 源的情况，请先使用 http 源并安装: 
 
-```sh
+```bash
 sudo apt install apt-transport-https ca-certificates
 ```
 
 再使用我们的软件源镜像。
 
-<ConfigGenerator promptString="请选择您的debian版本：" versionList={debianVersions} configGen={GenDebianConfig} />
+<ConfigGenerator promptString="请选择您的 Debian 版本：" versionList={debianVersions} configGen={GenDebianConfig} />
