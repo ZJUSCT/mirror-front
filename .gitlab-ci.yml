@@ -1,0 +1,29 @@
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+
+before_script:
+  - docker info
+  - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+
+build:
+  stage: build
+  image: docker:20.10
+  tags:
+    - dind
+  script:
+    - docker pull $CI_REGISTRY/$IMAGE_TAG_LATEST || true
+    - docker build -t $IMAGE_TAG ./Manager
+    - docker tag $IMAGE_TAG $IMAGE_TAG_LATEST
+    - docker push $IMAGE_TAG
+    - docker push $IMAGE_TAG_LATEST
+
+deploy:
+  stage: deploy
+  image: tmaier/docker-compose:latest
+  tags:
+    - dind
+  only:
+    - main
+  script:
+    - docker-compose up -d

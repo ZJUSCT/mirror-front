@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  manager:
+    image: git.zju.edu.cn:5050/zju-mirror/mirror-front
+    restart: always
+    ports:
+      - 6001:80
+    environment:
+      - TZ=Aisa/Shanghai
