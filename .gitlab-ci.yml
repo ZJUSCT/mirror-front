@@ -15,7 +15,7 @@ build:
     - dev
   script:
     - docker pull $CI_REGISTRY/$IMAGE_TAG_LATEST || true
-    - docker build -t $IMAGE_TAG ./Manager
+    - docker build -t $IMAGE_TAG .
     - docker tag $IMAGE_TAG $IMAGE_TAG_LATEST
     - docker push $IMAGE_TAG
     - docker push $IMAGE_TAG_LATEST
