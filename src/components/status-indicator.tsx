@@ -9,8 +9,8 @@ interface StatusInfo {
 };
 
 const statusInfoMap: { [key in MirrorStatus]: StatusInfo } = {
-  success: {
-    content: "success",
+  succeeded: {
+    content: "succeeded",
     color: "success.main",
   },
   syncing: {
