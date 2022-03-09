@@ -1,11 +1,10 @@
-import { Box, Button, Collapse, Grid, } from "@mui/material/";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { TransitionGroup } from "react-transition-group";
-import { IsoDict } from "../types/mirror";
-import Iso from "./iso";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Box, Button, Collapse } from "@mui/material/";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { IsoDict } from "../types/mirror";
+import Iso from "./iso";
 export interface IsoListProps {
   isoDict: IsoDict;
 }
@@ -30,14 +29,18 @@ export default function IsoList({ isoDict }: IsoListProps) {
             ))
         }
       </Box>
-      <Button
-        sx={{ mt: 1 }}
-        variant="text"
-        onClick={() => setShowAll(!showAll)}
-        startIcon={showAll ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      >
-        {showAll ? t("折叠") : t("展开")}
-      </Button>
+      {
+        Object.entries(isoDict).length > 4 && (
+          <Button
+            sx={{ mt: 1 }}
+            variant="text"
+            onClick={() => setShowAll(!showAll)}
+            startIcon={showAll ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          >
+            {showAll ? t("折叠") : t("展开")}
+          </Button>
+        )
+      }
     </Box>
   );
 }
