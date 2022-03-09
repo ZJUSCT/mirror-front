@@ -12,7 +12,7 @@ build:
   tags:
     - dind
   only:
-    - dev
+    - main
   script:
     - docker pull $CI_REGISTRY/$IMAGE_TAG_LATEST || true
     - docker build -t $IMAGE_TAG .
@@ -26,6 +26,6 @@ deploy:
   tags:
     - dind
   only:
-    - dev
+    - main
   script:
     - docker-compose up -d
