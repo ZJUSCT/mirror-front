@@ -8,14 +8,19 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import CodeBlock from "./code-block";
+import { Language } from "prism-react-renderer";
+import { Trans } from "gatsby-plugin-react-i18next";
 
 export default ({
   promptString,
   versionList,
+  language,
   configGen,
 }: {
   promptString: string;
   versionList: string[];
+  language?: Language,
   configGen: (version: string) => string;
 }) => {
   const [version, setVersion] = useState(versionList[0]);
@@ -33,7 +38,7 @@ export default ({
         <Grid item>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="demo-simple-select-helper-label">
-              Version
+              <Trans>版本</Trans>
             </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
@@ -54,9 +59,7 @@ export default ({
           </FormControl>
         </Grid>
       </Grid>
-      <pre>
-        <code>{configGen(version)}</code>
-      </pre>
+      <CodeBlock language={language}>{configGen(version)}</CodeBlock>
     </Box>
   );
 };

@@ -1,4 +1,8 @@
-import ConfigGenerator from '../src/components/config-generator'
+---
+mirrorId: ubuntu
+---
+
+import ConfigGenerator from '../../src/components/config-generator'
 
 export const ubuntuVersionMap = {
     "12.04 LTS": "precise",
@@ -29,6 +33,6 @@ deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted un
 
 Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 
-<ConfigGenerator promptString="请选择您的ubuntu版本：" versionList={Object.keys(ubuntuVersionMap)} configGen={GenUbuntuConfig} />
+<ConfigGenerator promptString="请选择您的 Ubuntu 版本：" versionList={Object.keys(ubuntuVersionMap)} configGen={GenUbuntuConfig} />
 
 本镜像仅包含 32/64 位 x86 架构处理器的软件包，在 ARM(arm64, armhf)、PowerPC(ppc64el)、RISC-V(riscv64) 和 S390x 等架构的设备上（对应官方源为`ports.ubuntu.com`）请使用 [ubuntu-ports](/ubuntu-ports) 镜像。
