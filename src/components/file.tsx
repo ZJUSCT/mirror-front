@@ -4,12 +4,12 @@ import AlbumIcon from "@mui/icons-material/Album";
 import { Trans } from "gatsby-plugin-react-i18next";
 import { CardActionArea } from "gatsby-theme-material-ui";
 
-export interface IsoProps {
+export interface FileProps {
   name: string;
   url: string;
 }
 
-export default function Iso({ name, url }: IsoProps) {
+export default function File({ name, url }: FileProps) {
   return (
     <Card className="zju-mirror-card" style={{ height: "100%" }}>
       <CardActionArea to={url} sx={{ p: 2 }}>

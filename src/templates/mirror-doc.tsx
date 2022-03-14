@@ -9,7 +9,7 @@ import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import { Button } from "gatsby-theme-material-ui";
 import React from "react";
 import Footer from '../components/footer';
-import IsoList from "../components/iso-list";
+import FileList from "../components/file-list";
 import LanguageIconButton from "../components/language-icon-button";
 import Seo from "../components/seo";
 import StatusIndicator from "../components/status-indicator";
@@ -91,14 +91,14 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
 
             </Grid>
 
-            {Object.keys(mirror.isoDict).length && (
+            {mirror.files?.length && (
               <Grid item width="100%">
                 <Box>
                   <Typography gutterBottom variant="h5" component="div">
                     <Trans>安装盘</Trans>
                   </Typography>
 
-                  <IsoList isoDict={mirror.isoDict}/>
+                  <FileList files={mirror.files || []}/>
                 </Box>
               </Grid>
             )}

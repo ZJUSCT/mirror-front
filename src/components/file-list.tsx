@@ -3,13 +3,13 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Button, Collapse } from "@mui/material/";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { IsoDict } from "../types/mirror";
-import Iso from "./iso";
-export interface IsoListProps {
-  isoDict: IsoDict;
+import File, { FileProps } from "./file";
+
+export interface FileListProps {
+  files: FileProps[];
 }
 
-export default function IsoList({ isoDict }: IsoListProps) {
+export default function FileList({ files }: FileListProps) {
   const { t } = useTranslation();
   const [showAll, setShowAll] = React.useState<boolean>(false);
 
@@ -17,20 +17,19 @@ export default function IsoList({ isoDict }: IsoListProps) {
     <Box display="flex" flexDirection="column" alignContent="center">
       <Box display="flex" gap="8px" flexWrap="wrap">
         {
-          Object.entries(isoDict)
-            .map(([name, url], i) => (
-              <Collapse
-                unmountOnExit
-                in={i < 4 || showAll}
-                sx={{ width: { xs: '100%', md: 'calc(50% - 4px)' } }}
-              >
-                <Iso name={name} url={url} />
-              </Collapse>
-            ))
+          files.map(({ name, url }, i) => (
+            <Collapse
+              unmountOnExit
+              in={i < 4 || showAll}
+              sx={{ width: { xs: '100%', md: 'calc(50% - 4px)' } }}
+            >
+              <File name={name} url={url} />
+            </Collapse>
+          ))
         }
       </Box>
       {
-        Object.entries(isoDict).length > 4 && (
+        files.length > 4 && (
           <Button
             sx={{ mt: 1 }}
             variant="text"

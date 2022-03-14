@@ -3,6 +3,11 @@ export type MirrorStatus = 'succeeded' | 'syncing' | 'failed' | 'paused' | 'cach
 
 export type IsoDict = Record<string, string>;
 
+export interface File {
+  name: string;
+  url: string;
+}
+
 export interface MirrorDto {
   id: string;
   name: Record<Locale, string>;
@@ -12,7 +17,7 @@ export interface MirrorDto {
   nextScheduled: string;
   lastSuccess: string;
   url: string;
-  isoDict: IsoDict;
+  files?: File[];
 }
 
 export interface Mirror extends MirrorDto {

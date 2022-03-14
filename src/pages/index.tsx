@@ -1,7 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { graphql } from "gatsby";
 import { Trans, useI18next } from "gatsby-plugin-react-i18next";
-import { t } from "i18next";
 import React from "react";
 import Footer from "../components/footer";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
