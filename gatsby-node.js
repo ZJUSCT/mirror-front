@@ -14,9 +14,7 @@ const mdxResolverPassthrough = (fieldName) => async (
     id: source.parent,
   });
   const resolver = type.getFields()[fieldName].resolve;
-  const result = await resolver(mdxNode, args, context, {
-    fieldName,
-  });
+  const result = await resolver(mdxNode, args, context, info);
   return result;
 }
 
