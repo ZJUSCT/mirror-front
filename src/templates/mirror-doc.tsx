@@ -95,7 +95,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
               <Grid item width="100%">
                 <Box>
                   <Typography gutterBottom variant="h5" component="div">
-                    <Trans>安装盘</Trans>
+                    <Trans>安装映像</Trans>
                   </Typography>
 
                   <FileList files={mirror.files || []}/>
