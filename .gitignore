@@ -74,4 +74,8 @@ yarn-error.log
 # config file
 config.ts
 
+# vscode config file
 .vscode/
+
+# pnpm packages
+.pnpm-store/
