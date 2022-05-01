@@ -22,14 +22,12 @@
 	"forwardPorts": [8000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sudo chown node node_modules .pnpm-store public",
+	"postCreateCommand": "sudo chown node node_modules",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "node",
 
 	"mounts": [
-		"source=mirrorfront-nodemodules,target=${containerWorkspaceFolder}/node_modules,type=volume",
-		"source=mirrorfront-pnpmstore,target=${containerWorkspaceFolder}/.pnpm-store,type=volume",
-		"source=mirrorfront-public,target=${containerWorkspaceFolder}/public,type=volume"
+		"source=mirrorfront-nodemodules,target=${containerWorkspaceFolder}/node_modules,type=volume"
 	]
 }

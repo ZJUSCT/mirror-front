@@ -13,7 +13,7 @@ ENV TZ=Asia/Shanghai
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
-#[Optional] Uncomment if you want to install more global node modules
+# [Optional] Uncomment if you want to install more global node modules
 RUN su node -c "yarn config set registry https://registry.npmmirror.com"
-RUN su node -c "yarn global add pnpm@next-7"
-RUN su node -c "pnpm config set registry https://registry.npmmirror.com"
+RUN su node -c "npm config set sharp_binary_host https://npmmirror.com/mirrors/sharp"
+RUN su node -c "npm config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips"
