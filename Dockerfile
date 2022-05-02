@@ -1,5 +1,13 @@
 FROM node:17-bullseye
 
-COPY . ./
-RUN yarn config set registry 'https://registry.npmmirror.com/' && yarn install && yarn run build
-ENTRYPOINT ["yarn", "run", "serve"]
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn config set registry 'https://registry.npmmirror.com/' && \ 
+    npm config set sharp_binary_host https://npmmirror.com/mirrors/sharp && \ 
+    npm config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips && \
+    yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn run build
+CMD ["yarn", "run", "serve"]
+
