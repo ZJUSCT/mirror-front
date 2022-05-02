@@ -4,7 +4,14 @@ mirrorId: debian
 
 import ConfigGenerator from '../../src/components/config-generator'
 
-export const debianVersions = ["sid", "testing", "bullseye", "buster", "stretch", "jessie"]
+export const debianVersions = [
+    "bullseye", // 11
+    "buster",   // 10
+    "stretch",  // 9
+    "jessie",   // 8
+    "testing",  // next stable in dev
+    "sid",      // unstable
+]
 
 export const GenDebianConfig = (version) => {
     if (version === 'sid') {

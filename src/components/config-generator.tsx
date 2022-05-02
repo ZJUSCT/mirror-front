@@ -15,15 +15,17 @@ import { Trans } from "gatsby-plugin-react-i18next";
 export default ({
   promptString,
   versionList,
+  defaultVersion,
   language,
   configGen,
 }: {
   promptString: string;
   versionList: string[];
+  defaultVersion: string | undefined;
   language?: Language,
   configGen: (version: string) => string;
 }) => {
-  const [version, setVersion] = useState(versionList[0]);
+  const [version, setVersion] = useState(defaultVersion ?? versionList[0]);
   return (
     <Box>
       <Grid
@@ -47,6 +49,7 @@ export default ({
               onChange={event => {
                 setVersion(event.target.value as string);
               }}
+              defaultValue={version}
             >
               {versionList.map((item, i) => {
                 return (
