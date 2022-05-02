@@ -91,17 +91,19 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
 
             </Grid>
 
-            {mirror.files?.length && (
-              <Grid item width="100%">
-                <Box>
-                  <Typography gutterBottom variant="h5" component="div">
-                    <Trans>安装映像</Trans>
-                  </Typography>
+            {
+              mirror.files?.length > 0 && (
+                <Grid item width="100%">
+                  <Box>
+                    <Typography gutterBottom variant="h5" component="div">
+                      <Trans>安装映像</Trans>
+                    </Typography>
 
-                  <FileList files={mirror.files || []}/>
-                </Box>
-              </Grid>
-            )}
+                    <FileList files={mirror.files || []} />
+                  </Box>
+                </Grid>
+              )
+            }
 
             <Grid item>
               <Button
