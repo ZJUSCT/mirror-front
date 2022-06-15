@@ -4,7 +4,7 @@ import { CardActionArea } from "gatsby-theme-material-ui";
 import * as React from "react";
 import { Mirror } from "../types/mirror";
 import StatusIndicator from "./status-indicator";
-import config from '../../config';
+import { getUrl } from "../utils/url";
 
 export default (props: { queryItem: Mirror }) => {
   const { language } = useI18next();
@@ -12,7 +12,7 @@ export default (props: { queryItem: Mirror }) => {
   return (
     <Card className="zju-mirror-card" style={{ height: "100%" }}>
       <CardActionArea
-        to={`${config.siteUrl}${props.queryItem.url || props.queryItem.docUrl}`}
+        to={getUrl(props.queryItem.url || props.queryItem.docUrl)}
         style={{ height: "100%" }}
       >
         <Grid

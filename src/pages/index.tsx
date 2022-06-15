@@ -10,7 +10,7 @@ import Seo from "../components/seo";
 import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror, MirrorDto } from "../types/mirror";
 import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
-import config from '../../config';
+import { getUrl } from "../utils/url";
 
 interface Data {
   mirrorDocs: {
@@ -102,7 +102,7 @@ export default ({ data }: { data: Data }) => {
                       name={mirror.name[language]}
                       desc={mirror.desc[language]}
                       icon={e.icon}
-                      url={`${config.siteUrl}${mirror.docUrl || mirror.url}`}
+                      url={getUrl(mirror.docUrl || mirror.url)}
                     />
                   </Grid>
                 )
