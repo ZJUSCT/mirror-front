@@ -92,7 +92,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
             </Grid>
 
             {
-              mirror.files?.length > 0 && (
+              (mirror.files?.length ?? 0) > 0 && (
                 <Grid item width="100%">
                   <Box>
                     <Typography gutterBottom variant="h5" component="div">

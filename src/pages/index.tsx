@@ -35,7 +35,7 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
     Object.fromEntries(
       data.mirrorDocs.nodes
         .filter(d => d.frontmatter?.mirrorId && d.locale === language)
-        .map(d => [d.frontmatter.mirrorId, d.slug])
+        .map(d => [d.frontmatter!.mirrorId, d.slug])
     ),
     [data, language]
   );
