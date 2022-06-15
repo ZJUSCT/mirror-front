@@ -21,9 +21,12 @@ gatsby-build:
     paths:
     - public
 
-dummy-deploy:
+deploy-webhook:
   stage: deploy
   only:
   - main
   script:
   - echo 'webhook should be triggered'
+  environment:
+    name: staging
+    url: https://mirror.zju.edu.cn/index
