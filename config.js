@@ -9,6 +9,5 @@ module.exports = {
   },
   defaultLanguage: 'zh',
   locales: ['zh', 'en'],
-  apiBaseUrl: 'http://new.mirrors.zju.edu.cn/api',
-  siteUrl: 'http://new.mirrors.zju.edu.cn',
+  siteUrl: 'http://mirror.zju.edu.cn',
 };

@@ -7,33 +7,50 @@ import { graphql } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { Trans, useI18next } from "gatsby-plugin-react-i18next";
 import { Button } from "gatsby-theme-material-ui";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from '../components/footer';
 import FileList from "../components/file-list";
 import LanguageIconButton from "../components/language-icon-button";
 import Seo from "../components/seo";
 import StatusIndicator from "../components/status-indicator";
 import ThemeIconButton from "../components/theme-icon-button";
-import { Mirror } from "../types/mirror";
-import { getMirror } from "../utils/api";
+import { MirrorDto } from "../types/mirror";
 import { Link } from "../utils/i18n-link";
 import components from "./components";
 
 interface Data {
   document: {
-    body: string
+    body: string,
+    frontmatter: any
   }
 }
 
-interface ServerData {
-  mirror: Mirror
+async function fetchMirror(id: string): Promise<MirrorDto> {
+  const res = await fetch(`/api/mirrors/${id}`);
+  if (!res.ok) {
+    throw new Error(`API call failed: ${res.status} ${await res.text()}`);
+  }
+  return await res.json();
 }
 
-export default ({ data, serverData }: { data: Data, serverData: ServerData }) => {
+export default ({ data }: { data: Data }) => {
   const { language } = useI18next();
-  const mirror = serverData.mirror;
-  const name = mirror.name[language]
 
+  const [mirror, setMirror] = useState({
+    id: data.document.frontmatter.mirrorId,
+    name: {
+      'zh': '',
+      'en': ''
+    },
+    status: 'unknown',
+  } as MirrorDto);
+  useEffect(() => {
+    fetchMirror(data.document.frontmatter.mirrorId)
+      .then(d => setMirror(d))
+      .catch(err => console.error(err));
+  }, []);
+
+  const name = mirror.name[language];
   return (
     <Box sx={{
       minHeight: "100vh",
@@ -85,7 +102,7 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
                   color="text.disabled"
                   sx={{ ml: 1 }}
                 >
-                  <Trans>最近更新于 {{ date: new Date(mirror.lastUpdated).toLocaleString(language) }}</Trans>
+                  <Trans>最近更新于 {{ date: new Date(mirror.lastUpdated * 1000).toLocaleString(language) }}</Trans>
                 </Typography>
               </Grid>
 
@@ -131,14 +148,6 @@ export default ({ data, serverData }: { data: Data, serverData: ServerData }) =>
     </Box >
   );
 };
-
-export async function getServerData({ pageContext }) {
-  return {
-    props: {
-      mirror: await getMirror(pageContext?.frontmatter?.mirrorId)
-    },
-  };
-}
 
 export const query = graphql`
   query MirrorDocPageQuery(

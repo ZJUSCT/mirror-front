@@ -37,7 +37,6 @@ const statusInfoMap: { [key in MirrorStatus]: StatusInfo } = {
 
 export default function StatusIndicator({ status, fontSize }: { status: MirrorStatus, fontSize?: string | number }) {
   const statusInfo: StatusInfo = statusInfoMap[status];
-  console.log(statusInfo);
   return (
 
     <Typography

@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { graphql } from "gatsby";
 import { Trans, useI18next } from "gatsby-plugin-react-i18next";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/footer";
 import FrequentlyUsedMirrorCard from "../components/frequently-used-mirror-card";
 import LanguageIconButton from "../components/language-icon-button";
@@ -9,7 +9,6 @@ import SearchTable from "../components/search-table";
 import Seo from "../components/seo";
 import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror, MirrorDto } from "../types/mirror";
-import { getMirrors } from "../utils/api";
 import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 
 interface Data {
@@ -24,12 +23,24 @@ interface Data {
   }
 }
 
-interface ServerData {
-  mirrors: MirrorDto[]
+async function fetchMirrors(): Promise<MirrorDto[]> {
+  const res = await fetch('/api/mirrors');
+  if (!res.ok) {
+    throw new Error(`API call failed: ${res.status} ${await res.text()}`);
+  }
+  return await res.json();
 }
 
-export default ({ serverData, data }: { serverData: ServerData, data: Data }) => {
+export default ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
+
+  const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>([]);
+
+  useEffect(() => {
+    fetchMirrors()
+      .then(d => setMirrorsRaw(d))
+      .catch(err => console.error(err));
+  }, []);
 
   const mirrorDocUrls = React.useMemo<Record<string, string>>(() =>
     Object.fromEntries(
@@ -42,13 +53,13 @@ export default ({ serverData, data }: { serverData: ServerData, data: Data }) =>
 
   const mirrors = React.useMemo<{ [key in string]: Mirror }>(() =>
     Object.fromEntries(
-      serverData.mirrors.map(dto => ([
+      mirrorsRaw.map(dto => ([
         dto.id, {
           ...dto,
           docUrl: mirrorDocUrls[dto.id],
         }
       ]))),
-    [serverData, mirrorDocUrls]
+    [mirrorsRaw, mirrorDocUrls]
   );
 
   return (
@@ -130,11 +141,3 @@ export const query = graphql`
     }
   }
 `;
-
-export async function getServerData() {
-  return {
-    props: {
-      mirrors: await getMirrors()
-    },
-  };
-}
