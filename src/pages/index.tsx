@@ -11,6 +11,7 @@ import ThemeIconButton from "../components/theme-icon-button";
 import { Mirror, MirrorDto } from "../types/mirror";
 import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 import { getUrl } from "../utils/url";
+import { readCache, writeCache } from "../utils/cache";
 
 interface Data {
   mirrorDocs: {
@@ -29,13 +30,15 @@ async function fetchMirrors(): Promise<MirrorDto[]> {
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
   }
-  return await res.json();
+  const json = await res.json();
+  writeCache('mirrors', json);
+  return json;
 }
 
 export default ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
 
-  const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>([]);
+  const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>(readCache('mirrors', []));
 
   useEffect(() => {
     fetchMirrors()
