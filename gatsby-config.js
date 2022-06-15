@@ -78,6 +78,7 @@ module.exports = {
         )
       }
     },
+    `gatsby-plugin-preact`
   ],
   developMiddleware: app => {
     app.use(
