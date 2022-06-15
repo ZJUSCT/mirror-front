@@ -102,7 +102,7 @@ export default ({ data }: { data: Data }) => {
                       name={mirror.name[language]}
                       desc={mirror.desc[language]}
                       icon={e.icon}
-                      url={getUrl(mirror.docUrl || mirror.url)}
+                      url={getUrl(mirror.docUrl || mirror.url, !!mirror.docUrl)}
                     />
                   </Grid>
                 )

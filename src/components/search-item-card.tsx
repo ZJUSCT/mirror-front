@@ -14,12 +14,12 @@ export default (props: { queryItem: Mirror }) => {
   return (
     <Card className="zju-mirror-card" style={{ height: "100%", position: "relative" }}>
       {props.queryItem.docUrl &&
-        <IconButton aria-label="help" href={getUrl(props.queryItem.docUrl)} style={{ position: "absolute", right: 0, zIndex: 1 }}>
+        <IconButton aria-label="help" href={getUrl(props.queryItem.docUrl, true)} style={{ position: "absolute", right: 0, zIndex: 1 }}>
           <HelpIcon />
         </IconButton>
       }
       <CardActionArea
-        to={getUrl(props.queryItem.url || props.queryItem.docUrl)}
+        to={getUrl(props.queryItem.url || props.queryItem.docUrl, !props.queryItem.url)}
         style={{ height: "100%" }}
       >
         <Grid
