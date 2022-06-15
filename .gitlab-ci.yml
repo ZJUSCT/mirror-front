@@ -1,31 +1,29 @@
-variables:
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+image: node:lts-bullseye
 
-before_script:
-  - docker info
-  - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+stages:
+  - build
+  - deploy
 
-build:
+gatsby-build:
   stage: build
-  image: docker:20.10
-  tags:
-    - dind
-  only:
-    - main
+  variables:
+    CHOKIDAR_USEPOLLING: 1
+  cache:
+    paths:
+    - node_modules/
   script:
-    - docker pull $CI_REGISTRY/$IMAGE_TAG_LATEST || true
-    - docker build -t $IMAGE_TAG .
-    - docker tag $IMAGE_TAG $IMAGE_TAG_LATEST
-    - docker push $IMAGE_TAG
-    - docker push $IMAGE_TAG_LATEST
+  - yarn config set registry https://registry.npmmirror.com
+  - npm config set sharp_binary_host https://npmmirror.com/mirrors/sharp
+  - npm config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips
+  - yarn install --frozen-lockfile
+  - yarn run build
+  artifacts:
+    paths:
+    - public
 
-deploy:
+dummy-deploy:
   stage: deploy
-  image: tmaier/docker-compose:latest
-  tags:
-    - dind
   only:
-    - main
+  - main
   script:
-    - docker-compose up -d
+  - echo 'webhook should be triggered'
