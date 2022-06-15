@@ -5,14 +5,14 @@ mirrorId: ubuntu
 import ConfigGenerator from '../../src/components/config-generator'
 
 export const ubuntuVersionMap = {
-    "12.04 LTS": "precise",
-    "14.04 LTS": "trusty",
-    "16.04 LTS": "xenial",
-    "18.04 LTS": "bionic",
-    "20.04 LTS": "focal",
-    "21.04": "hirsute",
+    "22.04 LTS": "jammy",
     "21.10": "impish",
-    "22.04 LTS": "jammy"
+    "21.04": "hirsute",
+    "20.04 LTS": "focal",
+    "18.04 LTS": "bionic",
+    "16.04 LTS": "xenial",
+    "14.04 LTS": "trusty",
+    "12.04 LTS": "precise",
 }
 
 export const GenUbuntuConfig = (version) => {
@@ -31,9 +31,10 @@ deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted un
 # deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse`
 }
 
+export const defaultVersion = Object.keys(ubuntuVersionMap).find(x => x.indexOf("LTS") > 0);
 
 Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 
-<ConfigGenerator promptString="请选择您的 Ubuntu 版本：" versionList={Object.keys(ubuntuVersionMap)} defaultVersion={Object.keys(ubuntuVersionMap).findLast(x => x.indexOf("LTS") > 0)} configGen={GenUbuntuConfig} />
+<ConfigGenerator promptString="请选择您的 Ubuntu 版本：" versionList={Object.keys(ubuntuVersionMap)} defaultVersion={defaultVersion} configGen={GenUbuntuConfig} />
 
 本镜像仅包含 32/64 位 x86 架构处理器的软件包，在 ARM(arm64, armhf)、PowerPC(ppc64el)、RISC-V(riscv64) 和 S390x 等架构的设备上（对应官方源为`ports.ubuntu.com`）请使用 [ubuntu-ports](/ubuntu-ports) 镜像。
