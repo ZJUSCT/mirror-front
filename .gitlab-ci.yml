@@ -12,11 +12,7 @@ gatsby-build:
     paths:
     - node_modules/
   script:
-  - yarn config set registry https://registry.npmmirror.com
-  - npm config set sharp_binary_host https://npmmirror.com/mirrors/sharp
-  - npm config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips
-  - yarn install --frozen-lockfile
-  - sed -i 's/fonts.googleapis.com/fonts.loli.net/g' node_modules/gatsby-plugin-webfonts/modules/google.js
+  - bash cached-restore.sh
   - yarn run build
   artifacts:
     paths:
