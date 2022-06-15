@@ -1,5 +1,8 @@
 #!/bin/bash
 
+md5sum yarn.lock || true
+md5sum node_modules/yarn.lock || true
+
 if cmp -s "yarn.lock" "node_modules/yarn.lock"; then
   echo "yarn.lock did not change, skipping install"
 else
