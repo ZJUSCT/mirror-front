@@ -17,6 +17,7 @@ import ThemeIconButton from "../components/theme-icon-button";
 import { MirrorDto } from "../types/mirror";
 import { Link } from "../utils/i18n-link";
 import components from "./components";
+import { readCache, writeCache } from "../utils/cache";
 
 interface Data {
   document: {
@@ -30,22 +31,27 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
   }
-  return await res.json();
+  const json = await res.json();
+  writeCache(`mirrors_${id}`, json);
+  return json;
 }
 
 export default ({ data }: { data: Data }) => {
   const { language } = useI18next();
 
-  const [mirror, setMirror] = useState({
+  const defaultData = {
     id: data.document.frontmatter.mirrorId,
     name: {
       'zh': '',
       'en': ''
     },
     status: 'unknown',
-  } as MirrorDto);
+  } as MirrorDto;
+  const mirrorId = data.document.frontmatter.mirrorId;
+
+  const [mirror, setMirror] = useState(readCache(`mirrors_${mirrorId}`, defaultData));
   useEffect(() => {
-    fetchMirror(data.document.frontmatter.mirrorId)
+    fetchMirror(mirrorId)
       .then(d => setMirror(d))
       .catch(err => console.error(err));
   }, []);
