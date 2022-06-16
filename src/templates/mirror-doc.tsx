@@ -18,6 +18,7 @@ import { MirrorDto } from "../types/mirror";
 import { Link } from "../utils/i18n-link";
 import components from "./components";
 import { readCache, writeCache } from "../utils/cache";
+import { getUrl } from "../utils/url";
 
 interface Data {
   document: {
@@ -134,7 +135,7 @@ export default ({ data }: { data: Data }) => {
                 size="large"
                 variant="contained"
                 startIcon={<FolderIcon />}
-                to={mirror.url}
+                to={getUrl(mirror.url, false)}
               >
                 <Trans>文件列表</Trans>
               </Button>

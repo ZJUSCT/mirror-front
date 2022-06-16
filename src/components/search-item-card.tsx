@@ -32,7 +32,7 @@ export default (props: { queryItem: Mirror }) => {
         >
           <Grid item>
             <Typography variant="h6" component="div">
-              {props.queryItem.name[language]}
+              {props.queryItem.id}
             </Typography>
             <Typography gutterBottom variant="body2" color="text.secondary">
               {props.queryItem.desc[language]}
