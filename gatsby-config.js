@@ -48,7 +48,14 @@ module.exports = {
       resolve: "gatsby-plugin-react-svg",
       options: {
         rule: {
-          include: /icons/
+          include: /icons/,
+          omitKeys: [
+            'inkscapePageshadow', 'inkscapePageopacity', 'inkscapePagecheckerboard', 
+            'inkscapeZoom', 'inkscapeCx', 'inkscapeCy', 'inkscapeWindowWidth', 'inkscapeWindowHeight', 
+            'inkscapeWindowX', 'inkscapeWindowY', 'inkscapeWindowMaximized', 'inkscapeCurrentLayer', 
+            'sodipodiNodetypes', 'sodipodiDocname', 'inkscapeVersion', 'xmlnsInkscape', 'xmlnsSodipodi',
+            'xmlnsSvg', 
+          ]
         }
       }
     },
