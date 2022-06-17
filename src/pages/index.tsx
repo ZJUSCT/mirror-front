@@ -12,6 +12,7 @@ import { Mirror, MirrorDto } from "../types/mirror";
 import frequentlyUsedMirror from "../utils/frequently-used-mirror-list";
 import { getUrl } from "../utils/url";
 import { readCache, writeCache } from "../utils/cache";
+import NameIconButton from "../components/name-icon-button";
 
 interface Data {
   mirrorDocs: {
@@ -83,6 +84,7 @@ export default ({ data }: { data: Data }) => {
               </Typography>
             </Grid>
             <Grid item>
+              <NameIconButton />
               <LanguageIconButton />
               <ThemeIconButton />
             </Grid>

@@ -7,9 +7,11 @@ import * as React from "react";
 import { Mirror } from "../types/mirror";
 import StatusIndicator from "./status-indicator";
 import { getUrl } from "../utils/url";
+import { usePrefs } from "./preferences-context";
 
 export default (props: { queryItem: Mirror }) => {
   const { language } = useI18next();
+  const [prefs, _] = usePrefs();
 
   return (
     <Card className="zju-mirror-card" style={{ height: "100%", position: "relative" }}>
@@ -32,7 +34,7 @@ export default (props: { queryItem: Mirror }) => {
         >
           <Grid item>
             <Typography variant="h6" component="div">
-              {props.queryItem.id}
+              {prefs.friendlyName ? props.queryItem.name[language] : props.queryItem.id}
             </Typography>
             <Typography gutterBottom variant="body2" color="text.secondary">
               {props.queryItem.desc[language]}
