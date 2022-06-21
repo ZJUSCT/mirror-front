@@ -1,8 +1,6 @@
 import { Card, Grid, Typography } from "@mui/material";
 import { useI18next } from "gatsby-plugin-react-i18next";
 import { CardActionArea } from "gatsby-theme-material-ui";
-import IconButton from "@mui/material/IconButton";
-import HelpIcon from '@mui/icons-material/Help';
 import * as React from "react";
 import { Mirror } from "../types/mirror";
 import StatusIndicator from "./status-indicator";
@@ -14,14 +12,9 @@ export default (props: { queryItem: Mirror }) => {
   const [prefs, _] = usePrefs();
 
   return (
-    <Card className="zju-mirror-card" style={{ height: "100%", position: "relative" }}>
-      {props.queryItem.docUrl &&
-        <IconButton aria-label="help" href={getUrl(props.queryItem.docUrl, true)} style={{ position: "absolute", right: 0, zIndex: 1 }}>
-          <HelpIcon />
-        </IconButton>
-      }
+    <Card className="zju-mirror-card" style={{ height: "100%" }}>
       <CardActionArea
-        to={getUrl(props.queryItem.url || props.queryItem.docUrl, !props.queryItem.url)}
+        to={getUrl(props.queryItem.docUrl || props.queryItem.url, !props.queryItem.url)}
         style={{ height: "100%" }}
       >
         <Grid
