@@ -129,7 +129,7 @@ export default ({ data }: { data: Data }) => {
               )
             }
 
-            {(data.document.frontmatter.isGit == undefined && !data.document.frontmatter.isGit) && <Grid item>
+            {!data.document.frontmatter?.isGit && <Grid item>
               <Button
                 color="primary"
                 size="large"
