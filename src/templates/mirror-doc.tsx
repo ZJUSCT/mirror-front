@@ -129,7 +129,7 @@ export default ({ data }: { data: Data }) => {
               )
             }
 
-            <Grid item>
+            {(data.document.frontmatter.isGit == undefined && !data.document.frontmatter.isGit) && <Grid item>
               <Button
                 color="primary"
                 size="large"
@@ -139,7 +139,7 @@ export default ({ data }: { data: Data }) => {
               >
                 <Trans>文件列表</Trans>
               </Button>
-            </Grid>
+            </Grid>}
           </Grid>
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
