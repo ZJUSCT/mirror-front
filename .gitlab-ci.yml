@@ -23,7 +23,7 @@ deploy-webhook:
   only:
   - main
   script:
-  - echo 'webhook should be triggered'
+  - curl "$WEBHOOK_DEPLOY_URL"
   environment:
     name: staging
     url: https://mirror.zju.edu.cn/index
