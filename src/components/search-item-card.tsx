@@ -1,21 +1,25 @@
-import { Card, Grid, Typography } from "@mui/material";
-import { useI18next } from "gatsby-plugin-react-i18next";
-import { CardActionArea } from "gatsby-theme-material-ui";
-import * as React from "react";
-import { Mirror } from "../types/mirror";
-import StatusIndicator from "./status-indicator";
-import { getUrl } from "../utils/url";
-import { usePrefs } from "./preferences-context";
+import { Card, Grid, Typography } from '@mui/material';
+import { useI18next } from 'gatsby-plugin-react-i18next';
+import { CardActionArea } from 'gatsby-theme-material-ui';
+import * as React from 'react';
+import { Locale, Mirror } from '../types/mirror';
+import StatusIndicator from './status-indicator';
+import { getUrl } from '../utils/url';
+import { usePrefs } from './preferences-context';
 
-export default (props: { queryItem: Mirror }) => {
+const SearchItemCard = (props: { queryItem: Mirror }) => {
   const { language } = useI18next();
+  const lang = language as Locale;
   const [prefs, _] = usePrefs();
 
   return (
-    <Card className="zju-mirror-card" style={{ height: "100%" }}>
+    <Card className="zju-mirror-card" style={{ height: '100%' }}>
       <CardActionArea
-        to={getUrl(props.queryItem.docUrl || props.queryItem.url, !!props.queryItem.docUrl)}
-        style={{ height: "100%" }}
+        to={getUrl(
+          props.queryItem.docUrl || props.queryItem.url,
+          !!props.queryItem.docUrl
+        )}
+        style={{ height: '100%' }}
       >
         <Grid
           container
@@ -27,10 +31,12 @@ export default (props: { queryItem: Mirror }) => {
         >
           <Grid item>
             <Typography variant="h6" component="div">
-              {prefs.friendlyName ? props.queryItem.name[language] : props.queryItem.id}
+              {prefs.friendlyName
+                ? props.queryItem.name[lang]
+                : props.queryItem.id}
             </Typography>
             <Typography gutterBottom variant="body2" color="text.secondary">
-              {props.queryItem.desc[language]}
+              {props.queryItem.desc[lang]}
             </Typography>
           </Grid>
           <Grid item>
@@ -41,3 +47,5 @@ export default (props: { queryItem: Mirror }) => {
     </Card>
   );
 };
+
+export default SearchItemCard;

@@ -39,7 +39,7 @@ module.exports = {
     'prefer-const': 'error',
     'eol-last': 'error',
     'no-trailing-spaces': 'error',
-    'quotes': ['warn', 'single', {avoidEscape: true}],
+    'quotes': ['warn', 'single', { avoidEscape: true }],
     'no-restricted-properties': [
       'error',
       {
@@ -51,5 +51,34 @@ module.exports = {
         property: 'only',
       },
     ],
+    'react/function-component-definition': [
+      2,
+      {
+        namedComponents: 'arrow-function',
+      },
+    ],
+    'import/extensions': [
+      'error',
+      'never',
+      {
+        svg: 'always',
+      },
+    ],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
+    'react/destructuring-assignment': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      node: {},
+      typescript: {},
+    },
   },
 };
