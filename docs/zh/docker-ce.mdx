@@ -1,0 +1,82 @@
+---
+mirrorId: docker-ce
+---
+
+import ConfigGenerator from '../../src/components/config-generator'
+
+export const osList = ['Debian', 'Ubuntu'];
+export const genCommand = (os) => {
+    const o = os.toLowerCase();
+    return `#信任 Docker 的 GPG 公钥:\n
+    curl -fsSL https://download.docker.com/linux/${o}/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg\n
+    #添加软件仓库:\n
+    echo \\\n
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirror.zju.edu.cn/docker-ce/linux/${o} \\\n
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null\n
+    #最后安装\n
+    sudo apt-get update
+    sudo apt-get install docker-ce
+    `;
+}
+export const osList2 = ['CentOS/RHEL', 'Fedora'];
+export const genCommand2 = (os) => {
+    const o = os.toLowerCase().charAt(0) == 'c' ? 'centos' : 'fedora';
+    return `yum-config-manager --add-repo https://download.docker.com/linux/${o}/docker-ce.repo`;
+}
+
+注意: 本镜像只提供 docker 程序安装包，非 dockerhub
+
+## Linux 平台使用说明
+
+### Debian/Ubuntu 用户
+
+以下内容根据 [官方文档](https://docs.docker.com/engine/install/debian/) 修改而来。
+
+如果你过去安装过 docker ，先删掉:
+
+```bash
+sudo apt-get remove docker docker-engine docker.io containerd runc
+```
+
+首先安装依赖:
+
+```bash
+sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+```
+
+根据你的发行版，下面的内容有所不同。你使用的发行版： 
+
+<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList} defaultVersion={'Debian'} configGen={genCommand} />
+
+### Fedora/CentOS/RHEL
+
+以下内容根据 [官方文档](https://docs.docker.com/engine/install/centos/) 修改而来。
+
+如果你之前安装过 docker ，先删掉：
+
+```bash
+sudo yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+```
+
+安装一些依赖：
+
+```bash
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+```
+
+根据你的发行版下载repo文件: 
+
+<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList2} defaultVersion={'CentOS/RHEL'} configGen={genCommand2} />
+
+把软件仓库地址替换为浙大源:
+
+```bash
+sudo sed -i 's+download.docker.com+mirror.zju.edu.cn/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+```
+
+最后安装:
+
+```bash
+sudo yum makecache fast
+sudo yum install docker-ce
+```
