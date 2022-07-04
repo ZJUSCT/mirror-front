@@ -32,6 +32,7 @@
     "gatsby-plugin-react-helmet": "^5.13.0",
     "gatsby-plugin-react-i18next": "^1.2.3",
     "gatsby-plugin-react-svg": "^3.1.0",
+    "gatsby-plugin-sass": "^5.17.0",
     "gatsby-source-filesystem": "^4.13.0",
     "gatsby-theme-material-ui": "^5.2.0",
     "i18next": "^21.6.16",
@@ -43,7 +44,8 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-helmet": "^6.1.0",
-    "react-i18next": "^11.16.7"
+    "react-i18next": "^11.16.7",
+    "sass": "^1.53.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
