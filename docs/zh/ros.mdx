@@ -1,0 +1,48 @@
+---
+mirrorId: ros
+---
+
+ROS (Robot Operating System, 机器人操作系统) 提供一系列程序库和工具以帮助软件开发者创建机器人应用软件。它提供了硬件抽象、设备驱动、函数库、可视化工具、消息传递和软件包管理等诸多功能。ROS遵循BSD开源许可协议。
+
+## ROS 安装指南
+
+根据使用的 ROS 版本与使用的操作系统，在本镜像站 ROS Wiki 镜像中找到对应 [安装指南](http://mirror.zju.edu.cn/roswiki/ROS(2f)Installation.html)。
+
+**如需要在安装中使用本镜像站加速安装，请先阅读以下内容。**
+
+## ROS 软件包镜像
+
+在安装指南“ 1.2 Setup your sources.list ”节，将命令替换为以下内容：
+
+```bash
+sudo sh -c 'echo "deb http://mirror.zju.edu.cn/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+```
+
+在安装指南“ 1.3 Setup your keys ”节，将命令替换为以下内容：
+
+```bash
+sudo apt install curl # if you haven't already installed curl
+curl -s http://mirror.zju.edu.cn/rosdistro/ros.asc | sudo apt-key add -
+```
+
+在安装指南“ 1.6.1 Initialize rosdep ”节，将：
+
+```bash
+sudo rosdep init
+rosdep update
+```
+
+替换为：
+
+```bash
+# 手动模拟 rosdep init
+sudo mkdir -p /etc/ros/rosdep/sources.list.d/
+sudo curl -o /etc/ros/rosdep/sources.list.d/20-default.list https://mirror.zju.edu.cn/github-raw/ros/rosdistro/master/rosdep/sources.list.d/20-default.list
+# 为 rosdep update 换源
+export ROSDISTRO_INDEX_URL=https://mirror.zju.edu.cn/rosdistro/index-v4.yaml
+rosdep update
+
+# 每次 rosdep update 之前，均需要增加该环境变量
+# 为了持久化该设定，可以将其写入 .bashrc 中，例如
+echo 'export ROSDISTRO_INDEX_URL=https://mirror.zju.edu.cn/rosdistro/index-v4.yaml' >> ~/.bashrc
+```

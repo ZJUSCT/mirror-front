@@ -1,0 +1,18 @@
+---
+mirrorId: ros2
+---
+
+请参照 [官方指南](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) ，流程中仅做如下修改：
+
+下载并安装 ROS 的 GPG Key ：
+
+```bash
+sudo apt install curl gnupg2
+sudo curl -sSL https://mirror.zju.edu.cn/rosdistro/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
+```
+
+添加软件仓库，更新索引：
+
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://mirror.zju.edu.cn/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+```
