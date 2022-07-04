@@ -14,7 +14,7 @@ export default (props: { queryItem: Mirror }) => {
   return (
     <Card className="zju-mirror-card" style={{ height: "100%" }}>
       <CardActionArea
-        to={getUrl(props.queryItem.docUrl || props.queryItem.url, !props.queryItem.url)}
+        to={getUrl(props.queryItem.docUrl || props.queryItem.url, !!props.queryItem.docUrl)}
         style={{ height: "100%" }}
       >
         <Grid
