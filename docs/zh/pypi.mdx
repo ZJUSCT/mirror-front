@@ -2,11 +2,11 @@
 mirrorId: pypi
 ---
 
-> pypi 镜像目前为清华 TUNA 镜像站的反代。
+> pypi 镜像目前仅为校内反向代理清华 TUNA 镜像站。若您的网络环境处于校外， pip 的 HTTP(S) 请求将会被重定向（ 302 ）至 TUNA 镜像站。
 
 ## 临时使用
 ```bash
-pip install -i https://mirrors.zju.edu.cn/pypi/simple some-package
+pip install -i https://mirrors.zju.edu.cn/pypi/web/simple some-package
 ```
 注意，`simple` 不能少，若使用 http 镜像需要加上 `--trusted-host mirrors.zju.edu.cn`
 
@@ -15,9 +15,9 @@ pip install -i https://mirrors.zju.edu.cn/pypi/simple some-package
 
 ```bash
 pip install pip -U
-pip config set global.index-url https://mirrors.zju.edu.cn/pypi/simple
+pip config set global.index-url https://mirrors.zju.edu.cn/pypi/web/simple
 ```
-如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
+如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip ：
 ```bash
-pip install -i https://mirrors.zju.edu.cn/pypi/simple pip -U
+pip install -i https://mirrors.zju.edu.cn/pypi/web/simple pip -U
 ```
