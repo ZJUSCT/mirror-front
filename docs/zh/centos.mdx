@@ -2,13 +2,25 @@
 mirrorId: centos
 ---
 
-该镜像只提供 CentOS 7 与 8，架构仅为 `x86_64`。
+在使用 CentOS 镜像前，请检查您所应该使用的对应软件源：
+
+| CentOS 版本 | 架构 | 对应软件源 |
+|---|---|---|
+| 6 及之前 | - | centos-vault |
+| 7 | x86_64 | centos |
+| 7 | 其他 | centos-altarch |
+| 8 ~ 8.1 | x86_64 | centos |
+| 8 ~ 8.1 | 其他 | centos-altarch |
+| 8.1 ~ 8.5 | - | centos-vault |
+| 8 Stream | - | centos |
+| 9 Stream | - | centos-stream |
+
 
 使用以下命令切换源并备份原始配置：
 
 ```bash
 sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
-         -e 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.zju.edu.cn|g' \
+         -e 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirror.zju.edu.cn|g' \
          -i.bak \
          /etc/yum.repos.d/CentOS-*.repo
 ```
@@ -16,7 +28,8 @@ sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 
 如果需要启用其中一些 repo，需要将其中的 `enabled=0` 改为 `enabled=1`。
 
-然后，更新软件包缓存
+然后，更新软件包缓存：
+
 ```bash
 sudo yum makecache
 ```
