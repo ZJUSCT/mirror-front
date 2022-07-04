@@ -56,6 +56,7 @@ export default ({ data }: { data: Data }) => {
       .then(d => setMirror(d))
       .catch(err => console.error(err));
   }, []);
+  console.log(mirror);
 
   const name = mirror.name[language];
   return (
