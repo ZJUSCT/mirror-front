@@ -101,7 +101,7 @@ const components = {
     const InlineCode = props => {
       const theme = useTheme();
       return (
-        <Typography {...props} component="code" style={{ color: theme.palette.secondary.main, fontFamily: 'monospace' }} />
+        <Typography {...props} component="code" style={{ color: theme.palette.secondary.main }} />
       );
     };
     return memo(InlineCode);

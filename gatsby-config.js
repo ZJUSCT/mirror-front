@@ -85,7 +85,8 @@ module.exports = {
         )
       }
     },
-    `gatsby-plugin-preact`
+    `gatsby-plugin-preact`,
+    `gatsby-plugin-sass`
   ],
   developMiddleware: app => {
     app.use(
