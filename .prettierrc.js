@@ -10,5 +10,6 @@ module.exports = {
   "jsxSingleQuote": false,
   "semi": true,
   "endOfLine": "lf",
-  "quoteProps": "consistent"
+  "quoteProps": "consistent",
+  "bracketSpacing": true,
 }
