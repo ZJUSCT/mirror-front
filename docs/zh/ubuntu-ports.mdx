@@ -34,7 +34,7 @@ deb https://mirror.zju.edu.cn/ubuntu-ports/ ${ubuntuName}-security main restrict
 
 export const defaultVersion = Object.keys(ubuntuVersionMap).find(x => x.indexOf("LTS") > 0);
 
-> Ubuntu Ports 镜像目前为 USTC 镜像站的反代。
+> ubuntu-ports 镜像目前仅为校内反向代理清华 TUNA 镜像站。若您的网络环境处于校外， apt 的 HTTP(S) 请求将会被重定向（ 302 ）至 TUNA 镜像站。
 
 Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 
