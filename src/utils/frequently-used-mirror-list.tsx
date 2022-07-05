@@ -18,7 +18,7 @@ export default [
     icon: <Icon width="4rem" icon={npmIcon} />
   },
   {
-    id: 'python',
+    id: 'pypi',
     icon: <Icon width="4rem" icon={pythonIcon} />
   },
   {
@@ -30,7 +30,7 @@ export default [
     icon: <Icon width="4rem" icon={centosIcon} />
   },
   {
-    id: 'docker',
+    id: 'docker-ce',
     icon: <Icon width="4rem" icon={dockerIcon} />
   },
 ];
