@@ -12,27 +12,31 @@ export declare type ThemeContextInterface = [ThemeMode, (mode: ThemeMode) => voi
 
 export const ThemeContext = React.createContext<ThemeContextInterface | null>(null);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = React.useState<ThemeMode>('auto');
-  const preferredMode = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
-  const paletteMode = mode === 'auto' ? preferredMode : mode;
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  // bypass gatsby build
+  if (typeof window === 'undefined') return <div />;
 
-  const theme = React.useMemo(
-    () => createTheme({
+  const savedMode = window.localStorage.getItem('themeMode') as ThemeMode;
+  const [mode, setMode] = React.useState<ThemeMode>(savedMode);
+
+  let paletteMode = mode;
+  if (mode === 'auto') {
+    // wait for media query result stable
+    // ref: https://github.com/mui/material-ui/issues/15588#issuecomment-567803082
+    const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
+    const prefersLight = useMediaQuery('(prefers-color-scheme: light)');
+    if (prefersDark !== !prefersLight) return null;
+    const preferredMode = prefersDark ? 'dark' : 'light';
+    paletteMode = preferredMode;
+  }
+
+  const theme = React.useMemo(() =>
+    createTheme({
       palette: {
         mode: paletteMode,
       },
     }, configTheme(paletteMode)),
     [paletteMode]
-  );
-
-  React.useEffect(
-    () => {
-      if (!window) return;
-      const mode = window.localStorage.getItem('themeMode') as ThemeMode;
-      if (mode) setMode(mode);
-    },
-    [preferredMode]
   );
 
   const updateMode = (mode: ThemeMode) => {
