@@ -22,7 +22,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
     // needed by prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': 'warn',
     'arrow-body-style': 'off',
     'prefer-arrow-callback': 'off',
     // allow jsx in typescript files
