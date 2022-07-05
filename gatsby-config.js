@@ -12,6 +12,7 @@ module.exports = {
     description: 'ZJU Mirror is a non-profit program aimed at popularizing open source software and facilitating efficient access to various resources of open source projects by all users.',
     author: 'ZJU SCT',
   },
+  assetPrefix: config.assetPrefix,
   pathPrefix: config.pathPrefix,
   plugins: [
     `gatsby-plugin-react-helmet`,

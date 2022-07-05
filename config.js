@@ -10,5 +10,6 @@ module.exports = {
   defaultLanguage: 'zh',
   locales: ['zh', 'en'],
   siteUrl: 'http://mirror.zju.edu.cn',
-  pathPrefix: `/index`,
+  pathPrefix: '',
+  assetPrefix: '/index',
 };
