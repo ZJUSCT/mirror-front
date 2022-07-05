@@ -125,10 +125,6 @@ const Index =  ({ data }: { data: Data }) => {
             <Grid item>
               <Typography variant="h3" component="div" color="primary">
                 <Trans>ZJU Mirror</Trans>
-                <Chip
-                  label={t(networkMap[networkMode].text)}
-                  color={networkMap[networkMode].color}
-                />
               </Typography>
             </Grid>
             <Grid item>
@@ -139,6 +135,12 @@ const Index =  ({ data }: { data: Data }) => {
           </Grid>
           <Typography variant="subtitle1" component="div" color="primary">
             <Trans>浙江大学开源软件镜像站</Trans>
+          </Typography>
+          <Typography variant="subtitle1" component="div" color="primary">
+            <Chip
+              label={t(networkMap[networkMode].text)}
+              color={networkMap[networkMode].color}
+            />
           </Typography>
         </Grid>
         <Grid item xs={1}>
