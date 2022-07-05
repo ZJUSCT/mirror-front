@@ -26,13 +26,24 @@ export default () => (
               <Typography gutterBottom variant="body2" color="text.secondary">
                 <Trans>浙江大学开源软件镜像站是一个致力于普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。</Trans>
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography gutterBottom variant="body2" color="text.secondary">
                 <Trans>本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
                   等项目源的镜像，以服务教育和科学研究为目的，提倡自由、平等、协作、共享的精神。</Trans>
               </Typography>
+              <Typography gutterBottom variant="body2" color="text.secondary">
+                <Link
+                  href="https://github.com/ZJUSCT/mirror-issues"
+                  color="text.secondary"
+                  underline="hover"
+                >
+                  <Trans>问题反馈与镜像请求（GitHub）</Trans>
+                </Link>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <Trans>根据相关法律法规，本站不对欧盟用户提供服务。</Trans>
+              </Typography>
             </Box>
           </Grid>
-
           <Grid item xs={2} md={1}>
             <Grid
               container
