@@ -57,13 +57,15 @@ async function fetchNetworkMode(): Promise<number> {
     return 0;
   }
   const json = await res.json();
-  return Number.isInteger(json) ? json : 0;
+  const c = Number.isInteger(json) ? json : 0;
+  writeCache('networkMode', c);
+  return c;
 }
 
 const Index =  ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
 
-  const [networkMode, setNetworkMode] = useState<number>(0);
+  const [networkMode, setNetworkMode] = useState<number>(readCache('networkMode', 0));
   const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>(readCache('mirrors', []));
 
   useEffect(() => {
