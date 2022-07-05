@@ -5,6 +5,7 @@ import {
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as React from 'react';
 import configTheme from './config-theme';
+import { readCache, writeCache } from '../utils/cache';
 
 export type ThemeMode = PaletteMode | 'auto';
 
@@ -16,7 +17,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // bypass gatsby build
   if (typeof window === 'undefined') return <div />;
 
-  const savedMode = window.localStorage.getItem('themeMode') as ThemeMode;
+  const savedMode = readCache('themeMode', 'auto' as ThemeMode);
   const [mode, setMode] = React.useState<ThemeMode>(savedMode);
 
   let paletteMode = mode;
@@ -41,9 +42,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateMode = (mode: ThemeMode) => {
     setMode(mode);
-    if (!window) return;
-    window.localStorage.setItem('themeMode', mode);
-  }
+    writeCache('themeMode', mode);
+  };
 
   return (
     <MuiThemeProvider theme={theme}>
