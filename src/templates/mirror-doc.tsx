@@ -37,7 +37,7 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
   return json;
 }
 
-export default ({ data }: { data: Data }) => {
+const MirrorDoc = ({ data }: { data: Data }) => {
   const { language } = useI18next();
 
   const defaultData = {
@@ -56,7 +56,9 @@ export default ({ data }: { data: Data }) => {
       .then(d => setMirror(d))
       .catch(err => console.error(err));
   }, []);
-  console.log(mirror);
+  
+  const fallbackUrl = `/${mirrorId}`;
+  const mirrorUrl = getUrl(mirror.url ?? fallbackUrl, false);
 
   const name = mirror.name[language];
   return (
@@ -136,7 +138,7 @@ export default ({ data }: { data: Data }) => {
                 size="large"
                 variant="contained"
                 startIcon={<FolderIcon />}
-                to={getUrl(mirror.url, false)}
+                to={mirrorUrl}
               >
                 <Trans>文件列表</Trans>
               </Button>
@@ -183,3 +185,5 @@ export const query = graphql`
     }
   }
 `
+
+export default MirrorDoc;
