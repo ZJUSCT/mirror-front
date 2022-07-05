@@ -5,8 +5,7 @@ import npmIcon from '@iconify/icons-logos/npm-icon';
 import pythonIcon from '@iconify/icons-logos/python';
 import archlinuxIcon from '@iconify/icons-logos/archlinux';
 import centosIcon from '@iconify/icons-logos/centos-icon';
-import dockerIcon from '@iconify/icons-logos/docker-icon';
-
+import debianIcon from '@iconify/icons-logos/debian';
 
 export default [
   {
@@ -22,15 +21,15 @@ export default [
     icon: <Icon width="4rem" icon={pythonIcon} />
   },
   {
+    id: 'debian',
+    icon: <Icon width="4rem" icon={debianIcon} />
+  },
+  {
     id: 'archlinux',
     icon: <Icon width="4rem" icon={archlinuxIcon} />
   },
   {
     id: 'centos',
     icon: <Icon width="4rem" icon={centosIcon} />
-  },
-  {
-    id: 'docker-ce',
-    icon: <Icon width="4rem" icon={dockerIcon} />
   },
 ];
