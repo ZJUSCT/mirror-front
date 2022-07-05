@@ -22,7 +22,7 @@ export interface FrequentlyUsedMirrorCardProps {
 export default function FrequentlyUsedMirrorCard({ name, icon, desc, url }: FrequentlyUsedMirrorCardProps) {
   return (
     <Card className="zju-mirror-card" style={{ height: "100%" }}>
-      <CardActionArea to={url}>
+      <CardActionArea to={url} style={{ height: "100%" }}>
         <Grid
           container
           direction="column"
