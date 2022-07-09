@@ -29,11 +29,11 @@ interface Data {
 const networkMap = {
   0: {
     text: '校外网络',
-    color: 'info',
+    color: 'primary',
   },
   1: {
     text: '校内网络 - IPv4',
-    color: 'primary',
+    color: 'success',
   },
   2: {
     text: '校内网络 - IPv6',
@@ -138,6 +138,7 @@ const Index =  ({ data }: { data: Data }) => {
           </Typography>
           <Typography variant="subtitle1" component="div" color="primary">
             <Chip
+              size="small"
               label={t(networkMap[networkMode].text)}
               color={networkMap[networkMode].color}
             />
