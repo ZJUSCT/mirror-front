@@ -1,0 +1,14 @@
+---
+title: Test
+name: test
+author: cache
+date: 2022-01-01
+---
+
+Alpine Linux 是一个面向安全、轻量级的，基于 musl libc 与 busybox 项目的 Linux 发行版。
+
+在终端输入以下命令以替换浙大镜像源：
+
+```bash
+sed -i 's/dl-cdn.alpinelinux.org/mirror.zju.edu.cn/g' /etc/apk/repositories
+```
