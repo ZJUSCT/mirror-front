@@ -37,10 +37,10 @@ export default function FrequentlyUsedMirrorCard({ name, icon, desc, url }: Freq
               justifyContent="flex-start"
               alignItems="center"
             >
-              <Typography variant="h6" component="div">
+              <Typography variant="h6" component="div" textAlign="center">
                 {name}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" textAlign="center">
                 {desc}
               </Typography>
             </Grid>

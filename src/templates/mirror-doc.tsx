@@ -80,20 +80,17 @@ const MirrorDoc = ({ data }: { data: Data }) => {
           >
             <Grid item sx={{ width: "100%" }}>
               <Grid container justifyContent="space-between">
-                <Typography variant="h5" component="div" color="primary">
-                  <Trans>ZJU Mirror</Trans>
-                </Typography>
+                <Link color="primary" underline="hover" to="/">
+                  <Typography variant="h5" component="div" color="primary">
+                    <Trans>ZJU Mirror</Trans>
+                  </Typography>
+                </Link>
                 <Grid item>
                   <LanguageIconButton />
                   <ThemeIconButton />
                 </Grid>
               </Grid>
-              <Link color="primary" underline="hover" to="/" sx={{ mt: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <ArrowBack sx={{ fontSize: "1em", mr: .5 }} />
-                <Typography variant="subtitle1">
-                  <Trans>返回</Trans>
-                </Typography>
-              </Link>
+              <Box sx={{ mt: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}/>
 
               <Typography variant="h2" fontWeight={400} component="div">
                 {name}
@@ -135,7 +132,7 @@ const MirrorDoc = ({ data }: { data: Data }) => {
             {!data.document.frontmatter?.isGit && <Grid item>
               <Button
                 color="primary"
-                size="large"
+                size="medium"
                 variant="contained"
                 startIcon={<FolderIcon />}
                 to={mirrorUrl}
@@ -146,9 +143,6 @@ const MirrorDoc = ({ data }: { data: Data }) => {
           </Grid>
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
-          <Typography gutterBottom variant="h5" component="div">
-            <Trans>使用说明</Trans>
-          </Typography>
           <MDXProvider components={components}>
             <MDXRenderer>{data.document.body}</MDXRenderer>
           </MDXProvider>
