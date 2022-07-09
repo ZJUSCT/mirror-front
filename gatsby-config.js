@@ -44,6 +44,13 @@ module.exports = {
         path: `${__dirname}/locales`,
       }
     },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'news',
+        path: `${__dirname}/news`,
+      }
+    },
     'gatsby-plugin-mdx',
     {
       resolve: "gatsby-plugin-react-svg",

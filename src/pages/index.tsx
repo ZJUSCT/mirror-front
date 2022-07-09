@@ -186,6 +186,13 @@ export const query = graphql`
         locale
       }
     },
+    news: allDocument(filter: {source: {eq: "news"}}) {
+      nodes {
+        frontmatter
+        slug
+        locale
+      }
+    },
     locales: allLocale(filter: {language: {eq: $language}}) {
       edges {
         node {
