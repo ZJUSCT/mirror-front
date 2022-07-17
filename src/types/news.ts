@@ -9,7 +9,7 @@ export interface File {
 
 export interface NewsDto {
   name: string;
-  title: Record<Locale, string>;
+  title: string;
   date: string;
   author: string;
   url: string;

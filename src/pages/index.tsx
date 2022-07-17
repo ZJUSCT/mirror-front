@@ -9,6 +9,7 @@ import SearchTable from '../components/search-table';
 import Seo from '../components/seo';
 import ThemeIconButton from '../components/theme-icon-button';
 import { Mirror, MirrorDto } from '../types/mirror';
+import { News, NewsDto } from '../types/news';
 import frequentlyUsedMirror from '../utils/frequently-used-mirror-list';
 import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
@@ -21,6 +22,18 @@ interface Data {
       locale: string;
       frontmatter?: {
         mirrorId?: string;
+      };
+    }[];
+  };
+  news: {
+    nodes: {
+      slug: string;
+      locale: string;
+      frontmatter: {
+        name: string;
+        title: string;
+        date: string;
+        author: string;
       };
     }[];
   };
@@ -97,7 +110,15 @@ const Index =  ({ data }: { data: Data }) => {
       ]))),
     [mirrorsRaw, mirrorDocUrls]
   );
-
+  const newsUrls = React.useMemo<Record<string, string>>(
+    () =>
+      Object.fromEntries(
+        data.news.nodes
+          .filter(d => d.locale === language)
+          .map(d => [d.frontmatter.title, d.slug])
+      ),
+    [data, language]
+  );
 
   return (
     <Box
