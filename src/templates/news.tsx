@@ -27,38 +27,16 @@ interface Data {
   };
 }
 
-async function fetchNews (id: string): Promise<NewsDto> {
-  const res = await fetch(`/api/news/${id}`);
-  if (!res.ok) {
-    throw new Error(`API call failed: ${res.status} ${await res.text()}`);
-  }
-  const json = await res.json();
-  writeCache(`mirrors_${id}`, json);
-  return json;
-}
 
 const News = ({ data }: { data: Data }) => {
   const { language } = useI18next();
 
-  const defaultData = {
+  const news = {
     name: data.document.frontmatter.name,
     title: data.document.frontmatter.title,
     author: data.document.frontmatter.author,
     date: data.document.frontmatter.date
   } as NewsDto;
-  const name = data.document.frontmatter.name;
-  const title = data.document.frontmatter.title;
-  const [news, setNews] = useState(
-    readCache(`news_${name}`, defaultData)
-  );
-  useEffect(() => {
-    fetchNews(name)
-      .then(d => setNews(d))
-      .catch(err => console.error(err));
-  }, []);
-
-  const fallbackUrl = `/${name}`;
-  const newsUrl = getUrl(news.url ?? fallbackUrl, false);
 
   return (
     <Box
@@ -69,7 +47,7 @@ const News = ({ data }: { data: Data }) => {
         justifyContent: 'space-between',
       }}
     >
-      <Seo title={`${title} | 镜像站新闻 | ZJU Mirror`} />
+      <Seo title={`${news.title} | 镜像站新闻 | ZJU Mirror`} />
       <Box>
         <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }}>
           <Grid
@@ -107,7 +85,7 @@ const News = ({ data }: { data: Data }) => {
               </Link>
 
               <Typography variant="h2" fontWeight={400} component="div">
-                {title}
+                {news.title}
               </Typography>
 
               <Grid
