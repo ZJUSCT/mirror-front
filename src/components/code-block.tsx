@@ -27,7 +27,6 @@ export default function CodeBlock({ children, codeStyle, ...props }: CodeBlockPr
           padding: 20,
           overflowX: 'auto',
           borderRadius: 5,
-          whiteSpace: 'nowrap',
           ...style,
           ...codeStyle
         }}>
