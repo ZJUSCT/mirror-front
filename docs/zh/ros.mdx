@@ -37,7 +37,7 @@ rosdep update
 ```bash
 # 手动模拟 rosdep init
 sudo mkdir -p /etc/ros/rosdep/sources.list.d/
-sudo curl -o /etc/ros/rosdep/sources.list.d/20-default.list https://mirror.zju.edu.cn/github-raw/ros/rosdistro/master/rosdep/sources.list.d/20-default.list
+sudo curl -o /etc/ros/rosdep/sources.list.d/20-default.list https://mirror.zju.edu.cn/rosdistro/rosdep/sources.list.d/20-default.list
 # 为 rosdep update 换源
 export ROSDISTRO_INDEX_URL=https://mirror.zju.edu.cn/rosdistro/index-v4.yaml
 rosdep update
