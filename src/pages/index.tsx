@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Typography } from '@mui/material';
+import { Box, Chip, Grid, Link, Typography } from '@mui/material';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
@@ -75,7 +75,7 @@ async function fetchNetworkMode(): Promise<number> {
   return c;
 }
 
-const Index =  ({ data }: { data: Data }) => {
+const Index = ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
 
   const [networkMode, setNetworkMode] = useState<number>(readCache('networkMode', 0));
@@ -110,13 +110,11 @@ const Index =  ({ data }: { data: Data }) => {
       ]))),
     [mirrorsRaw, mirrorDocUrls]
   );
-  const newsUrls = React.useMemo<Record<string, string>>(
-    () =>
-      Object.fromEntries(
-        data.news.nodes
-          .filter(d => d.locale === language)
-          .map(d => [d.frontmatter.title, d.slug])
-      ),
+  const newsUrls = React.useMemo<Array<[string, Date, string]>>(() =>
+    data.news.nodes
+      .filter(d => d.locale === language)
+      .map(d => [d.frontmatter.title, new Date(d.frontmatter.date), d.slug])
+      .sort((a, b) => b[1] - a[1]),
     [data, language]
   );
 
@@ -185,6 +183,25 @@ const Index =  ({ data }: { data: Data }) => {
                 )
               );
             })}
+          </Grid>
+        </Grid>
+        <Grid item xs={1}>
+          <Typography gutterBottom variant="h5" component="div">
+            <Trans>近期更新</Trans>
+          </Typography>
+          <Grid>
+            {
+              newsUrls.map(([title, date, url], _) =>
+                <Grid container>
+                  <Link href={url} underline="hover">
+                    {title}
+                  </Link>
+                  <Typography color="info.light" component="div">
+                    &nbsp; - {date.toLocaleDateString()}
+                  </Typography>
+                </Grid>
+              )
+            }
           </Grid>
         </Grid>
         <Grid item xs={1}>
