@@ -108,11 +108,11 @@ export default () => (
                 </Typography>
                 <Typography gutterBottom variant="body2">
                   <Link
-                    href="https://lug.ustc.edu.cn"
+                    href="https://mirrorz.org/"
                     color="text.secondary"
                     underline="hover"
                   >
-                    <Trans>中国科学技术大学 Linux 用户协会</Trans>
+                    <Trans>MirrorZ 镜像站项目</Trans>
                   </Link>
                 </Typography>
               </Grid>
