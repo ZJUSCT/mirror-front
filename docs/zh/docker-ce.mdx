@@ -11,7 +11,7 @@ export const genCommand = (os) => {
     curl -fsSL https://download.docker.com/linux/${o}/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg\n
     #添加软件仓库:\n
     echo \\\n
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirror.zju.edu.cn/docker-ce/linux/${o} \\\n
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.zju.edu.cn/docker-ce/linux/${o} \\\n
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null\n
     #最后安装\n
     sudo apt-get update
@@ -71,7 +71,7 @@ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 把软件仓库地址替换为浙大源:
 
 ```bash
-sudo sed -i 's+download.docker.com+mirror.zju.edu.cn/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+sudo sed -i 's+download.docker.com+mirrors.zju.edu.cn/docker-ce+' /etc/yum.repos.d/docker-ce.repo
 ```
 
 最后安装:
