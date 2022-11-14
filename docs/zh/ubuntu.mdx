@@ -18,17 +18,17 @@ export const ubuntuVersionMap = {
 export const GenUbuntuConfig = (version) => {
     var ubuntuName = ubuntuVersionMap[version]
     return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
-# deb-src https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
-deb https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
-# deb-src https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
-deb https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
-# deb-src https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
-deb https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse
-# deb-src https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse\n
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName} main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-updates main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-backports main restricted universe multiverse
+deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-security main restricted universe multiverse\n
 # 预发布软件源，不建议启用
-# deb https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse
-# deb-src https://mirror.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse`
+# deb https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse
+# deb-src https://mirrors.zju.edu.cn/ubuntu/ ${ubuntuName}-proposed main restricted universe multiverse`
 }
 
 export const defaultVersion = Object.keys(ubuntuVersionMap).find(x => x.indexOf("LTS") > 0);

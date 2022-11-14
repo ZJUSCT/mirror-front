@@ -16,36 +16,36 @@ export const debianVersions = [
 export const GenDebianConfig = (version) => {
     if (version === 'sid') {
         return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirror.zju.edu.cn/debian/ sid main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ sid main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ sid main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ sid main contrib non-free`
     } else if (version === 'buster' || version === 'stretch') {
         return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirror.zju.edu.cn/debian/ ${version} main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version} main contrib non-free
-deb https://mirror.zju.edu.cn/debian/ ${version}-updates main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version}-updates main contrib non-free\n
-deb https://mirror.zju.edu.cn/debian/ ${version}-backports main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version}-backports main contrib non-free\n
-deb https://mirror.zju.edu.cn/debian-security ${version}/updates main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian-security ${version}/updates main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+deb https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian-security ${version}/updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian-security ${version}/updates main contrib non-free`
     } else if (version === 'jessie') {
         return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirror.zju.edu.cn/debian/ jessie main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ jessie main contrib non-free
-deb https://mirror.zju.edu.cn/debian/ jessie-updates main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ jessie-updates main contrib non-free\n
-deb https://mirror.zju.edu.cn/debian-security jessie/updates main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian-security jessie/updates main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ jessie main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ jessie main contrib non-free
+deb https://mirrors.zju.edu.cn/debian/ jessie-updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ jessie-updates main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian-security jessie/updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian-security jessie/updates main contrib non-free`
     }
     return `# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirror.zju.edu.cn/debian/ ${version} main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version} main contrib non-free
-deb https://mirror.zju.edu.cn/debian/ ${version}-updates main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version}-updates main contrib non-free\n
-deb https://mirror.zju.edu.cn/debian/ ${version}-backports main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian/ ${version}-backports main contrib non-free\n
-deb https://mirror.zju.edu.cn/debian-security ${version}-security main contrib non-free
-# deb-src https://mirror.zju.edu.cn/debian-security ${version}-security main contrib non-free`
+deb https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version} main contrib non-free
+deb https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-updates main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian/ ${version}-backports main contrib non-free\n
+deb https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free
+# deb-src https://mirrors.zju.edu.cn/debian-security ${version}-security main contrib non-free`
 }
 
 Debian 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。

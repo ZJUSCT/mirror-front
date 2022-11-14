@@ -27,14 +27,14 @@ cpan[1]> o conf urllist
 
 # 将本站镜像加入镜像列表首位
 # 注：若已在列表中则可跳过本步直接退出，修改列表不会执行自动去重
-cpan[2]> o conf urllist unshift https://mirror.zju.edu.cn/CPAN/
+cpan[2]> o conf urllist unshift https://mirrors.zju.edu.cn/CPAN/
 
 # 或将本站镜像加入镜像列表末尾
 # 注：本命令和上面的命令执行一个即可，修改列表不会执行自动去重
-cpan[3]> o conf urllist push https://mirror.zju.edu.cn/CPAN/
+cpan[3]> o conf urllist push https://mirrors.zju.edu.cn/CPAN/
 
 # 或清空镜像列表，仅保留本站
-cpan[4]> o conf urllist https://mirror.zju.edu.cn/CPAN/
+cpan[4]> o conf urllist https://mirrors.zju.edu.cn/CPAN/
 
 # 保存修改后的配置至 MyConfig.pm
 cpan[5]> o conf commit
@@ -52,10 +52,10 @@ cpan[6]> quit
 if ! (
     perl -MCPAN -e 'CPAN::HandleConfig->load();' \
         -e 'CPAN::HandleConfig->prettyprint("urllist")' |
-    grep -qF 'https://mirror.zju.edu.cn/CPAN/'
+    grep -qF 'https://mirrors.zju.edu.cn/CPAN/'
 ); then
     perl -MCPAN -e 'CPAN::HandleConfig->load();' \
-        -e 'CPAN::HandleConfig->edit("urllist", "unshift", "https://mirror.zju.edu.cn/CPAN/");' \
+        -e 'CPAN::HandleConfig->edit("urllist", "unshift", "https://mirrors.zju.edu.cn/CPAN/");' \
         -e 'CPAN::HandleConfig->commit()'
 fi
 ```
