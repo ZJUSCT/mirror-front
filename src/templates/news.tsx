@@ -59,30 +59,16 @@ const News = ({ data }: { data: Data }) => {
           >
             <Grid item sx={{ width: '100%' }}>
               <Grid container justifyContent="space-between">
-                <Typography variant="h5" component="div" color="primary">
-                  <Trans>ZJU Mirror</Trans>
-                </Typography>
+                <Link color="primary" underline="hover" to="/">
+                  <Typography variant="h5" component="div" color="primary">
+                    <Trans>ZJU Mirror</Trans>
+                  </Typography>
+                </Link>
                 <Grid item>
                   <LanguageIconButton />
                   <ThemeIconButton />
                 </Grid>
               </Grid>
-              <Link
-                color="primary"
-                underline="hover"
-                to="/"
-                sx={{
-                  mt: 4,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <ArrowBack sx={{ fontSize: '1em', mr: 0.5 }} />
-                <Typography variant="subtitle1">
-                  <Trans>返回</Trans>
-                </Typography>
-              </Link>
 
               <Typography variant="h2" fontWeight={400} component="div">
                 {news.title}
