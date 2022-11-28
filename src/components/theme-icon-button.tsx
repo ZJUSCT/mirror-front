@@ -7,7 +7,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeMode, useMode } from './theme-context';
 
-export default function ThemeIconButton() {
+export default () => {
   const { t } = useTranslation();
 
   const modeMap = {
@@ -22,26 +22,31 @@ export default function ThemeIconButton() {
     auto: {
       name: t('系统默认'),
       icon: BrightnessAutoIcon,
-    }
-  }
+    },
+  };
 
-  const [mode, setMode] = useMode();
-
+  const [mode, setMode] = useMode() ?? ['auto', () => {}];
   const currentMode = modeMap[mode];
   const Icon = currentMode.icon;
 
   const toggleMode = () => {
-    const nextModes: Record<ThemeMode, ThemeMode> = { light: 'dark', dark: 'auto', auto: 'light' };
+    const nextModes: Record<ThemeMode, ThemeMode> = {
+      light: 'dark',
+      dark: 'auto',
+      auto: 'light',
+    };
     setMode(nextModes[mode]);
   };
 
-  return <ToolTip title={currentMode.name}>
-    <IconButton
-      aria-label="toggle theme"
-      color="primary"
-      onClick={toggleMode}
-    >
-      <Icon fontSize='small' />
-    </IconButton>
-  </ToolTip >
-}
+  return (
+    <ToolTip title={currentMode.name}>
+      <IconButton
+        aria-label="toggle theme"
+        color="primary"
+        onClick={toggleMode}
+      >
+        <Icon fontSize="small" />
+      </IconButton>
+    </ToolTip>
+  );
+};

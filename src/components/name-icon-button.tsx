@@ -3,8 +3,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Tooltip } from '@mui/material';
 import { IconButton } from 'gatsby-theme-material-ui';
 import { useTranslation } from 'react-i18next';
-import { usePrefs } from './preferences-context';
 import * as React from 'react';
+import { usePrefs } from './preferences-context';
 
 const nameMode = {
   friendly: {
@@ -14,17 +14,17 @@ const nameMode = {
   raw: {
     name: '显示镜像名称',
     icon: InfoOutlinedIcon,
-  }
-}
+  },
+};
 
-const getModeName = (m: boolean): string => m ? 'friendly' : 'raw';
+const getModeName = (m: boolean): string => (m ? 'friendly' : 'raw');
 
-export default function NameIconButton() {
+export default () => {
   const { t } = useTranslation();
 
   const [prefs, setPrefs] = usePrefs();
   const modeName = getModeName(prefs.friendlyName);
-  const mode = nameMode[modeName];
+  const mode = modeName === 'friendly' ? nameMode.friendly : nameMode.raw;
   const toggle = () => {
     setPrefs({
       ...prefs,
@@ -32,13 +32,15 @@ export default function NameIconButton() {
     });
   };
 
-  return <Tooltip title={t(mode.name)}>
-    <IconButton
-      aria-label="toggle friendly name"
-      color="primary"
-      onClick={toggle}
-    >
-      <mode.icon fontSize='small' />
-    </IconButton>
-  </Tooltip>
-}
+  return (
+    <Tooltip title={t(mode.name)}>
+      <IconButton
+        aria-label="toggle friendly name"
+        color="primary"
+        onClick={toggle}
+      >
+        <mode.icon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+};

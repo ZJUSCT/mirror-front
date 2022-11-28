@@ -1,17 +1,17 @@
-import React from "react";
-import { Card, Grid, Typography } from "@mui/material";
-import AlbumIcon from "@mui/icons-material/Album";
-import { Trans } from "gatsby-plugin-react-i18next";
-import { CardActionArea } from "gatsby-theme-material-ui";
+import React from 'react';
+import { Card, Grid, Typography } from '@mui/material';
+import AlbumIcon from '@mui/icons-material/Album';
+import { Trans } from 'gatsby-plugin-react-i18next';
+import { CardActionArea } from 'gatsby-theme-material-ui';
 
 export interface FileProps {
   name: string;
   url: string;
 }
 
-export default function File({ name, url }: FileProps) {
+export default ({ name, url }: FileProps) => {
   return (
-    <Card className="zju-mirror-card" style={{ height: "100%" }}>
+    <Card className="zju-mirror-card" style={{ height: '100%' }}>
       <CardActionArea to={url} sx={{ p: 2 }}>
         <Grid
           container
@@ -42,4 +42,4 @@ export default function File({ name, url }: FileProps) {
       </CardActionArea>
     </Card>
   );
-}
+};

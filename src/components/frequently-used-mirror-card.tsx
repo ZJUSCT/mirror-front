@@ -1,10 +1,6 @@
-import {
-  Box, Card,
-  CardContent, Grid, Typography
-} from "@mui/material";
-import { CardActionArea } from "gatsby-theme-material-ui";
-import * as React from "react";
-
+import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { CardActionArea } from 'gatsby-theme-material-ui';
+import * as React from 'react';
 
 export type mirrorBrief = {
   name: string;
@@ -19,10 +15,10 @@ export interface FrequentlyUsedMirrorCardProps {
   url: string;
 }
 
-export default function FrequentlyUsedMirrorCard({ name, icon, desc, url }: FrequentlyUsedMirrorCardProps) {
+export default ({ name, icon, desc, url }: FrequentlyUsedMirrorCardProps) => {
   return (
-    <Card className="zju-mirror-card" style={{ height: "100%" }}>
-      <CardActionArea to={url} style={{ height: "100%" }}>
+    <Card className="zju-mirror-card" style={{ height: '100%' }}>
+      <CardActionArea to={url} style={{ height: '100%' }}>
         <Grid
           container
           direction="column"
@@ -40,7 +36,11 @@ export default function FrequentlyUsedMirrorCard({ name, icon, desc, url }: Freq
               <Typography variant="h6" component="div" textAlign="center">
                 {name}
               </Typography>
-              <Typography variant="body2" color="text.secondary" textAlign="center">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+              >
                 {desc}
               </Typography>
             </Grid>
@@ -48,5 +48,5 @@ export default function FrequentlyUsedMirrorCard({ name, icon, desc, url }: Freq
         </Grid>
       </CardActionArea>
     </Card>
-  )
+  );
 };

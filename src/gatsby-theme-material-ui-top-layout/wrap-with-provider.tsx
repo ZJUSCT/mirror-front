@@ -1,12 +1,14 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import Viewport from 'gatsby-theme-material-ui-top-layout/src/components/viewport';
-import React, { Children } from 'react';
+import React from 'react';
 import { ThemeProvider } from '../components/theme-context';
-import Footer from '../components/footer';
 import { PrefsProvider } from '../components/preferences-context';
 
-
-export default function wrapWithProvider({ element }) {
+export default function wrapWithProvider({
+  element,
+}: {
+  element: React.ReactNode;
+}) {
   return (
     <React.StrictMode>
       <Viewport />

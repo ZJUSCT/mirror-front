@@ -1,5 +1,11 @@
 export type Locale = 'zh' | 'en';
-export type MirrorStatus = 'succeeded' | 'syncing' | 'failed' | 'paused' | 'cached' | 'unknown';
+export type MirrorStatus =
+  | 'succeeded'
+  | 'syncing'
+  | 'failed'
+  | 'paused'
+  | 'cached'
+  | 'unknown';
 
 export type IsoDict = Record<string, string>;
 

@@ -1,10 +1,10 @@
-import React from "react";
-import SearchItemCard from "../components/search-item-card";
-import { Box, Grid } from "@mui/material";
-import { Mirror } from "../types/mirror";
+import React from 'react';
+import { Box, Grid } from '@mui/material';
+import SearchItemCard from './search-item-card';
+import { Mirror } from '../types/mirror';
 
 export default (props: { queryResults: Mirror[] }) => (
-  <Box sx={{ display: "flex", justifyContent: "center" }}>
+  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
     <Grid
       container
       spacing={{ xs: 2 }}

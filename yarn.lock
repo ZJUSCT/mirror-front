@@ -2767,6 +2767,13 @@
   dependencies:
     "@types/unist" "*"
 
+"@types/mdx-js__react@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@types/mdx-js__react/-/mdx-js__react-1.5.5.tgz#fa6daa1a28336d77b6cf071aacc7e497600de9ee"
+  integrity sha512-k8pnaP6JXVlQh18HgL5X6sYFNC/qZnzO7R2+HsmwrwUd+JnnsU0d9lyyT0RQrHg1anxDU36S98TI/fsGtmYqqg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/mdx@^2.0.1":
   version "2.0.1"
   resolved "https://registry.npmmirror.com/@types/mdx/-/mdx-2.0.1.tgz#e4c05d355d092d7b58db1abfe460e53f41102ac8"
@@ -6693,6 +6700,11 @@ gatsby-theme-material-ui-top-layout@^5.1.0:
   integrity sha512-zRNBsNc8mLjuwQ5jMhVP4CMw+CyrFuZl2QKTMPiSOi2f2nllaV40iXIFlga0LG0kPyTyq9bMG3lw2Mg/ha2IEw==
   dependencies:
     gatsby-plugin-react-helmet "^5.2.0"
+
+gatsby-theme-material-ui-top-layout@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/gatsby-theme-material-ui-top-layout/-/gatsby-theme-material-ui-top-layout-5.2.0.tgz#735debc5386fc008cbf3f0cb4ee407e1399520b1"
+  integrity sha512-KmrLJuZu1zMTqrYaG9/UcRQrLm8WFn08tA6vGPZdTjMU6WhNa6LGd34n/tT9x7Te9Qu4HHwDu8qN1j/zw3/kTA==
 
 gatsby-theme-material-ui@^5.2.0:
   version "5.2.0"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   FormControl,
   InputLabel,
@@ -7,10 +7,10 @@ import {
   Box,
   Grid,
   Typography,
-} from "@mui/material";
-import CodeBlock from "./code-block";
-import { Language } from "prism-react-renderer";
-import { Trans } from "gatsby-plugin-react-i18next";
+} from '@mui/material';
+import { Language } from 'prism-react-renderer';
+import { Trans } from 'gatsby-plugin-react-i18next';
+import CodeBlock from './code-block';
 
 export default ({
   promptString,
@@ -22,7 +22,7 @@ export default ({
   promptString: string;
   versionList: string[];
   defaultVersion: string | undefined;
-  language?: Language,
+  language: Language;
   configGen: (version: string) => string;
 }) => {
   const [version, setVersion] = useState(defaultVersion ?? versionList[0]);
