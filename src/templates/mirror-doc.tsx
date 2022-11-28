@@ -1,33 +1,33 @@
-import { MDXProvider } from "@mdx-js/react";
-import { ArrowBack } from "@mui/icons-material";
-import FolderIcon from "@mui/icons-material/Folder";
-import { Box, Grid, Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { graphql } from "gatsby";
-import { MDXRenderer } from "gatsby-plugin-mdx";
-import { Trans, useI18next } from "gatsby-plugin-react-i18next";
-import { Button } from "gatsby-theme-material-ui";
-import React, { useEffect, useState } from "react";
+import { MDXProvider } from '@mdx-js/react';
+import { ArrowBack } from '@mui/icons-material';
+import FolderIcon from '@mui/icons-material/Folder';
+import { Box, Grid, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { graphql } from 'gatsby';
+import { MDXRenderer } from 'gatsby-plugin-mdx';
+import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
+import { Button } from 'gatsby-theme-material-ui';
+import React, { useEffect, useState } from 'react';
 import Footer from '../components/footer';
-import FileList from "../components/file-list";
-import LanguageIconButton from "../components/language-icon-button";
-import Seo from "../components/seo";
-import StatusIndicator from "../components/status-indicator";
-import ThemeIconButton from "../components/theme-icon-button";
-import { MirrorDto } from "../types/mirror";
-import { Link } from "../utils/i18n-link";
-import components from "./components";
-import { readCache, writeCache } from "../utils/cache";
-import { getUrl } from "../utils/url";
+import FileList from '../components/file-list';
+import LanguageIconButton from '../components/language-icon-button';
+import Seo from '../components/seo';
+import StatusIndicator from '../components/status-indicator';
+import ThemeIconButton from '../components/theme-icon-button';
+import { MirrorDto } from '../types/mirror';
+import { Link } from '../utils/i18n-link';
+import components from './components';
+import { readCache, writeCache } from '../utils/cache';
+import { getUrl } from '../utils/url';
 
 interface Data {
   document: {
-    body: string,
-    frontmatter: any
-  }
+    body: string;
+    frontmatter: any;
+  };
 }
 
-async function fetchMirror(id: string): Promise<MirrorDto> {
+async function fetchMirror (id: string): Promise<MirrorDto> {
   const res = await fetch(`/api/mirrors/${id}`);
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
@@ -43,31 +43,35 @@ const MirrorDoc = ({ data }: { data: Data }) => {
   const defaultData = {
     id: data.document.frontmatter.mirrorId,
     name: {
-      'zh': '',
-      'en': ''
+      zh: '',
+      en: '',
     },
     status: 'unknown',
   } as MirrorDto;
   const mirrorId = data.document.frontmatter.mirrorId;
 
-  const [mirror, setMirror] = useState(readCache(`mirrors_${mirrorId}`, defaultData));
+  const [mirror, setMirror] = useState(
+    readCache(`mirrors_${mirrorId}`, defaultData)
+  );
   useEffect(() => {
     fetchMirror(mirrorId)
       .then(d => setMirror(d))
       .catch(err => console.error(err));
   }, []);
-  
+
   const fallbackUrl = `/${mirrorId}`;
   const mirrorUrl = getUrl(mirror.url ?? fallbackUrl, false);
 
   const name = mirror.name[language];
   return (
-    <Box sx={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between"
-    }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
         <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }}>
@@ -78,7 +82,7 @@ const MirrorDoc = ({ data }: { data: Data }) => {
             justifyContent="flex-start"
             alignItems="flex-start"
           >
-            <Grid item sx={{ width: "100%" }}>
+            <Grid item sx={{ width: '100%' }}>
               <Grid container justifyContent="space-between">
                 <Link color="primary" underline="hover" to="/">
                   <Typography variant="h5" component="div" color="primary">
@@ -90,7 +94,14 @@ const MirrorDoc = ({ data }: { data: Data }) => {
                   <ThemeIconButton />
                 </Grid>
               </Grid>
-              <Box sx={{ mt: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}/>
+              <Box
+                sx={{
+                  mt: 4,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              />
 
               <Typography variant="h2" fontWeight={400} component="div">
                 {name}
@@ -109,37 +120,43 @@ const MirrorDoc = ({ data }: { data: Data }) => {
                   color="text.disabled"
                   sx={{ ml: 1 }}
                 >
-                  <Trans>最近更新于 {{ date: new Date(mirror.lastUpdated * 1000).toLocaleString(language) }}</Trans>
+                  <Trans>
+                    最近更新于{' '}
+                    {{
+                      date: new Date(mirror.lastUpdated * 1000).toLocaleString(
+                        language
+                      ),
+                    }}
+                  </Trans>
                 </Typography>
               </Grid>
-
             </Grid>
 
-            {
-              (mirror.files?.length ?? 0) > 0 && (
-                <Grid item width="100%">
-                  <Box>
-                    <Typography gutterBottom variant="h5" component="div">
-                      <Trans>安装映像</Trans>
-                    </Typography>
+            {(mirror.files?.length ?? 0) > 0 && (
+              <Grid item width="100%">
+                <Box>
+                  <Typography gutterBottom variant="h5" component="div">
+                    <Trans>安装映像</Trans>
+                  </Typography>
 
-                    <FileList files={mirror.files || []} />
-                  </Box>
-                </Grid>
-              )
-            }
+                  <FileList files={mirror.files || []} />
+                </Box>
+              </Grid>
+            )}
 
-            {!data.document.frontmatter?.isGit && <Grid item>
-              <Button
-                color="primary"
-                size="medium"
-                variant="contained"
-                startIcon={<FolderIcon />}
-                to={mirrorUrl}
-              >
-                <Trans>文件列表</Trans>
-              </Button>
-            </Grid>}
+            {!data.document.frontmatter?.isGit && (
+              <Grid item>
+                <Button
+                  color="primary"
+                  size="medium"
+                  variant="contained"
+                  startIcon={<FolderIcon />}
+                  to={mirrorUrl}
+                >
+                  <Trans>文件列表</Trans>
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
@@ -149,15 +166,12 @@ const MirrorDoc = ({ data }: { data: Data }) => {
         </Paper>
       </Box>
       <Footer />
-    </Box >
+    </Box>
   );
 };
 
 export const query = graphql`
-  query MirrorDocPageQuery(
-    $id: String!
-    $language: String!
-  ) {
+  query MirrorDocPageQuery($id: String!, $language: String!) {
     document(id: { eq: $id }) {
       id
       body
@@ -168,7 +182,7 @@ export const query = graphql`
       tableOfContents
       frontmatter
     }
-    locales: allLocale(filter: {language: {eq: $language}}) {
+    locales: allLocale(filter: { language: { eq: $language } }) {
       edges {
         node {
           ns
@@ -178,6 +192,6 @@ export const query = graphql`
       }
     }
   }
-`
+`;
 
 export default MirrorDoc;

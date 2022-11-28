@@ -1,7 +1,7 @@
-import { Box, Grid, Link, Typography } from "@mui/material";
-import { Trans } from "gatsby-plugin-react-i18next";
-import React from "react";
-import Zjusct from "../../resource/icons/zjusct.svg";
+import { Box, Grid, Link, Typography } from '@mui/material';
+import { Trans } from 'gatsby-plugin-react-i18next';
+import React from 'react';
+import Zjusct from '../../resource/icons/zjusct.svg';
 
 export default () => (
   <Box sx={{ px: { xs: 4, sm: 8 }, py: 6 }}>
@@ -24,11 +24,15 @@ export default () => (
           <Grid item xs={2} md={1}>
             <Box maxWidth={520}>
               <Typography gutterBottom variant="body2" color="text.secondary">
-                <Trans>浙江大学开源软件镜像站是一个致力于普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。</Trans>
+                <Trans>
+                  浙江大学开源软件镜像站是一个致力于普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。
+                </Trans>
               </Typography>
               <Typography gutterBottom variant="body2" color="text.secondary">
-                <Trans>本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
-                  等项目源的镜像，以服务教育和科学研究为目的，提倡自由、平等、协作、共享的精神。</Trans>
+                <Trans>
+                  本镜像站提供了包括 Docker, PostgreSQL, Ubuntu
+                  等项目源的镜像，以服务教育和科学研究为目的，提倡自由、平等、协作、共享的精神。
+                </Trans>
               </Typography>
               <Typography gutterBottom variant="body2" color="text.secondary">
                 <Link
@@ -53,7 +57,12 @@ export default () => (
               columnSpacing={8}
             >
               <Grid item>
-                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
+                <Typography
+                  gutterBottom
+                  variant="body1"
+                  color="text.secondary"
+                  fontWeight={700}
+                >
                   <Trans>关于我们</Trans>
                 </Typography>
                 <Typography gutterBottom variant="body2">
@@ -85,7 +94,12 @@ export default () => (
                 </Typography>
               </Grid>
               <Grid item>
-                <Typography gutterBottom variant="body1" color="text.secondary" fontWeight={700}>
+                <Typography
+                  gutterBottom
+                  variant="body1"
+                  color="text.secondary"
+                  fontWeight={700}
+                >
                   <Trans>特别鸣谢</Trans>
                 </Typography>
                 <Typography gutterBottom variant="body2">

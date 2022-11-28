@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Icon } from '@iconify/react';
 import ubuntuIcon from '@iconify/icons-logos/ubuntu';
 import npmIcon from '@iconify/icons-logos/npm-icon';
@@ -10,26 +10,26 @@ import debianIcon from '@iconify/icons-logos/debian';
 export default [
   {
     id: 'ubuntu',
-    icon: <Icon height="4rem" icon={ubuntuIcon} />
+    icon: <Icon height="4rem" icon={ubuntuIcon} />,
   },
   {
     id: 'npm',
-    icon: <Icon height="4rem" icon={npmIcon} />
+    icon: <Icon height="4rem" icon={npmIcon} />,
   },
   {
     id: 'pypi',
-    icon: <Icon height="4rem" icon={pythonIcon} />
+    icon: <Icon height="4rem" icon={pythonIcon} />,
   },
   {
     id: 'debian',
-    icon: <Icon height="4rem" icon={debianIcon} />
+    icon: <Icon height="4rem" icon={debianIcon} />,
   },
   {
     id: 'archlinux',
-    icon: <Icon height="4rem" icon={archlinuxIcon} />
+    icon: <Icon height="4rem" icon={archlinuxIcon} />,
   },
   {
     id: 'centos',
-    icon: <Icon height="4rem" icon={centosIcon} />
+    icon: <Icon height="4rem" icon={centosIcon} />,
   },
 ];

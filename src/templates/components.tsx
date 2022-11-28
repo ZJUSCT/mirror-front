@@ -8,54 +8,108 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from "gatsby-theme-material-ui";
+import { Link } from 'gatsby-theme-material-ui';
 import React, { memo } from 'react';
 import CodeBlock from '../components/code-block';
 
 const components = {
   p: (() => {
-    const Paragraph = props => <Typography {...props} style={{ margin: '8px 0' }} />;
+    const Paragraph = props => (
+      <Typography {...props} style={{ margin: '8px 0' }} />
+    );
     return memo(Paragraph);
   })(),
   h1: (() => {
-    const H1 = props => <Typography {...props} component="h1" variant="h3" style={{ margin: '24px 0 8px' }} />;
+    const H1 = props => (
+      <Typography
+        {...props}
+        component="h1"
+        variant="h3"
+        style={{ margin: '24px 0 8px' }}
+      />
+    );
     return memo(H1);
   })(),
   h2: (() => {
-    const H2 = props => <Typography {...props} component="h2" variant="h4" style={{ margin: '24px 0 8px' }} />;
+    const H2 = props => (
+      <Typography
+        {...props}
+        component="h2"
+        variant="h4"
+        style={{ margin: '24px 0 8px' }}
+      />
+    );
     return memo(H2);
   })(),
   h3: (() => {
-    const H3 = props => <Typography {...props} component="h3" variant="h5" style={{ margin: '24px 0 8px' }} />;
+    const H3 = props => (
+      <Typography
+        {...props}
+        component="h3"
+        variant="h5"
+        style={{ margin: '24px 0 8px' }}
+      />
+    );
     return memo(H3);
   })(),
   h4: (() => {
-    const H4 = props => <Typography {...props} component="h4" variant="h6" style={{ margin: '16px 0 8px' }} />;
+    const H4 = props => (
+      <Typography
+        {...props}
+        component="h4"
+        variant="h6"
+        style={{ margin: '16px 0 8px' }}
+      />
+    );
     return memo(H4);
   })(),
   h5: (() => {
-    const H5 = props => <Typography {...props} component="h5" variant="subtitle2" style={{ margin: '16px 0 8px' }} />;
+    const H5 = props => (
+      <Typography
+        {...props}
+        component="h5"
+        variant="subtitle2"
+        style={{ margin: '16px 0 8px' }}
+      />
+    );
     return memo(H5);
   })(),
   h6: (() => {
-    const H6 = props => <Typography {...props} component="h6" variant="body1" />;
+    const H6 = props => (
+      <Typography {...props} component="h6" variant="body1" />
+    );
     return memo(H6);
   })(),
   blockquote: (() => {
     const Blockquote = props => {
       const theme = useTheme();
       return (
-        <Paper style={{ borderLeft: `5px solid ${theme.palette.primary.light}`, padding: '4px 24px', margin: '16px 0' }} {...props} />
-      )
+        <Paper
+          style={{
+            borderLeft: `5px solid ${theme.palette.primary.light}`,
+            padding: '4px 24px',
+            margin: '16px 0',
+          }}
+          {...props}
+        />
+      );
     };
     return memo(Blockquote);
   })(),
   ul: (() => {
-    const Ul = props => <Typography {...props} component="ul" style={{ paddingLeft: 30 }} />;
+    const Ul = props => (
+      <Typography {...props} component="ul" style={{ paddingLeft: 30 }} />
+    );
     return memo(Ul);
   })(),
   ol: (() => {
-    const Ol = props => <Typography {...props} component="ol" style={{ marginTop: 0, marginBottom: 16 }} />;
+    const Ol = props => (
+      <Typography
+        {...props}
+        component="ol"
+        style={{ marginTop: 0, marginBottom: 16 }}
+      />
+    );
     return memo(Ol);
   })(),
   li: (() => {
@@ -101,7 +155,11 @@ const components = {
     const InlineCode = props => {
       const theme = useTheme();
       return (
-        <Typography {...props} component="code" style={{ color: theme.palette.secondary.main }} />
+        <Typography
+          {...props}
+          component="code"
+          style={{ color: theme.palette.secondary.main }}
+        />
       );
     };
     return memo(InlineCode);

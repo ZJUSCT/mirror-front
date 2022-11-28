@@ -54,7 +54,7 @@ const networkMap = {
   },
 };
 
-async function fetchMirrors(): Promise<MirrorDto[]> {
+async function fetchMirrors (): Promise<MirrorDto[]> {
   const res = await fetch('/api/mirrors');
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
@@ -64,7 +64,7 @@ async function fetchMirrors(): Promise<MirrorDto[]> {
   return json;
 }
 
-async function fetchNetworkMode(): Promise<number> {
+async function fetchNetworkMode (): Promise<number> {
   const res = await fetch('/api/is_campus_network');
   if (!res.ok) {
     return 0;
@@ -78,8 +78,12 @@ async function fetchNetworkMode(): Promise<number> {
 const Index = ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
 
-  const [networkMode, setNetworkMode] = useState<number>(readCache('networkMode', 0));
-  const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>(readCache('mirrors', []));
+  const [networkMode, setNetworkMode] = useState<number>(
+    readCache('networkMode', 0)
+  );
+  const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>(
+    readCache('mirrors', [])
+  );
 
   useEffect(() => {
     fetchMirrors()
@@ -100,21 +104,25 @@ const Index = ({ data }: { data: Data }) => {
     [data, language]
   );
 
-  const mirrors = React.useMemo<{ [key in string]: Mirror }>(() =>
-    Object.fromEntries(
-      mirrorsRaw.map(dto => ([
-        dto.id, {
-          ...dto,
-          docUrl: mirrorDocUrls[dto.id],
-        }
-      ]))),
+  const mirrors = React.useMemo<{ [key in string]: Mirror }>(
+    () =>
+      Object.fromEntries(
+        mirrorsRaw.map(dto => [
+          dto.id,
+          {
+            ...dto,
+            docUrl: mirrorDocUrls[dto.id],
+          },
+        ])
+      ),
     [mirrorsRaw, mirrorDocUrls]
   );
-  const newsUrls = React.useMemo<Array<[string, Date, string]>>(() =>
-    data.news.nodes
-      .filter(d => d.locale === language)
-      .map(d => [d.frontmatter.title, new Date(d.frontmatter.date), d.slug])
-      .sort((a, b) => b[1] - a[1]),
+  const newsUrls = React.useMemo<Array<[string, Date, string]>>(
+    () =>
+      data.news.nodes
+        .filter(d => d.locale === language)
+        .map(d => [d.frontmatter.title, new Date(d.frontmatter.date), d.slug] as (Date | string)[])
+        .sort((a, b) => b[1] - a[1]),
     [data, language]
   );
 
@@ -190,18 +198,16 @@ const Index = ({ data }: { data: Data }) => {
             <Trans>近期更新</Trans>
           </Typography>
           <Grid>
-            {
-              newsUrls.map(([title, date, url], _) =>
-                <Grid container>
-                  <Link href={url} underline="hover">
-                    {title}
-                  </Link>
-                  <Typography color="info.light" component="div">
-                    &nbsp; - {date.toLocaleDateString()}
-                  </Typography>
-                </Grid>
-              )
-            }
+            {newsUrls.map(([title, date, url], _) => (
+              <Grid container>
+                <Link href={url} underline="hover">
+                  {title}
+                </Link>
+                <Typography color="info.light" component="div">
+                  &nbsp; - {date.toLocaleDateString()}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
         <Grid item xs={1}>
@@ -213,26 +219,26 @@ const Index = ({ data }: { data: Data }) => {
       </Grid>
       <Footer />
     </Box>
-  )
+  );
 };
 
 export const query = graphql`
-  query($language: String!) {
-    mirrorDocs: allDocument(filter: {source: {eq: "mirrors"}}) {
+  query ($language: String!) {
+    mirrorDocs: allDocument(filter: { source: { eq: "mirrors" } }) {
       nodes {
         frontmatter
         slug
         locale
       }
-    },
-    news: allDocument(filter: {source: {eq: "news"}}) {
+    }
+    news: allDocument(filter: { source: { eq: "news" } }) {
       nodes {
         frontmatter
         slug
         locale
       }
-    },
-    locales: allLocale(filter: {language: {eq: $language}}) {
+    }
+    locales: allLocale(filter: { language: { eq: $language } }) {
       edges {
         node {
           ns

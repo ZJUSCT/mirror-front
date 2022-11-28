@@ -27,7 +27,6 @@ interface Data {
   };
 }
 
-
 const News = ({ data }: { data: Data }) => {
   const { language } = useI18next();
 
@@ -35,7 +34,7 @@ const News = ({ data }: { data: Data }) => {
     name: data.document.frontmatter.name,
     title: data.document.frontmatter.title,
     author: data.document.frontmatter.author,
-    date: data.document.frontmatter.date
+    date: data.document.frontmatter.date,
   } as NewsDto;
 
   return (
@@ -87,7 +86,7 @@ const News = ({ data }: { data: Data }) => {
                   sx={{ ml: 1 }}
                 >
                   <AccountCircle sx={{ fontSize: '1em', mr: 0.5 }} />
-                  <Trans> { news.author }</Trans>
+                  <Trans> {news.author}</Trans>
                 </Typography>
 
                 <Typography
@@ -97,12 +96,13 @@ const News = ({ data }: { data: Data }) => {
                   sx={{ ml: 1 }}
                 >
                   <DateRange sx={{ fontSize: '1em', mr: 0.5 }} />
-                  <Trans> {{ date: new Date(news.date).toLocaleDateString(language) }}</Trans>
+                  <Trans>
+                    {' '}
+                    {{ date: new Date(news.date).toLocaleDateString(language) }}
+                  </Trans>
                 </Typography>
               </Grid>
             </Grid>
-
-            
           </Grid>
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
