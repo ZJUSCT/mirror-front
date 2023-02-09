@@ -1,4 +1,5 @@
 import { PaletteMode, ThemeOptions } from '@mui/material';
+import '@fontsource/poppins';
 
 export default function configTheme(mode: PaletteMode): ThemeOptions {
   return {
@@ -6,7 +7,7 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
       mode === 'light'
         ? {
             primary: {
-              main: '#157684',
+              main: '#154A87',
             },
             neutral: {
               main: '#f2f7f9',
@@ -25,12 +26,12 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
               main: '#e44918',
             },
             background: {
-              default: '#f2f7f9',
+              default: '#F0F3F8',
             },
           }
         : {
             primary: {
-              main: '#15BBC6',
+              main: '#B02026',
             },
             neutral: {
               main: '#070707',
@@ -54,6 +55,11 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
             },
           },
     typography: {
+      h1: {
+        fontFamily: '"Poppins", sans-serif',
+        fontWeight: 700,
+        fontSize: 60,
+      },
       h2: {
         fontFamily: '"Metropolis", sans-serif',
         fontWeight: 700,
