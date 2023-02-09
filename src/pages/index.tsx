@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Link, Typography } from '@mui/material';
+import { Box, Chip, Grid, Link, Typography, PaletteMode } from '@mui/material';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
@@ -14,6 +14,9 @@ import frequentlyUsedMirror from '../utils/frequently-used-mirror-list';
 import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
 import NameIconButton from '../components/name-icon-button';
+import ZjuFalconIcon from '../../resource/icons/zju-falcon.svg';
+import ZjuFalconIconDark from '../../resource/icons/zju-falcon-dark.svg';
+import { ThemeMode, useMode } from '../components/theme-context';
 
 interface Data {
   mirrorDocs: {
@@ -54,7 +57,7 @@ const networkMap = {
   },
 };
 
-async function fetchMirrors (): Promise<MirrorDto[]> {
+async function fetchMirrors(): Promise<MirrorDto[]> {
   const res = await fetch('/api/mirrors');
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
@@ -64,7 +67,7 @@ async function fetchMirrors (): Promise<MirrorDto[]> {
   return json;
 }
 
-async function fetchNetworkMode (): Promise<number> {
+async function fetchNetworkMode(): Promise<number> {
   const res = await fetch('/api/is_campus_network');
   if (!res.ok) {
     return 0;
@@ -121,7 +124,13 @@ const Index = ({ data }: { data: Data }) => {
     () =>
       data.news.nodes
         .filter(d => d.locale === language)
-        .map(d => [d.frontmatter.title, new Date(d.frontmatter.date), d.slug] as (Date | string)[])
+        .map(
+          d =>
+            [d.frontmatter.title, new Date(d.frontmatter.date), d.slug] as (
+              | Date
+              | string
+            )[]
+        )
         .sort((a, b) => b[1] - a[1]),
     [data, language]
   );
@@ -143,33 +152,52 @@ const Index = ({ data }: { data: Data }) => {
         sx={{ px: { xs: 4, sm: 8 }, py: 8 }}
       >
         <Grid item xs={1}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
           >
-            <Grid item>
-              <Typography variant="h3" component="div" color="primary">
-                <Trans>ZJU Mirror</Trans>
+            <Box sx={{ minWidth: 100, maxWidth: 100 }}>
+              {
+                // FIXME: this expression does not deal with theme mode 'auto'
+                (useMode() ?? ['auto', () => {}])[0] === 'light' ? (
+                  <ZjuFalconIcon />
+                ) : (
+                  <ZjuFalconIconDark />
+                )
+              }
+            </Box>
+            <Box sx={{ width: '100%', ml: 2 }}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Typography variant="h1" component="div" color="primary">
+                    <Trans>ZJU Mirror</Trans>
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <NameIconButton />
+                  <LanguageIconButton />
+                  <ThemeIconButton />
+                </Grid>
+              </Grid>
+              <Typography variant="subtitle1" component="div" color="primary">
+                <Trans>浙江大学开源软件镜像站</Trans>
               </Typography>
-            </Grid>
-            <Grid item>
-              <NameIconButton />
-              <LanguageIconButton />
-              <ThemeIconButton />
-            </Grid>
-          </Grid>
-          <Typography variant="subtitle1" component="div" color="primary">
-            <Trans>浙江大学开源软件镜像站</Trans>
-          </Typography>
-          <Typography variant="subtitle1" component="div" color="primary">
-            <Chip
-              size="small"
-              label={t(networkMap[networkMode].text)}
-              color={networkMap[networkMode].color}
-            />
-          </Typography>
+              <Typography variant="subtitle1" component="div" color="primary">
+                <Chip
+                  size="small"
+                  label={t(networkMap[networkMode].text)}
+                  color={networkMap[networkMode].color}
+                />
+              </Typography>
+            </Box>
+          </Box>
         </Grid>
         <Grid item xs={1}>
           <Typography gutterBottom variant="h5" component="div">

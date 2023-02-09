@@ -19,6 +19,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@fontsource/poppins": "^4.5.10",
     "@formatjs/intl-displaynames": "^5.4.3",
     "@iconify/icons-logos": "^1.2.6",
     "@iconify/react": "^3.2.1",
