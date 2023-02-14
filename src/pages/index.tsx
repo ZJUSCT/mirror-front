@@ -15,8 +15,6 @@ import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
 import NameIconButton from '../components/name-icon-button';
 import ZjuFalconIcon from '../../resource/icons/zju-falcon.svg';
-import ZjuFalconIconDark from '../../resource/icons/zju-falcon-dark.svg';
-import { ThemeMode, useMode } from '../components/theme-context';
 
 interface Data {
   mirrorDocs: {
@@ -158,15 +156,8 @@ const Index = ({ data }: { data: Data }) => {
               flexDirection: 'row',
             }}
           >
-            <Box sx={{ minWidth: 100, maxWidth: 100 }}>
-              {
-                // FIXME: this expression does not deal with theme mode 'auto'
-                (useMode() ?? ['auto', () => {}])[0] === 'light' ? (
-                  <ZjuFalconIcon />
-                ) : (
-                  <ZjuFalconIconDark />
-                )
-              }
+            <Box sx={{ minWidth: 72, maxWidth: 72 }}>
+              <ZjuFalconIcon />
             </Box>
             <Box sx={{ width: '100%', ml: 2 }}>
               <Grid
@@ -176,7 +167,12 @@ const Index = ({ data }: { data: Data }) => {
                 alignItems="center"
               >
                 <Grid item>
-                  <Typography variant="h1" component="div" color="primary">
+                  <Typography
+                    variant="h1"
+                    component="div"
+                    color="primary"
+                    sx={{ fontSize: 64, mt: -1 }}
+                  >
                     <Trans>ZJU Mirror</Trans>
                   </Typography>
                 </Grid>
@@ -186,16 +182,30 @@ const Index = ({ data }: { data: Data }) => {
                   <ThemeIconButton />
                 </Grid>
               </Grid>
-              <Typography variant="subtitle1" component="div" color="primary">
-                <Trans>浙江大学开源软件镜像站</Trans>
-              </Typography>
-              <Typography variant="subtitle1" component="div" color="primary">
-                <Chip
-                  size="small"
-                  label={t(networkMap[networkMode].text)}
-                  color={networkMap[networkMode].color}
-                />
-              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  mt: -2,
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  component="div"
+                  color="primary"
+                  sx={{ fontSize: 28 }}
+                >
+                  <Trans>浙江大学开源软件镜像站</Trans>
+                </Typography>
+                <Typography variant="subtitle1" component="div" color="primary" sx={{ ml: 1 }}>
+                  <Chip
+                    size="medium"
+                    label={t(networkMap[networkMode].text)}
+                    color={networkMap[networkMode].color}
+                  />
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Grid>

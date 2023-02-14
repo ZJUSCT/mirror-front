@@ -31,7 +31,7 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
           }
         : {
             primary: {
-              main: '#B02026',
+              main: '#1d69b5',
             },
             neutral: {
               main: '#070707',
