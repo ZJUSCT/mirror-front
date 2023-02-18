@@ -15,7 +15,6 @@ module.exports = {
   assetPrefix: config.assetPrefix,
   pathPrefix: config.pathPrefix,
   plugins: [
-    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-theme-material-ui`,
       options: {
