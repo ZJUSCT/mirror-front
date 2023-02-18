@@ -141,6 +141,7 @@ exports.onCreateNode = async (
     internal: {
       type: `MdxDocument`,
       contentDigest: createContentDigest(fieldData),
+      contentFilePath: node.internal.contentFilePath,
       content: JSON.stringify(fieldData),
       description: `Mdx implementation of the Document interface`,
     },
@@ -159,6 +160,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           slug
           source
           frontmatter
+          internal {
+            contentFilePath
+          }
         }
       }
     }
@@ -178,7 +182,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const { slug, frontmatter } = doc;
     createPage({
       path: slug,
-      component: require.resolve(config.documentSources[doc.source]?.template),
+      component: `${require.resolve(
+        config.documentSources[doc.source]?.template
+      )}?__contentFilePath=${doc.internal.contentFilePath}`,
       context: {
         id: doc.id,
         previousId: previous ? previous.id : undefined,

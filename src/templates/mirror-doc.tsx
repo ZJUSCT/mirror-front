@@ -1,10 +1,9 @@
 import { MDXProvider } from '@mdx-js/react';
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, ConnectedTvOutlined } from '@mui/icons-material';
 import FolderIcon from '@mui/icons-material/Folder';
 import { Box, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
-import { MDXRenderer } from 'gatsby-plugin-mdx';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import { Button } from 'gatsby-theme-material-ui';
 import React, { useEffect, useState } from 'react';
@@ -37,7 +36,7 @@ async function fetchMirror (id: string): Promise<MirrorDto> {
   return json;
 }
 
-const MirrorDoc = ({ data }: { data: Data }) => {
+const MirrorDoc = ({ data, children }: { data: Data }) => {
   const { language } = useI18next();
 
   const defaultData = {
@@ -160,9 +159,7 @@ const MirrorDoc = ({ data }: { data: Data }) => {
           </Grid>
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
-          <MDXProvider components={components}>
-            <MDXRenderer>{data.document.body}</MDXRenderer>
-          </MDXProvider>
+          <MDXProvider components={components}>{children}</MDXProvider>
         </Paper>
       </Box>
       <Footer />

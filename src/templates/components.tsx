@@ -146,23 +146,21 @@ const components = {
   })(),
   code: (() => {
     const CodeBlk = ({ children, className }) => {
+      if (className === undefined) {
+        const theme = useTheme();
+        return (
+          <Typography
+            component="code"
+            style={{ color: theme.palette.secondary.main }}
+          >
+            {children}
+          </Typography>
+        );
+      }
       const lang = className?.match(/language-(?<lang>.*)/)?.groups?.lang || '';
       return <CodeBlock language={lang}>{children}</CodeBlock>;
     };
     return memo(CodeBlk);
-  })(),
-  inlineCode: (() => {
-    const InlineCode = props => {
-      const theme = useTheme();
-      return (
-        <Typography
-          {...props}
-          component="code"
-          style={{ color: theme.palette.secondary.main }}
-        />
-      );
-    };
-    return memo(InlineCode);
   })(),
   hr: Divider,
   input: (() => {

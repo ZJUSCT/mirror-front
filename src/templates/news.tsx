@@ -4,7 +4,6 @@ import FolderIcon from '@mui/icons-material/Folder';
 import { Box, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
-import { MDXRenderer } from 'gatsby-plugin-mdx';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import { Button } from 'gatsby-theme-material-ui';
 import React, { useEffect, useState } from 'react';
@@ -27,7 +26,7 @@ interface Data {
   };
 }
 
-const News = ({ data }: { data: Data }) => {
+const News = ({ data, children }: { data: Data }) => {
   const { language } = useI18next();
 
   const news = {
@@ -107,7 +106,7 @@ const News = ({ data }: { data: Data }) => {
         </Box>
         <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
           <MDXProvider components={components}>
-            <MDXRenderer>{data.document.body}</MDXRenderer>
+            {children}
           </MDXProvider>
         </Paper>
       </Box>
