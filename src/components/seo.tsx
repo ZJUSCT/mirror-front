@@ -93,7 +93,7 @@ export default ({ description, meta = [], title }: SeoProps) => {
     },
     {
       name: 'theme-color',
-      content: theme.palette.primary.light,
+      content: theme.palette.primary.main,
     },
   ];
 
