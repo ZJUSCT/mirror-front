@@ -2,9 +2,35 @@ import React from 'react';
 import { JSX } from 'preact';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useTheme } from '@mui/material';
-import { Helmet } from 'gatsby-plugin-react-i18next';
+import { useI18next } from 'gatsby-plugin-react-i18next';
 
 type MetaProps = JSX.IntrinsicElements['meta'];
+
+const Helmet: React.FC = ({children, title, meta}) => {
+  const {languages, language, originalPath, defaultLanguage, siteUrl = ''} = useI18next();
+  const createUrlWithLang = (lng: string) => {
+    const url = `${siteUrl}${lng === defaultLanguage ? '' : `/${lng}`}${originalPath}`;
+    return url.endsWith('/') ? url : `${url}/`;
+  };
+  return (
+    <>
+      <html lang={language} />
+      <title>{title}</title>
+      {
+        meta?.map((m: MetaProps) => (
+          <meta {...m} />
+        ))
+      }
+      <link rel="canonical" href={createUrlWithLang(language)} />
+      {languages.map((lng) => (
+        <link rel="alternate" key={lng} href={createUrlWithLang(lng)} hrefLang={lng} />
+      ))}
+      {/* adding a fallback page for unmatched languages */}
+      <link rel="alternate" href={createUrlWithLang(defaultLanguage)} hrefLang="x-default" />
+      {children}
+    </>
+  );
+};
 
 export interface SeoProps {
   description?: string;
