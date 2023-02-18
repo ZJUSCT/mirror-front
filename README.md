@@ -2,7 +2,7 @@
 
 # ZJU Mirror Front-end
 
-back-end JSON format: [mirrorz-json](https://github.com/mirrorz-org/mirrorz#data-format-v15-draft)
+back-end JSON format: [MirrorsDotNet API](https://github.com/ZJUSCT/MirrorsDotNet/blob/main/Docs/Swagger.json)
 
 ## Deployment
 
