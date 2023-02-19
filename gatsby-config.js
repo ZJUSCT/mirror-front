@@ -50,7 +50,21 @@ module.exports = {
         path: `${__dirname}/news`,
       }
     },
-    'gatsby-plugin-mdx',
+    {
+      resolve: "gatsby-plugin-mdx",
+      options: {
+        mdxOptions: {
+          remarkPlugins: [
+            // Add GitHub Flavored Markdown (GFM) support
+            // Warning: Most of the remark ecosystem is ESM which means that packages 
+            // like remark-gfm don’t work out of the box with Gatsby v5. To make remark-gfm
+            // compatible with the current Gatsby version, we have to use an old version of
+            // remark-gfm. Please take care in future updates.
+            require(`remark-gfm`),
+          ],
+        },
+      }
+    },
     {
       resolve: "gatsby-plugin-react-svg",
       options: {
