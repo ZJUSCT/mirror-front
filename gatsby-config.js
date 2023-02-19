@@ -92,6 +92,13 @@ module.exports = {
         )
       }
     },
+    {
+      resolve: 'gatsby-plugin-manifest',
+      options: {
+        icon: 'resource/icons/favicon.svg',
+      },
+    },
+
     `gatsby-plugin-preact`,
     `gatsby-plugin-sass`
   ],
