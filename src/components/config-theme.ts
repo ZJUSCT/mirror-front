@@ -58,7 +58,6 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
       h1: {
         fontFamily: '"Poppins", sans-serif',
         fontWeight: 700,
-        fontSize: 60,
       },
       h2: {
         fontFamily: '"Metropolis", sans-serif',

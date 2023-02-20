@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Link, Typography, PaletteMode } from '@mui/material';
+import { Box, Chip, Grid, Link, Typography } from '@mui/material';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
@@ -9,7 +9,6 @@ import SearchTable from '../components/search-table';
 import Seo from '../components/seo';
 import ThemeIconButton from '../components/theme-icon-button';
 import { Mirror, MirrorDto } from '../types/mirror';
-import { News, NewsDto } from '../types/news';
 import frequentlyUsedMirror from '../utils/frequently-used-mirror-list';
 import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
@@ -156,7 +155,12 @@ const Index = ({ data }: { data: Data }) => {
               flexDirection: 'row',
             }}
           >
-            <Box sx={{ minWidth: 72, maxWidth: 72 }}>
+            <Box
+              sx={{
+                minWidth: { xs: 54, sm: 72 },
+                maxWidth: { xs: 54, sm: 72 },
+              }}
+            >
               <ZjuFalconIcon />
             </Box>
             <Box sx={{ width: '100%', ml: 2 }}>
@@ -171,12 +175,12 @@ const Index = ({ data }: { data: Data }) => {
                     variant="h1"
                     component="div"
                     color="primary"
-                    sx={{ fontSize: 64, mt: -1 }}
+                    sx={{ fontSize: { xs: 48, sm: 64 }, mt: -1 }}
                   >
                     <Trans>ZJU Mirror</Trans>
                   </Typography>
                 </Grid>
-                <Grid item>
+                <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
                   <NameIconButton />
                   <LanguageIconButton />
                   <ThemeIconButton />
@@ -187,22 +191,28 @@ const Index = ({ data }: { data: Data }) => {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  mt: -2,
+                  mt: { xs: -1, sm: -2 },
                 }}
               >
                 <Typography
                   variant="subtitle1"
                   component="div"
                   color="primary"
-                  sx={{ fontSize: 28 }}
+                  sx={{ fontSize: { xs: 21, sm: 28 } }}
                 >
                   <Trans>浙江大学开源软件镜像站</Trans>
                 </Typography>
-                <Typography variant="subtitle1" component="div" color="primary" sx={{ ml: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  component="div"
+                  color="primary"
+                  sx={{ ml: 1 }}
+                >
                   <Chip
                     size="medium"
                     label={t(networkMap[networkMode].text)}
                     color={networkMap[networkMode].color}
+                    sx={{ display: { xs: 'none', sm: 'grid' } }}
                   />
                 </Typography>
               </Box>
