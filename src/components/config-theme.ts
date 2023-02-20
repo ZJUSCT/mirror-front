@@ -20,7 +20,7 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
             },
             info: {
               main: '#6780da',
-              light: '#15BBC6',
+              light: '#63a0cf;',
             },
             error: {
               main: '#e44918',
@@ -44,7 +44,7 @@ export default function configTheme(mode: PaletteMode): ThemeOptions {
             },
             info: {
               main: '#6780da',
-              light: '#15BBC6',
+              light: '#63a0cf;',
             },
             error: {
               main: '#e44918',
