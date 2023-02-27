@@ -15,5 +15,5 @@ ENV TZ=Asia/Shanghai
 
 # [Optional] Uncomment if you want to install more global node modules
 RUN su node -c "yarn config set registry https://registry.npmmirror.com"
-RUN su node -c "npm config set sharp_binary_host https://npmmirror.com/mirrors/sharp"
-RUN su node -c "npm config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips"
+RUN su node -c "yarn config set sharp_binary_host https://npmmirror.com/mirrors/sharp"
+RUN su node -c "yarn config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips"
