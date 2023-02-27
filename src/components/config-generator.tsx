@@ -15,12 +15,14 @@ import CodeBlock from './code-block';
 export default ({
   promptString,
   versionList,
+  friendlyNameList,
   defaultVersion,
   language,
   configGen,
 }: {
   promptString: string;
   versionList: string[];
+  friendlyNameList: string[] | undefined;
   defaultVersion: string | undefined;
   language: Language;
   configGen: (version: string) => string;
@@ -52,9 +54,11 @@ export default ({
               defaultValue={version}
             >
               {versionList.map((item, i) => {
+                const desc =
+                  friendlyNameList === undefined ? item : friendlyNameList[i];
                 return (
                   <MenuItem key={i} value={item}>
-                    {item}
+                    {desc}
                   </MenuItem>
                 );
               })}
