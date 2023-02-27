@@ -1,0 +1,29 @@
+---
+mirrorId: gentoo-portage
+---
+
+### Portage 配置
+
+#### rsync 方式
+
+修改 `/etc/portage/repos.conf/gentoo.conf` ，将
+
+```conf
+sync-uri = rsync://rsync.gentoo.org/gentoo-portage
+```
+
+修改为
+
+```conf
+sync-uri = rsync://mirror.zju.edu.cn/gentoo-portage
+```
+
+#### git 方式
+
+参考 [Gentoo Portage Git 帮助](/doc/gentoo-portage.git/)。
+
+### Distfiles 配置
+
+参考 [Gentoo 帮助](/doc/gentoo/)。
+
+配置好 Portage 与 Distfiles 后，执行 `emerge --sync` 进行更新。

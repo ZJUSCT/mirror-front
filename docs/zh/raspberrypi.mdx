@@ -1,0 +1,30 @@
+---
+mirrorId: raspberrypi
+---
+
+import ConfigGenerator from '../../src/components/config-generator'
+
+export const osVersion = ['9', '10', '11'];
+export const versionName = [
+    'Debian 11 (bullseye)',
+    'Debian 10 (buster)',
+    'Debian 9 (stretch)',
+];
+export const configGen = (version) => {
+    const versionMap = {
+        '9': 'stretch',
+        '10': 'buster',
+        '11': 'bullseye',
+    };
+    const release_name = versionMap[version];
+    return `deb https://mirrors.zju.edu.cn/raspberrypi/ ${release_name} main
+`;
+}
+
+编辑 `/etc/apt/sources.list.d/raspi.list` ：
+
+<ConfigGenerator 
+    promptString="" 
+    versionList={osVersion}
+    friendlyNameList={versionName}
+    configGen={configGen} />

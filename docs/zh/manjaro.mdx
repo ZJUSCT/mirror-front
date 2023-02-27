@@ -1,0 +1,34 @@
+---
+mirrorId: manjaro
+---
+
+> 镜像站已正常工作，但可能未进入中国镜像站列表。
+> 
+> 手动设置方法可参照 [ArchLinux 文档](/docs/archlinux)
+
+包含架构：`i686`, `x86_64`, `aarch64`
+
+目前 AArch64 (ARM) 架构的 manjaro 源位于主源，manjaro-arm 镜像上游已不再更新。
+
+使用说明
+========
+
+生成可用中国镜像站列表：
+
+```
+pacman-mirrors -i -c China -m rank
+```
+        
+勾选
+
+```
+https://mirrors.zju.edu.cn/manjaro/
+```
+
+然后按 ``OK`` 键两次。
+        
+最后刷新缓存：
+
+```bash
+pacman -Syy
+```
