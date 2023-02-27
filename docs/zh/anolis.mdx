@@ -1,0 +1,13 @@
+---
+mirrorId: anolis
+---
+
+> 以下代码在 AnolisOS 8.6 上经过测试，结合您所使用的系统版本，命令可能有所不同。
+
+输入以下命令替换配置：
+
+```bash
+sed -e 's|mirrors.openanolis.cn|mirrors.zju.edu.cn|g' \
+    -i.bak \
+    /etc/yum.repos.d/AnolisOS-*.repo
+```

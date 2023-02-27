@@ -1,0 +1,14 @@
+---
+mirrorId: almalinux
+---
+
+> 以下命令在 AlmaLinux 9.1 上经过测试，结合您使用的实际版本命令也许有所更改。
+
+输入以下命令替换配置：
+
+```bash
+sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#\s*baseurl=https://repo.almalinux.org/almalinux|baseurl=https://mirrors.zju.edu.cn/almalinux|g' \
+    -i.bak \
+    /etc/yum.repos.d/almalinux-*.repo
+```

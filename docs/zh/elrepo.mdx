@@ -1,0 +1,50 @@
+---
+mirrorId: elrepo
+---
+
+import ConfigGenerator from '../../src/components/config-generator'
+
+export const osVersion = ['7', '8', '6'];
+export const versionName = [
+        'RHEL-7, SL-7, CentOS-7',
+        'RHEL-8, SL-8, CentOS-8',
+        'RHEL-6, SL-6, CentOS-6'
+];
+export const configGen = (version) => {
+    return `
+yum install https://www.elrepo.org/elrepo-release-${version}.el${version}.elrepo.noarch.rpm`;
+}
+
+首先按照[官网的安装说明](https://elrepo.org/tiki/tiki-index.php)，配置 ELRepo：
+
+```bash
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+```
+
+接着，按照你的系统版本，运行：
+
+<ConfigGenerator 
+    promptString="" 
+    versionList={osVersion}
+    friendlyNameList={versionName}
+    configGen={configGen} />
+
+接下来是换源，建议先备份 `/etc/yum.repos.d/elrepo.repo` ：
+
+```shell
+cp /etc/yum.repos.d/elrepo.repo /etc/yum.repos.d/elrepo.repo.bak
+```
+
+然后编辑 /etc/yum.repos.d/elrepo.repo 文件，在 `mirrorlist=` 开头的行前面加 `#` 注释掉；并将 `http://elrepo.org/linux` 替换为
+
+
+```conf
+https://mirrors.zju.edu.cn/elrepo
+```
+
+
+最后，更新软件包缓存
+
+```shell
+yum makecache
+```

@@ -1,0 +1,27 @@
+---
+mirrorId: rocky
+---
+
+> 本项文档参照 http://mirrors.ustc.edu.cn/help/rocky.html 编写。
+
+对于 Rocky Linux 9 ，输入以下命令替换配置：
+
+```bash
+sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.zju.edu.cn/rocky|g' \
+    -i.bak \
+    /etc/yum.repos.d/rocky-extras.repo \
+    /etc/yum.repos.d/rocky.repo
+```
+
+对于 Rocky Linux 8 ，输入以下命令替换配置：
+
+```bash
+sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.zju.edu.cn/rocky|g' \
+    -i.bak \
+    /etc/yum.repos.d/Rocky-AppStream.repo \
+    /etc/yum.repos.d/Rocky-BaseOS.repo \
+    /etc/yum.repos.d/Rocky-Extras.repo \
+    /etc/yum.repos.d/Rocky-PowerTools.repo
+```
