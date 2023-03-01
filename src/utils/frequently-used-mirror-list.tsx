@@ -4,7 +4,7 @@ import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
 import npmIcon from '@iconify/icons-logos/npm-icon';
 import pythonIcon from '@iconify/icons-logos/python';
 import archlinuxIcon from '@iconify/icons-logos/archlinux';
-import centosIcon from '@iconify/icons-logos/centos-icon';
+import anacondaIcon from '@iconify/icons-simple-icons/anaconda';
 import debianIcon from '@iconify/icons-logos/debian';
 
 export default [
@@ -29,7 +29,7 @@ export default [
     icon: <Icon height="4rem" icon={archlinuxIcon} />,
   },
   {
-    id: 'centos',
-    icon: <Icon height="4rem" icon={centosIcon} />,
+    id: 'anaconda',
+    icon: <Icon height="4rem" icon={anacondaIcon} color="#3BA740" />,
   },
 ];
