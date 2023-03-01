@@ -1,6 +1,7 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Button, Collapse } from '@mui/material/';
+import natsort from 'natsort';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import File, { FileProps } from './file';
@@ -12,6 +13,11 @@ export interface FileListProps {
 export default ({ files }: FileListProps) => {
   const { t } = useTranslation();
   const [showAll, setShowAll] = React.useState<boolean>(false);
+
+  var sorter = natsort({desc: true});
+  files.sort(function (a, b) {
+    return sorter(a.name, b.name);
+  });
 
   return (
     <Box display="flex" flexDirection="column" alignContent="center">

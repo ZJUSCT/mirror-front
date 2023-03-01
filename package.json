@@ -39,6 +39,7 @@
     "gatsby-theme-material-ui-top-layout": "^5.2.0",
     "i18next": "^21.6.16",
     "js-search": "^2.0.0",
+    "natsort": "^2.0.3",
     "path-to-regexp": "^6.2.0",
     "preact": "^10.12.1",
     "preact-render-to-string": "^5.2.6",
