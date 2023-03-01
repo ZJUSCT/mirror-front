@@ -1542,6 +1542,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify/icons-simple-icons@^1.2.44":
+  version "1.2.44"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-simple-icons/-/icons-simple-icons-1.2.44.tgz#2a238f6b615c3df9bb8e565d64ebef4ce3e5d752"
+  integrity sha512-pILdRcEqvmMSpZ7v6hh1dCh2iGJwZwAqqGGa6n6ui6pC4dPrhLOrYuODsPvRkvzXQYQWYUHkNybU9Vgb+8pMQw==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify/react@^3.2.1":
   version "3.2.2"
   resolved "https://registry.npmmirror.com/@iconify/react/-/react-3.2.2.tgz#ab5241dc01562076bae3b0c22238aff7e5f029cc"
