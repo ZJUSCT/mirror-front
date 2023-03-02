@@ -9,6 +9,7 @@ const config = require('./config');
 module.exports = {
   siteMetadata: {
     title: 'ZJU Mirror',
+    siteUrl: config.siteUrl,
     description: 'ZJU Mirror is a non-profit program aimed at popularizing open source software and facilitating efficient access to various resources of open source projects by all users.',
     author: 'ZJU SCT',
   },
@@ -112,9 +113,19 @@ module.exports = {
         icon: 'resource/icons/favicon.svg',
       },
     },
-
     `gatsby-plugin-preact`,
-    `gatsby-plugin-sass`
+    `gatsby-plugin-sass`,
+    {
+      resolve: "gatsby-plugin-sitemap",
+      options: {
+        serialize: ({ path }) => {
+          return {
+            url: path,
+            lastmod: new Date(0).toISOString(),
+          };
+        },
+      },
+    },
   ],
   developMiddleware: app => {
     app.use(
