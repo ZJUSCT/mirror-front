@@ -67,7 +67,7 @@ export default () => (
                 </Typography>
                 <Typography gutterBottom variant="body2">
                   <Link
-                    href="mailto:mail@zjusct.io"
+                    href="mailto:mirrors@zju.edu.cn"
                     color="text.secondary"
                     underline="hover"
                   >
