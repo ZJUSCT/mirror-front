@@ -2,6 +2,7 @@ export type Locale = 'zh' | 'en';
 export type MirrorStatus =
   | 'succeeded'
   | 'syncing'
+  | 'pending'
   | 'failed'
   | 'paused'
   | 'cached'
