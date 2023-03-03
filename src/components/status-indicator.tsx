@@ -56,7 +56,14 @@ export default ({
       fontSize={fontSize || 'inherit'}
       sx={{ display: 'flex', alignItems: 'center' }}
     >
-      <CircleIcon sx={{ fontSize: '.8em', mr: 0.5 }} />
+      <CircleIcon
+        sx={{ fontSize: '.8em', mr: 0.5 }}
+        className={
+          statusInfo.content === 'pending' || statusInfo.content === 'syncing'
+            ? 'status-circle-animation'
+            : ''
+        }
+      />
       {statusInfo.content.toUpperCase()}
     </Typography>
   );
