@@ -13,6 +13,10 @@ const statusInfoMap: { [key in MirrorStatus]: StatusInfo } = {
     content: 'succeeded',
     color: 'success.main',
   },
+  pending: {
+    content: 'pending',
+    color: 'warning.main',
+  },
   syncing: {
     content: 'syncing',
     color: 'warning.main',
