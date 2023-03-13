@@ -104,7 +104,7 @@ const News = ({ data, children }: { data: Data }) => {
             </Grid>
           </Grid>
         </Box>
-        <Paper sx={{ p: { xs: 4, sm: 8 } }} elevation={0}>
+        <Paper sx={{ px: { xs: 4, sm: 8 }, py: 4 }} elevation={0}>
           <MDXProvider components={components}>
             {children}
           </MDXProvider>
