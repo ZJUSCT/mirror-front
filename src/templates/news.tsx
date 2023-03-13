@@ -67,6 +67,14 @@ const News = ({ data, children }: { data: Data }) => {
                   <ThemeIconButton />
                 </Grid>
               </Grid>
+              <Box
+                sx={{
+                  mt: 4,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              />
 
               <Typography variant="h2" fontWeight={400} component="div">
                 {news.title}
