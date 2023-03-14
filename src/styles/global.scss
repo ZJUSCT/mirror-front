@@ -15,3 +15,12 @@ code {
 .status-circle-animation {
     animation: circle-animation 1s infinite alternate ease-in-out both running;
 }
+
+::selection {
+    color: white;
+    background: #1d69b5; /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+    color: white;
+    background: #1d69b5; /* Gecko Browsers */
+}
