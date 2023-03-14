@@ -118,6 +118,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
                   component="div"
                   color="text.disabled"
                   sx={{ ml: 1 }}
+                  display={mirror.status === "cached" ? "none" : "block"}
                 >
                   <Trans>
                     最近更新于{' '}
