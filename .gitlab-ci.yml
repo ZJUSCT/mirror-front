@@ -26,4 +26,4 @@ deploy-webhook:
   - curl "$WEBHOOK_DEPLOY_URL"
   environment:
     name: staging
-    url: https://mirror.zju.edu.cn/index
+    url: https://mirrors.zju.edu.cn/index

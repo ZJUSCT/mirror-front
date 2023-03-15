@@ -12,7 +12,7 @@ mirrorId: gentoo
 GENTOO_MIRRORS="https://mirrors.zju.edu.cn/gentoo"
 ```
 
-关于 Portage 配置可以参考 [Gentoo Portage 镜像](/doc/gentoo-portage/)。
+关于 Portage 配置可以参考 [Gentoo Portage 镜像](/docs/gentoo-portage/)。
 
 配置好 Portage 与 Distfiles 后，执行 `emerge --sync` 进行更新。
 
@@ -26,6 +26,6 @@ export SNAPSHOT_URL="https://mirrors.zju.edu.cn/gentoo/snapshots"
 # export GNU_URL="http://mirrors.zju.edu.cn/gnu"
 ```
 
-`GNU_URL` 的具体设置可以参考 [GNU 帮助](/doc/gnu/)。
+`GNU_URL` 的具体设置可以参考 [GNU 帮助](/docs/gnu/)。
 
 Bootstrap 成功后，若对 Gentoo Portage 和 Distfiles 换源，可参照以上几节，只需将 `/etc` 换成 `$EPREFIX/etc`
