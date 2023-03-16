@@ -26,9 +26,9 @@ export const genCommand2 = (os) => {
 
 注意: 本镜像只提供 docker 程序安装包，非 dockerhub
 
-## Linux 平台使用说明
+### Linux 平台使用说明
 
-### Debian/Ubuntu 用户
+#### Debian/Ubuntu 用户
 
 以下内容根据 [官方文档](https://docs.docker.com/engine/install/debian/) 修改而来。
 
@@ -48,7 +48,7 @@ sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-pr
 
 <ConfigGenerator promptString="选择你使用的发行版：" versionList={osList} defaultVersion={'Debian'} configGen={genCommand} />
 
-### Fedora/CentOS/RHEL
+#### Fedora/CentOS/RHEL
 
 以下内容根据 [官方文档](https://docs.docker.com/engine/install/centos/) 修改而来。
 
