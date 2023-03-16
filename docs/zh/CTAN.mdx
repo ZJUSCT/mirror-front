@@ -9,11 +9,11 @@ CTAN (The Comprehensive TeX Archive Network) 是所有 TeX 排版系统相关材
 
 本文提供了 TeX Live 和 MiKTeX 两大主要发行版的镜像配置方法。
 
-## TeX Live
+### TeX Live
 
 TeX Live 是目前使用最为广泛的 TeX 发行版，支持 Windows、Linux 和 macOS。其中在 macOS 上发行的版本称为 MacTeX。
 
-### 安装
+#### 安装
 
 TeX Live 发行版的常见安装方法可以参考此文档。
 
@@ -26,7 +26,7 @@ Linux 下使用如下命令：
 perl install-tl --repository https://mirrors.zju.edu.cn/CTAN/systems/texlive/tlnet
 ```
 
-### 切换镜像
+#### 切换镜像
 
 TeX Live 使用的 CTAN 镜像源可以从内置的包管理器 `tlmgr` 更改（*很可能需要管理员权限*）。
 
@@ -46,15 +46,15 @@ tlmgr update --all --repository https://mirrors.zju.edu.cn/CTAN/systems/texlive/
 
 其中的 ```update --all``` 指令可根据需要修改。
 
-### MiKTeX
+#### MiKTeX
 
 MiKTeX 发行版的特点在于仅安装用户需要的宏包，节省了磁盘空间占用，但在部分实现细节上与 TeX Live 有所出入。该发行版支持 Windows、Linux 和 macOS。
 
-### 安装
+#### 安装
 
 MiKTeX 仅提供 Windows 和 macOS 的独立安装包，前往 TeX 排版系统下载页即可。在 Linux 下的安装请参考[官方文档](https://miktex.org/howto/install-miktex-unx)。
 
-### 切换镜像
+#### 切换镜像
 
 MiKTeX 使用的 CTAN 镜像源可以从内置的 MiKTeX Console 图形化应用程序进行切换，也可以使用如下命令：
 
