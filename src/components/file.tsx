@@ -17,10 +17,10 @@ export default ({ name, url }: FileProps) => {
           container
           direction="row"
           justifyContent="flex-start"
-          alignItems="center"
+          alignItems="stretch"
           spacing={1}
         >
-          <Grid item>
+          <Grid item height="0px">
             <AlbumIcon color="primary" />
           </Grid>
           <Grid item>
@@ -28,13 +28,14 @@ export default ({ name, url }: FileProps) => {
               variant="subtitle1"
               component="div"
               color="primary"
+              lineHeight={1.5}
               fontWeight={400}
             >
               <Trans>ISO</Trans>
             </Typography>
           </Grid>
           <Grid item>
-            <Typography variant="subtitle1" component="div">
+            <Typography variant="subtitle1" component="div" lineHeight={1.5}>
               {name}
             </Typography>
           </Grid>
