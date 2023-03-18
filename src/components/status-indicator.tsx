@@ -57,7 +57,7 @@ export default ({
       sx={{ display: 'flex', alignItems: 'center' }}
     >
       <CircleIcon
-        sx={{ fontSize: '.8em', mr: 0.5 }}
+        sx={{ fontSize: '.8em', mr: 0.5, mb: 0.3 }}
         className={
           statusInfo.content === 'pending' || statusInfo.content === 'syncing'
             ? 'status-circle-animation'
