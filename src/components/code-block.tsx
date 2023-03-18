@@ -4,7 +4,7 @@ import Highlight, {
   PrismTheme,
 } from 'prism-react-renderer';
 import React from 'react';
-import prismDarkTheme from 'prism-react-renderer/themes/dracula';
+import prismDarkTheme from 'prism-react-renderer/themes/vsDark';
 import prismLightTheme from 'prism-react-renderer/themes/github';
 import { useTheme } from '@mui/material';
 
