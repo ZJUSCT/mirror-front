@@ -69,7 +69,7 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={openWrtIcon} color={color} />;
     case 'pypi':
       return <Icon height={size} icon={pythonIcon} color={color} />;
-    case 'raspbian':
+    case 'raspberrypi':
       return <Icon height={size} icon={raspberryPiIcon} color={color} />;
     case 'rocky':
       return <Icon height={size} icon={rockyIcon} color={color} />;
