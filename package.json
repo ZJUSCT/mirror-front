@@ -23,6 +23,8 @@
     "@formatjs/intl-displaynames": "^5.4.3",
     "@iconify/icons-logos": "^1.2.6",
     "@iconify/icons-simple-icons": "^1.2.44",
+    "@iconify/icons-mdi": "^1.2.44",
+    "@iconify/icons-file-icons": "^1.2.3",
     "@iconify/react": "^3.2.1",
     "@mdx-js/react": "^2.3.0",
     "@mui/icons-material": "^5.6.2",
