@@ -159,7 +159,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
               </Grid>
             )}
           </Grid>
-          <Box position="fixed" top="6rem" right="5rem" zIndex={-1}>
+          <Box sx={{position: "fixed", top: "6rem", right: {xs: "-4rem", sm: "5rem"}, zIndex: -1}}>
             {TitleMirrorIcon(mirrorId, "rgb(71 123 210 / 23%)", "20rem")}
           </Box>
         </Box>
