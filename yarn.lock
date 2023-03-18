@@ -1535,10 +1535,24 @@
   resolved "https://registry.npmmirror.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@iconify/icons-file-icons@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-file-icons/-/icons-file-icons-1.2.3.tgz#57a795193a37855728490833465737a51826ebcc"
+  integrity sha512-y68vu+pMcxTQ5m3nn5ALhO5XvBaSliBX7ipKynKgAz/EPyPEGdshIZ41HCiv1yniYOf4Gd9oi6L75RbUL8iE1Q==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify/icons-logos@^1.2.6":
   version "1.2.23"
   resolved "https://registry.npmmirror.com/@iconify/icons-logos/-/icons-logos-1.2.23.tgz#ee07383da155f79591054990bcc9c956ea080046"
   integrity sha512-XQZyfF4AiXgQjZYN12LPymGhd9UMG0666hIzTYecM+d+jNqdLcs2zJLxNmBnTtPi+3t5JsHW+TSus7k9YydQzw==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify/icons-mdi@^1.2.44":
+  version "1.2.44"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-mdi/-/icons-mdi-1.2.44.tgz#3a4d253639e90fe7a40590299df1e724fcdef644"
+  integrity sha512-j1hw1Ar1EMz74Ehg1BwQ5h69gO++9GZqJYye2huvl9jPgvXqlNmwAFWOVZQ3EoLTfoAwcp8awfQh3FcMvaqyuA==
   dependencies:
     "@iconify/types" "*"
 
