@@ -111,14 +111,15 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
                 container
                 direction="row"
                 justifyContent="flex-start"
-                alignItems="baseline"
+                alignItems="center"
               >
-                <StatusIndicator status={mirror.status} />
+                <Box sx={{ mr: 1 }}>
+                  <StatusIndicator status={mirror.status} />
+                </Box>
                 <Typography
                   variant="subtitle1"
                   component="div"
                   color="text.disabled"
-                  sx={{ ml: 1 }}
                   display={mirror.status === 'cached' ? 'none' : 'block'}
                 >
                   <Trans>
@@ -159,8 +160,15 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
               </Grid>
             )}
           </Grid>
-          <Box sx={{position: "fixed", top: "6rem", right: {xs: "-4rem", sm: "5rem"}, zIndex: -1}}>
-            {TitleMirrorIcon(mirrorId, "rgb(71 123 210 / 23%)", "20rem")}
+          <Box
+            sx={{
+              position: 'fixed',
+              top: '6rem',
+              right: { xs: '-4rem', sm: '5rem' },
+              zIndex: -1,
+            }}
+          >
+            {TitleMirrorIcon(mirrorId, 'rgb(71 123 210 / 23%)', '20rem')}
           </Box>
         </Box>
         <Box zIndex={1} position="sticky">
