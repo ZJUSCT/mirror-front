@@ -37,6 +37,6 @@ export const defaultVersion = Object.keys(ubuntuVersionMap).find(x => x.indexOf(
 
 Ubuntu 的软件源配置文件是 `/etc/apt/sources.list`。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
 
-<ConfigGenerator promptString="请选择您的 Ubuntu 版本：" versionList={Object.keys(ubuntuVersionMap)} defaultVersion={defaultVersion} configGen={GenUbuntuConfig} />
+<ConfigGenerator promptString="请选择您的 Ubuntu 版本：" versionList={Object.keys(ubuntuVersionMap)} defaultVersion={defaultVersion} configGen={GenUbuntuConfig} language="bash" />
 
 本镜像仅包含 arm64 armhf ppc64el riscv64 s390x 架构的软件包。
