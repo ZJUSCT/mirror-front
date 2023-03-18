@@ -18,6 +18,7 @@ import { Link } from '../utils/i18n-link';
 import components from './components';
 import { readCache, writeCache } from '../utils/cache';
 import { getUrl } from '../utils/url';
+import TitleMirrorIcon from '../utils/title-mirror-icon';
 
 interface Data {
   document: {
@@ -26,7 +27,7 @@ interface Data {
   };
 }
 
-async function fetchMirror (id: string): Promise<MirrorDto> {
+async function fetchMirror(id: string): Promise<MirrorDto> {
   const res = await fetch(`/api/mirrors/${id}`);
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
@@ -49,7 +50,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
   } as MirrorDto;
   const mirrorId = data.document.frontmatter.mirrorId;
 
-  const [mirror, setMirror] = useState(
+  const [mirror, setMirror] = useState<MirrorDto>(
     readCache(`mirrors_${mirrorId}`, defaultData)
   );
   useEffect(() => {
@@ -73,7 +74,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
     >
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
-        <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }}>
+        <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }} position="relative">
           <Grid
             container
             direction="column"
@@ -118,7 +119,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
                   component="div"
                   color="text.disabled"
                   sx={{ ml: 1 }}
-                  display={mirror.status === "cached" ? "none" : "block"}
+                  display={mirror.status === 'cached' ? 'none' : 'block'}
                 >
                   <Trans>
                     最近更新于{' '}
@@ -158,10 +159,15 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
               </Grid>
             )}
           </Grid>
+          <Box position="fixed" top="6rem" right="5rem" zIndex={-1}>
+            {TitleMirrorIcon(mirrorId, "rgb(71 123 210 / 23%)", "20rem")}
+          </Box>
         </Box>
-        <Paper sx={{ px: { xs: 4, sm: 8 }, py: 4 }} elevation={0}>
-          <MDXProvider components={components}>{children}</MDXProvider>
-        </Paper>
+        <Box zIndex={1} position="sticky">
+          <Paper sx={{ px: { xs: 4, sm: 8 }, py: 4 }} elevation={0}>
+            <MDXProvider components={components}>{children}</MDXProvider>
+          </Paper>
+        </Box>
       </Box>
       <Footer />
     </Box>
