@@ -90,7 +90,11 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
                   </Typography>
                 </Link>
                 <Grid item>
-                  <LanguageIconButton />
+                  {
+                    /* TODO: add English docs
+                    <LanguageIconButton />
+                    */
+                  }
                   <ThemeIconButton />
                 </Grid>
               </Grid>
