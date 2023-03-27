@@ -17,6 +17,7 @@ import homebrewIcon from '@iconify/icons-simple-icons/homebrew';
 import kaliIcon from '@iconify/icons-simple-icons/kalilinux';
 import manjaroIcon from '@iconify/icons-simple-icons/manjaro';
 import npmIcon from '@iconify/icons-simple-icons/npm';
+import openSuseIcon from '@iconify/icons-simple-icons/opensuse';
 import openWrtIcon from '@iconify/icons-simple-icons/openwrt';
 import pythonIcon from '@iconify/icons-simple-icons/python';
 import raspberryPiIcon from '@iconify/icons-simple-icons/raspberrypi';
@@ -79,6 +80,8 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={manjaroIcon} color={color} />;
     case 'npm':
       return <Icon height={size} icon={npmIcon} color={color} />;
+    case 'opensuse':
+      return <Icon height={size} icon={openSuseIcon} color={color} />;
     case 'openwrt':
       return <Icon height={size} icon={openWrtIcon} color={color} />;
     case 'pypi':
