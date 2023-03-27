@@ -12,13 +12,13 @@ openSUSE 默认使用 [MirrorBrain](https://zh.opensuse.org/MirrorBrain) 技术�
 
 禁用官方软件源
 
-```
+```bash
 zypper mr -da
 ```
 
 添加镜像源
 
-```
+```bash
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/distribution/leap/$releasever/repo/oss/' mirror-oss
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/distribution/leap/$releasever/repo/non-oss/' mirror-non-oss
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/update/leap/$releasever/oss/' mirror-update
@@ -27,7 +27,7 @@ zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/update/leap/$releasever/non-
 
 Leap 15.3 用户还需添加 sle 和 backports 源
 
-```
+```bash
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/update/leap/$releasever/sle/' mirror-sle-update
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/update/leap/$releasever/backports/' mirror-backports-update
 ```
@@ -38,20 +38,20 @@ Leap 15.3 注：若在安装时**没有**启用在线软件源，sle 源和 back
 
 禁用官方软件源
 
-```
+```bash
 zypper mr -da
 ```
 
 添加镜像源
 
-```
+```bash
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/oss/' mirror-oss
 zypper ar -cfg 'https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/non-oss/' mirror-non-oss
 ```
 
 刷新软件源
 
-```
+```bash
 zypper ref
 ```
 
@@ -61,7 +61,7 @@ update 源仅用于推送临时安全补丁，如当日快照已发布但仍有�
 由于 update 源存在较强的时效性，上游镜像并未同步 update 源，镜像源亦无法提供该源的镜像。
 禁用 update 源并不会使系统缺失任何功能或安全更新，仅会导致极少数更新晚些推送，如有需求可以重新启用官方 update 源。
 
-## 图形界面下配置方法
+### 图形界面下配置方法
 
 以 openSUSE Leap 15.3 为例：
 
@@ -70,7 +70,7 @@ update 源仅用于推送临时安全补丁，如当日快照已发布但仍有�
 3. 在打开的窗口上方的列表中点击 Main Repository，点击 Edit；
 4. 将 download.opensuse.org 替换为
 
-    ```
+    ```plaintext
     mirrors.zju.edu.cn/opensuse
     ```
 
