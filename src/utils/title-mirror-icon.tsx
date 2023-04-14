@@ -15,6 +15,7 @@ import gnuIcon from '@iconify/icons-simple-icons/gnu';
 import gnuEmacsIcon from '@iconify/icons-simple-icons/gnuemacs';
 import homebrewIcon from '@iconify/icons-simple-icons/homebrew';
 import kaliIcon from '@iconify/icons-simple-icons/kalilinux';
+import llvmIcon from '@iconify/icons-simple-icons/llvm';
 import manjaroIcon from '@iconify/icons-simple-icons/manjaro';
 import npmIcon from '@iconify/icons-simple-icons/npm';
 import openSuseIcon from '@iconify/icons-simple-icons/opensuse';
@@ -76,6 +77,8 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={homebrewIcon} color={color} />;
     case 'kali':
       return <Icon height={size} icon={kaliIcon} color={color} />;
+    case 'llvm-apt':
+      return <Icon height={size} icon={llvmIcon} color={color} />;
     case 'manjaro':
       return <Icon height={size} icon={manjaroIcon} color={color} />;
     case 'npm':
