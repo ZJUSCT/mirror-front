@@ -98,6 +98,8 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={rosIcon} color={color} />;
     case 'rosdistro':
       return <Icon height={size} icon={rosIcon} color={color} />;
+    case 'rustup':
+      return <Icon height={size} icon={rustIcon} color={color} />;
     case 'ubuntu':
       return <Icon height={size} icon={ubuntuIcon} color={color} />;
     case 'ubuntu-ports':
