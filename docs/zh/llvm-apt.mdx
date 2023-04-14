@@ -1,0 +1,27 @@
+---
+mirrorId: llvm-apt
+---
+
+import ConfigGenerator from '../../src/components/config-generator'
+
+### 安装脚本
+
+export const llvmVersionMap = {
+    "默认": "",
+    "15": "15",
+    "14": "14",
+    "13": "13",
+    "12": "12",
+    "11": "11",
+}
+
+export const GetConfig = (version) => {
+    var versionName = llvmVersionMap[version]
+    return `wget https://mirrors.zju.edu.cn/llvm-apt/llvm.sh
+chmod +x llvm.sh
+./llvm.sh ${versionName} all -m https://mirrors.zju.edu.cn/llvm-apt`
+}
+
+使用下面的指令进行配置。
+
+<ConfigGenerator promptString="请选择您需要的 LLVM 版本：" versionList={Object.keys(llvmVersionMap)} defaultVersion="默认" configGen={GetConfig} language="bash" />
