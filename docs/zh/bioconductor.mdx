@@ -19,3 +19,14 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("$package_name")
 ```
+
+### 离线使用
+
+如果您的网络环境处于校内但无法访问公网，在完成下列步骤后，即可正常使用 Bioconductor 镜像。
+1. 确保 BiocManager 的版本不低于 `1.30.12`。	
+2. 使用一台可以访问公网的设备，访问 [https://bioconductor.org/config.yaml](https://bioconductor.org/config.yaml) 下载 `config.yaml`，并将该文件拷贝到 BiocManager 所在的校内设备上。然后，在 `~/.Rprofile` 添加如下配置：
+```R
+options(
+    BIOCONDUCTOR_CONFIG_FILE = "file:///path/to/config.yaml"  # config.yaml 所在的路径
+)
+```
