@@ -15,7 +15,6 @@ import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
 import NameIconButton from '../components/name-icon-button';
 import ZjuFalconIcon from '../../resource/icons/zju-falcon.svg';
-import './index.css';
 
 interface Data {
   mirrorDocs: {
