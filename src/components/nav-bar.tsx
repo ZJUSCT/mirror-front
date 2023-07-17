@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Grid } from '@mui/material';
+import { Link, Grid, Hidden } from '@mui/material';
 import { MirrorDto } from '../types/mirror';
 
 export default ({ data }: { data: MirrorDto[] }) => {
@@ -19,26 +19,32 @@ export default ({ data }: { data: MirrorDto[] }) => {
   for (let i = 'A'.charCodeAt(0); i <= 'Z'.charCodeAt(0); i += 1) {
     const char = String.fromCharCode(i);
     if (caps[char]) {
-      buttons.push(<Link href={`#${char}`}>{char}</Link>);
+      buttons.push(
+        <Link href={`#${char}`} style={{ textDecoration: 'none' }}>
+          {char}
+        </Link>
+      );
     };
   }
 
   return (
-    <Grid
-      container
-      flexDirection="column"
-      flexWrap="nowrap"
-      spacing={1}
-      sx={{
-        position: 'fixed',
-        bottom: '1rem',
-        right: '1rem',
-        width: 'fit-content',
-      }}
-    >
-      {buttons.map(fab => (
-        <Grid item>{fab}</Grid>
-      ))}
-    </Grid>
+    <Hidden smDown>
+      <Grid
+        container
+        flexDirection="column"
+        flexWrap="nowrap"
+        spacing={1}
+        sx={{
+          position: 'fixed',
+          bottom: '1rem',
+          right: '1rem',
+          width: 'fit-content',
+        }}
+      >
+        {buttons.map(fab => (
+          <Grid item>{fab}</Grid>
+        ))}
+      </Grid>
+    </Hidden>
   );
 };
