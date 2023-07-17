@@ -2,6 +2,10 @@ code {
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace !important;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 @keyframes circle-animation {
     0% {
         opacity: 0.5;
