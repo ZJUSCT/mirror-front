@@ -1,0 +1,18 @@
+---
+mirrorId: crates.io-index
+isGit: true
+---
+
+编辑 `~/.cargo/config` 文件，添加以下内容：
+
+```toml
+[source.crates-io]
+replace-with = 'zju'
+
+[source.zju]
+registry = "sparse+https://mirrors.zju.edu.cn/crates.io-index/"
+```
+
+该镜像可加快 cargo 读取软件包索引的速度。
+
+注：`sparse+` 表示在使用稀疏索引，链接末尾的 `/` 不能缺少。
