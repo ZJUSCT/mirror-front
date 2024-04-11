@@ -1,4 +1,6 @@
-image: node:lts-bullseye
+image: 
+  name: node:18
+  pull_policy: if-not-present
 
 stages:
   - build
@@ -10,10 +12,10 @@ gatsby-build:
     CHOKIDAR_USEPOLLING: 1
   cache:
     paths:
-    - node_modules/
+    - .npm/
   script:
-  - bash cached-restore.sh
-  - yarn run build
+  - npm ci --cache .npm --prefer-offline
+  - npm run build
   artifacts:
     paths:
     - public
