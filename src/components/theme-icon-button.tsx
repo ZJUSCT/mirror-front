@@ -2,9 +2,9 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
 import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
 import ToolTip from '@mui/material/Tooltip';
-import { IconButton } from 'gatsby-theme-material-ui';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { LinkIconButton as IconButton } from './link-mui-components';
 import { ThemeMode, useMode } from './theme-context';
 
 export default () => {

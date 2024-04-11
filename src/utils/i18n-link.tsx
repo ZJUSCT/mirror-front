@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import { LANGUAGE_KEY } from 'gatsby-plugin-react-i18next/dist/types';
-import { Link as MuiLink } from 'gatsby-theme-material-ui';
 import { LinkProps } from '@mui/material';
+import { LinkLink as MuiLink } from '~/components/link-mui-components';
 
 export function linkWithI18n<
   P extends { to: string; onClick?: React.MouseEventHandler }

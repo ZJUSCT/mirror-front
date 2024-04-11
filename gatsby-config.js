@@ -17,20 +17,6 @@ module.exports = {
   pathPrefix: config.pathPrefix,
   plugins: [
     {
-      resolve: `gatsby-theme-material-ui`,
-      options: {
-        webFontsConfig: {
-          fonts: {
-            google: [
-              {
-                family: `Metrophobic`
-              },
-            ],
-          },
-        },
-      }
-    },
-    {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'mirrors',
@@ -113,7 +99,6 @@ module.exports = {
         icon: 'resource/icons/favicon.svg',
       },
     },
-    `gatsby-plugin-preact`,
     `gatsby-plugin-sass`,
     {
       resolve: "gatsby-plugin-sitemap",

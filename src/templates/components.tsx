@@ -8,11 +8,12 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from 'gatsby-theme-material-ui';
 import React, { memo } from 'react';
+import { MDXComponents } from '@mdx-js/react/lib';
+import { LinkLink as Link } from '~/components/link-mui-components';
 import CodeBlock from '../components/code-block';
 
-const components = {
+const components: MDXComponents = {
   p: (() => {
     const Paragraph = props => (
       <Typography {...props} style={{ margin: '8px 0' }} />

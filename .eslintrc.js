@@ -13,13 +13,15 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: './',
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'import', 'prettier'],
   rules: {
     // needed by prettier
     'prettier/prettier': 'warn',

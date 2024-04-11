@@ -1,15 +1,13 @@
 import { MDXProvider } from '@mdx-js/react';
-import { ArrowBack, ConnectedTvOutlined } from '@mui/icons-material';
 import FolderIcon from '@mui/icons-material/Folder';
 import { Box, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
-import { Button } from 'gatsby-theme-material-ui';
+import { LinkButton as Button } from '~/components/link-mui-components';
 import React, { useEffect, useState } from 'react';
 import Footer from '../components/footer';
 import FileList from '../components/file-list';
-import LanguageIconButton from '../components/language-icon-button';
 import Seo from '../components/seo';
 import StatusIndicator from '../components/status-indicator';
 import ThemeIconButton from '../components/theme-icon-button';
@@ -90,11 +88,9 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
                   </Typography>
                 </Link>
                 <Grid item>
-                  {
-                    /* TODO: add English docs
+                  {/* TODO: add English docs
                     <LanguageIconButton />
-                    */
-                  }
+                    */}
                   <ThemeIconButton />
                 </Grid>
               </Grid>

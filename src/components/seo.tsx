@@ -1,10 +1,9 @@
 import React from 'react';
-import { JSX } from 'preact';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useTheme } from '@mui/material';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 
-type MetaProps = JSX.IntrinsicElements['meta'];
+type MetaProps = React.JSX.IntrinsicElements['meta'];
 
 const Helmet: React.FC = ({children, title, meta}) => {
   const {languages, language, originalPath, defaultLanguage, siteUrl = ''} = useI18next();
@@ -16,11 +15,7 @@ const Helmet: React.FC = ({children, title, meta}) => {
     <>
       <html lang={language} />
       <title>{title}</title>
-      {
-        meta?.map((m: MetaProps) => (
-          <meta {...m} />
-        ))
-      }
+      {meta?.map((m: MetaProps, i: number) => <meta {...m} key={i}/>)}
       <link rel="canonical" href={createUrlWithLang(language)} />
       {languages.map((lng) => (
         <link rel="alternate" key={lng} href={createUrlWithLang(lng)} hrefLang={lng} />

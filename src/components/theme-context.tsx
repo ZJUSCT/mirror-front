@@ -5,14 +5,14 @@ import {
 } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as React from 'react';
-import configTheme from './config-theme';
+import { lightTheme, darkTheme } from './config-theme';
 import { readCache, writeCache } from '../utils/cache';
 
 export type ThemeMode = PaletteMode | 'auto';
 
 export declare type ThemeContextInterface = [
   ThemeMode,
-  (mode: ThemeMode) => void
+  (mode: ThemeMode) => void,
 ];
 
 export const ThemeContext = React.createContext<ThemeContextInterface | null>(
@@ -27,11 +27,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = React.useState<ThemeMode>(savedMode);
 
   let paletteMode: PaletteMode;
+  // ensure renders execute equal number of hooks
+  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const prefersLight = useMediaQuery('(prefers-color-scheme: light)');
   if (mode === 'auto') {
     // wait for media query result stable
     // ref: https://github.com/mui/material-ui/issues/15588#issuecomment-567803082
-    const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-    const prefersLight = useMediaQuery('(prefers-color-scheme: light)');
     if (prefersDark !== !prefersLight) return null;
     const preferredMode = prefersDark ? 'dark' : 'light';
     paletteMode = preferredMode;
@@ -39,18 +40,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     paletteMode = mode;
   }
 
-  const theme = React.useMemo(
-    () =>
-      createTheme(
-        {
-          palette: {
-            mode: paletteMode,
-          },
-        },
-        configTheme(paletteMode)
-      ),
-    [paletteMode]
-  );
+  const theme = paletteMode === 'light' ? lightTheme : darkTheme;
 
   const updateMode = (newMode: ThemeMode) => {
     setMode(newMode);

@@ -1,23 +1,17 @@
 import { MDXProvider } from '@mdx-js/react';
-import { ArrowBack, DateRange, AccountCircle } from '@mui/icons-material';
-import FolderIcon from '@mui/icons-material/Folder';
+import { DateRange, AccountCircle } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
-import { Button } from 'gatsby-theme-material-ui';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Footer from '../components/footer';
-import FileList from '../components/file-list';
 import LanguageIconButton from '../components/language-icon-button';
 import Seo from '../components/seo';
-import StatusIndicator from '../components/status-indicator';
 import ThemeIconButton from '../components/theme-icon-button';
 import { NewsDto } from '../types/news';
 import { Link } from '../utils/i18n-link';
 import components from './components';
-import { readCache, writeCache } from '../utils/cache';
-import { getUrl } from '../utils/url';
 
 interface Data {
   document: {

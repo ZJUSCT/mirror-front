@@ -1,9 +1,9 @@
 import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Tooltip } from '@mui/material';
-import { IconButton } from 'gatsby-theme-material-ui';
+import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
+import { LinkIconButton as IconButton } from './link-mui-components';
 import { usePrefs } from './preferences-context';
 
 const nameMode = {

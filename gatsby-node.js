@@ -2,6 +2,7 @@ const { match, compile } = require("path-to-regexp");
 const { createFilePath } = require(`gatsby-source-filesystem`)
 const { createContentDigest } = require(`gatsby-core-utils`)
 const config = require('./config');
+const path = require("path");
 
 const mdxResolverPassthrough = (fieldName) => async (
   source,
@@ -194,3 +195,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     });
   })
 }
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      alias: {
+        '~': path.resolve(__dirname, 'src'),
+      },
+    },
+  });
+};

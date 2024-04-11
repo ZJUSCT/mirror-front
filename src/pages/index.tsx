@@ -40,7 +40,12 @@ interface Data {
   };
 }
 
-const networkMap = {
+const networkMap: {
+  [value: number]: {
+    text: string;
+    color: string;
+  };
+} = {
   0: {
     text: '校外网络',
     color: 'primary',
@@ -124,12 +129,13 @@ const Index = ({ data }: { data: Data }) => {
         .filter(d => d.locale === language)
         .map(
           d =>
-            [d.frontmatter.title, new Date(d.frontmatter.date), d.slug] as (
-              | Date
-              | string
-            )[]
+            [d.frontmatter.title, new Date(d.frontmatter.date), d.slug] as [
+              string,
+              Date,
+              string,
+            ]
         )
-        .sort((a, b) => b[1] - a[1]),
+        .sort((a, b) => b[1].getTime() - a[1].getTime()),
     [data, language]
   );
 
@@ -226,7 +232,11 @@ const Index = ({ data }: { data: Data }) => {
             <Typography gutterBottom variant="h5" component="div">
               <Trans>常用镜像</Trans>
             </Typography>
-            <Grid container spacing={{ xs: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+            <Grid
+              container
+              spacing={{ xs: 2 }}
+              columns={{ xs: 1, sm: 3, md: 6 }}
+            >
               {frequentlyUsedMirror.map((e, i) => {
                 const mirror = mirrors[e.id];
                 return (
@@ -236,7 +246,10 @@ const Index = ({ data }: { data: Data }) => {
                         name={mirror.name[language]}
                         desc={mirror.desc[language]}
                         icon={e.icon}
-                        url={getUrl(mirror.docUrl || mirror.url, !!mirror.docUrl)}
+                        url={getUrl(
+                          mirror.docUrl || mirror.url,
+                          !!mirror.docUrl
+                        )}
                       />
                     </Grid>
                   )
@@ -249,8 +262,8 @@ const Index = ({ data }: { data: Data }) => {
               <Trans>近期更新</Trans>
             </Typography>
             <Grid>
-              {newsUrls.map(([title, date, url], _) => (
-                <Grid container>
+              {newsUrls.map(([title, date, url], i) => (
+                <Grid container key={i}>
                   <Link href={url} underline="hover">
                     {title}
                   </Link>

@@ -1,12 +1,15 @@
-import { Card, Grid, Typography, Tooltip } from '@mui/material';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import { useI18next } from 'gatsby-plugin-react-i18next';
-import { CardActionArea } from 'gatsby-theme-material-ui';
 import * as React from 'react';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import { LinkCardActionArea as CardActionArea } from './link-mui-components';
 import { Locale, Mirror } from '../types/mirror';
 import StatusIndicator from './status-indicator';
 import { getUrl } from '../utils/url';
 import { usePrefs } from './preferences-context';
-import VerifiedIcon from '@mui/icons-material/Verified';
 import officialCertificatedMirrorList from '../utils/official-certificated-mirror-list';
 
 const SearchItemCard = (props: { queryItem: Mirror }) => {

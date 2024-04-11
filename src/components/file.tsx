@@ -1,8 +1,10 @@
 import React from 'react';
-import { Card, Grid, Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import AlbumIcon from '@mui/icons-material/Album';
 import { Trans } from 'gatsby-plugin-react-i18next';
-import { CardActionArea } from 'gatsby-theme-material-ui';
+import { LinkCardActionArea as CardActionArea } from './link-mui-components';
 
 export interface FileProps {
   name: string;
