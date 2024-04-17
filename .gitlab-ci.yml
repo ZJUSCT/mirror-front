@@ -10,10 +10,13 @@ gatsby-build:
   stage: build
   variables:
     CHOKIDAR_USEPOLLING: 1
+    GATSBY_TELEMETRY_DISABLED: 1
   cache:
     paths:
     - .npm/
   script:
+  - apt-get update && apt-get install -y libvips42
+  - npm config set registry https://registry.npmmirror.com
   - npm ci --cache .npm --prefer-offline
   - npm run build
   artifacts:
