@@ -1,5 +1,5 @@
 image: 
-  name: node:18
+  name: node:20
   pull_policy: if-not-present
 
 stages:
@@ -17,6 +17,7 @@ gatsby-build:
   script:
   - apt-get update && apt-get install -y libvips42
   - npm config set registry https://registry.npmmirror.com
+  - npm install -g npm@10.5.1
   - npm ci --cache .npm --prefer-offline
   - npm run build
   artifacts:
