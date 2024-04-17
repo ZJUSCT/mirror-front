@@ -1,6 +1,10 @@
-localhost:50000
+{
+	admin off
+}
 
-file_server
-reverse_proxy /api/* https://mirror.zju.edu.cn {
-	header_up Host {upstream_hostport}
+http://:50000 {
+	file_server
+	reverse_proxy /api/* https://mirror.zju.edu.cn {
+		header_up Host {upstream_hostport}
+	}
 }
