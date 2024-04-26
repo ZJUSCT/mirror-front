@@ -38,13 +38,18 @@ export default ({ children, codeStyle, language }: CodeBlockProps) => {
             ...codeStyle,
           }}
         >
-          {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span key={key} {...getTokenProps({ token, key })} />
-              ))}
-            </div>
-          ))}
+          {tokens.map((line, i) => {
+            if (line.length === 1 && line[0].content.indexOf('\u200b') > -1) {
+              return <br />;
+            }
+            return (
+              <div key={i} {...getLineProps({ line, key: i })}>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token, key })} />
+                ))}
+              </div>
+            );
+          })}
         </code>
       )}
     </Highlight>
