@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Link, Typography } from '@mui/material';
+import { Box, Chip, ChipProps, Grid, Link, Typography } from '@mui/material';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ import SearchTable from '../components/search-table';
 import NavBar from '../components/nav-bar';
 import Seo from '../components/seo';
 import ThemeIconButton from '../components/theme-icon-button';
-import { Mirror, MirrorDto } from '../types/mirror';
+import { Locale, Mirror, MirrorDto } from '../types/mirror';
 import frequentlyUsedMirror from '../utils/frequently-used-mirror-list';
 import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
@@ -43,7 +43,7 @@ interface Data {
 const networkMap: {
   [value: number]: {
     text: string;
-    color: string;
+    color: ChipProps['color'];
   };
 } = {
   0: {
@@ -243,8 +243,8 @@ const Index = ({ data }: { data: Data }) => {
                   mirror && (
                     <Grid item xs={1} key={i}>
                       <FrequentlyUsedMirrorCard
-                        name={mirror.name[language]}
-                        desc={mirror.desc[language]}
+                        name={mirror.name[language as Locale]}
+                        desc={mirror.desc[language as Locale]}
                         icon={e.icon}
                         url={getUrl(
                           mirror.docUrl || mirror.url,

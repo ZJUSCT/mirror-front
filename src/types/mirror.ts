@@ -20,9 +20,9 @@ export interface MirrorDto {
   name: Record<Locale, string>;
   desc: Record<Locale, string>;
   status: MirrorStatus;
-  lastUpdated: string;
-  nextScheduled: string;
-  lastSuccess: string;
+  lastUpdated: number;
+  nextScheduled: number;
+  lastSuccess: number;
   url: string;
   files?: File[];
 }
