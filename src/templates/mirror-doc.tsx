@@ -1,6 +1,7 @@
 import { MDXProvider } from '@mdx-js/react';
 import FolderIcon from '@mui/icons-material/Folder';
 import { Box, Grid, Typography } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
@@ -34,9 +35,7 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
   if (!res.ok) {
     throw new Error(`API call failed: ${res.status} ${await res.text()}`);
   }
-  const json = await res.json();
-  writeCache(`mirrors_${id}`, json);
-  return json;
+  return res.json();
 }
 
 const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
@@ -109,7 +108,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
               />
 
               <Typography variant="h2" fontWeight={400} component="div">
-                {name}
+                {name === '' ? <Skeleton width="4em" /> : name}
               </Typography>
 
               <Grid
