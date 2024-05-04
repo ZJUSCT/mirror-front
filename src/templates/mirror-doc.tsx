@@ -5,16 +5,16 @@ import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import { LinkButton as Button } from '~/components/link-mui-components';
-import React, { useEffect, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import Footer from '../components/footer';
 import FileList from '../components/file-list';
 import Seo from '../components/seo';
 import StatusIndicator from '../components/status-indicator';
 import ThemeIconButton from '../components/theme-icon-button';
-import { MirrorDto } from '../types/mirror';
+import { Locale, MirrorDto } from '../types/mirror';
 import { Link } from '../utils/i18n-link';
 import components from './components';
-import { readCache, writeCache } from '../utils/cache';
+import { popCache, writeCache } from '../utils/cache';
 import { getUrl } from '../utils/url';
 import TitleMirrorIcon from '../utils/title-mirror-icon';
 
@@ -24,6 +24,10 @@ interface Data {
     frontmatter: any;
   };
 }
+
+type MirrorDocProps = {
+  data: Data;
+};
 
 async function fetchMirror(id: string): Promise<MirrorDto> {
   const res = await fetch(`/api/mirrors/${id}`);
@@ -35,7 +39,7 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
   return json;
 }
 
-const MirrorDoc = ({ data, children }: { data: Data }) => {
+const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
   const { language } = useI18next();
 
   const defaultData = {
@@ -46,11 +50,12 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
     },
     status: 'unknown',
   } as MirrorDto;
-  const mirrorId = data.document.frontmatter.mirrorId;
+  const { mirrorId } = data.document.frontmatter;
 
-  const [mirror, setMirror] = useState<MirrorDto>(
-    readCache(`mirrors_${mirrorId}`, defaultData)
-  );
+  const [mirror, setMirror] = useState<MirrorDto>({
+    ...defaultData,
+    ...popCache(`mirrors_${mirrorId}`, defaultData),
+  });
   useEffect(() => {
     fetchMirror(mirrorId)
       .then(d => setMirror(d))
@@ -60,7 +65,7 @@ const MirrorDoc = ({ data, children }: { data: Data }) => {
   const fallbackUrl = `/${mirrorId}`;
   const mirrorUrl = getUrl(mirror.url ?? fallbackUrl, false);
 
-  const name = mirror.name[language];
+  const name = mirror.name[language as Locale];
   return (
     <Box
       sx={{

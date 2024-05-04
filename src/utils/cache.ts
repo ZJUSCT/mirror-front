@@ -11,4 +11,10 @@ function readCache<T>(key: string, defaultValue: T): T {
   return d ? JSON.parse(d) : defaultValue;
 }
 
-export { writeCache, readCache };
+function popCache<T>(key: string, defaultValue: T): T {
+  const d = readCache(key, defaultValue);
+  localStorage.removeItem(`${cachePrefix}${key}`);
+  return d;
+}
+
+export { writeCache, readCache, popCache };
