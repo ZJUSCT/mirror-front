@@ -14,6 +14,8 @@ import {
 import { Trans } from 'gatsby-plugin-react-i18next';
 import CodeBlock from './code-block';
 
+type ConfigStyle = 'default' | 'new' | 'old';
+
 const ubuntuVersionMap: Record<number | string, string> = {
   2404: 'noble',
   2310: 'mantic',
@@ -40,22 +42,31 @@ const configGenOld = (
 ) => {
   const ubuntuName = ubuntuVersionMap[version];
   const httpProtocol = enableHTTPS ? 'https' : 'http';
-  const debSrcText = enableSrc ? '' : '# ';
   const proposedText = enableProposed ? '' : '# ';
   const securityRepo = enableSecurity
     ? 'mirrors.zju.edu.cn'
     : 'security.ubuntu.com';
-  return `deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
-  ${debSrcText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
+  let sources = `deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
   deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
-  ${debSrcText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
   deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
-  ${debSrcText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
-  
-  deb ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse
-  ${debSrcText}deb-src ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse
-  ${proposedText}deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse
-  ${proposedText}${debSrcText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
+  deb ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
+  if (enableSrc) {
+    sources += `
+  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
+  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
+  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
+  deb-src ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
+  }
+
+  if (enableProposed) {
+    sources += `
+  ${proposedText}deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
+    if (enableSrc) {
+      sources += `
+  ${proposedText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
+    }
+  }
+  return sources;
 };
 
 const configGenNew = (
@@ -106,7 +117,9 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
   const [enableSrc, setEnableSrc] = useState(false);
   const [enableProposed, setEnableProposed] = useState(false);
   const [enableSecurity, setEnableSecurity] = useState(true);
-  const shouldUseNewConf = () => parseInt(version, 10) >= 2404;
+  const [confStyle, setConfStyle] = useState('default' as ConfigStyle);
+  const newConfAvailable = () => parseInt(version, 10) >= 2404;
+  const shouldUseNewConf = () => newConfAvailable() && confStyle !== 'old';
 
   return (
     <Box>
@@ -129,7 +142,7 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
               id="demo-simple-select-helper"
               label="Age"
               onChange={event => {
-                setVersion(event.target.value as string);
+                setVersion(event.target.value);
               }}
               defaultValue={version}
             >
@@ -187,30 +200,44 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
           }
           label="启用安全更新镜像（仅推荐浙江大学校网内启用）"
         />
+        <FormControlLabel
+          control={
+            <Switch
+              disabled={!newConfAvailable()}
+              checked={shouldUseNewConf()}
+              onChange={e => setConfStyle(e.target.checked ? 'new' : 'old')}
+            />
+          }
+          label="使用 DEB822 格式（ Ubuntu 24.04 起）"
+        />
       </FormGroup>
-      <Grid container direction="row" my={2}>
-        <Typography>该版本 Ubuntu 的默认软件源配置文件是</Typography>
-        <code
-          style={{ margin: '0 0.5rem', fontWeight: 'bold', color: 'brown' }}
-        >
-          {shouldUseNewConf()
-            ? '/etc/apt/sources.list.d/ubuntu.sources'
-            : '/etc/apt/sources.list'}
-        </code>
-        <Typography>
-          。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
-        </Typography>
-        {shouldUseNewConf() && (
-          <>
-            <Typography style={{ fontWeight: 'bold' }}>
-              如果您从旧版本 Ubuntu 升级到该版本，可能需要同时备份并清除
-            </Typography>
-            <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
-              /etc/apt/sources.list
-            </code>
-            <Typography style={{ fontWeight: 'bold' }}>的内容。</Typography>
-          </>
-        )}
+      <Grid container direction="column" my={2}>
+        <Grid container direction="row">
+          <Typography>软件源配置文件是</Typography>
+          <code
+            style={{ margin: '0 0.5rem', fontWeight: 'bold', color: 'brown' }}
+          >
+            {shouldUseNewConf()
+              ? '/etc/apt/sources.list.d/ubuntu.sources'
+              : '/etc/apt/sources.list'}
+          </code>
+        </Grid>
+        <Grid container direction="row">
+          <Typography>
+            将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
+          </Typography>
+          {shouldUseNewConf() && (
+            <>
+              <Typography style={{ fontWeight: 'bold' }}>
+                如果您从旧版本 Ubuntu 升级到该版本，可能需要同时备份并清除
+              </Typography>
+              <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
+                /etc/apt/sources.list
+              </code>
+              <Typography style={{ fontWeight: 'bold' }}>的内容。</Typography>
+            </>
+          )}
+        </Grid>
       </Grid>
       <CodeBlock language="bash">
         {shouldUseNewConf()
