@@ -15,7 +15,7 @@ gatsby-build:
     paths:
     - .npm/
   script:
-  - apt-get update && apt-get install -y libvips42
+  - apt-get update && apt-get install -y libvips42 libvips-dev
   - npm config set registry https://registry.npmmirror.com
   - npm install -g npm@10.5.1
   - npm ci --cache .npm --prefer-offline
