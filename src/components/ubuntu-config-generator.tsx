@@ -171,7 +171,7 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
               onChange={e => setEnableHTTPS(e.target.checked)}
             />
           }
-          label="启用 HTTPS （容器镜像可能不支持）"
+          label="启用 HTTPS （容器镜像可能默认不支持）"
         />
         <FormControlLabel
           control={
@@ -208,7 +208,7 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
               onChange={e => setConfStyle(e.target.checked ? 'new' : 'old')}
             />
           }
-          label="使用 DEB822 格式（ Ubuntu 24.04 起）"
+          label="使用 DEB822 格式（Ubuntu 24.04 起）"
         />
       </FormGroup>
       <Grid container direction="column" my={2}>
