@@ -180,7 +180,7 @@ export default () => {
         alignItems="flex-end"
       >
         <Grid item sx={{ mb: 1 }}>
-          <Typography component="p">请选择您的 Ubuntu 版本：</Typography>
+          <Typography component="p">请选择您的 Debian 版本：</Typography>
         </Grid>
         <Grid item>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
