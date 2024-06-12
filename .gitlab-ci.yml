@@ -1,5 +1,5 @@
 image: 
-  name: node:20
+  name: dockerhub.zjusct.io/library/node:20
   pull_policy: if-not-present
 
 stages:
