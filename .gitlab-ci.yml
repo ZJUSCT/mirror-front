@@ -1,5 +1,5 @@
 image: 
-  name: dockerhub.zjusct.io/library/node:20
+  name: git.zju.edu.cn:5050/image/node:20
   pull_policy: if-not-present
 
 stages:
