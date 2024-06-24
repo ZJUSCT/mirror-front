@@ -1,0 +1,22 @@
+---
+title: 关于分阶段移除 CentOS 镜像的通知
+name: removeal_of_centos_legacy_240624
+author: Azuk @ ZJUSCT Falcon Team
+date: 2024-06-24
+---
+
+由于 CentOS 7 在 6 月 30 日结束生命周期， CentOS 传统版本将全部结束支持，上游即将清空镜像仓库中的内容。为避免 CentOS 镜像终止服务产生不便，我们决定分阶段移除该镜像。
+
+**2024-06-24:** 停止该软件源与上游的同步
+**2024-06-30:** 停止该软件源的校外访问
+**2026-06-30:** 移除文件，终止该软件源的校内服务
+
+校内用户：
+
+请注意 ELRepo 与 EPEL 也即将停止对 CentOS 7 的支持，且 CentOS 7 不再会提供安全更新，您需要尽快迁移至其他发行版。当前我们没有提供 ELRepo Archive 与 EPEL Archive 镜像。
+
+校外用户：
+
+2024-06-30 后，我们不再提供 CentOS 镜像源，请迁移到其他镜像站的 centos-vault 镜像。
+
+感谢您的理解与支持
