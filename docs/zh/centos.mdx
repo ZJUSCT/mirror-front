@@ -2,18 +2,19 @@
 mirrorId: centos
 ---
 
+> CentOS Legacy 已经结束生命周期（ End-of-Life ），不再提供安全更新支持，请避免继续使用 CentOS 。
+
+> CentOS 镜像目前仅为校内用户提供镜像服务。若您的网络环境处于校外， HTTP(S) 请求将会被重定向（ 302 ）至清华 TUNA 镜像站。
+
 在使用 CentOS 镜像前，请检查您所应该使用的对应软件源：
 
 | CentOS 版本 | 架构 | 对应软件源 |
 |---|---|---|
-| 6 及之前 | - | centos-vault |
-| 7 | x86_64 | centos |
-| 7 | 其他 | centos-altarch |
-| 8 ~ 8.1 | x86_64 | centos |
-| 8 ~ 8.1 | 其他 | centos-altarch |
-| 8.1 ~ 8.5 | - | centos-vault |
-| 8 Stream | - | centos |
-| 9 Stream | - | centos-stream |
+| \<= 7.8 | - | centos-vault |
+| 7.9 | x86_64 | centos |
+| 7.9 | 其他 | centos-vault |
+| 8.0 ~ 8.5 | - | centos-vault |
+| Stream | - | centos-stream |
 
 
 使用以下命令切换源并备份原始配置：
