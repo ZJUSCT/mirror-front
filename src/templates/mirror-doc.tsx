@@ -71,7 +71,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
       }}
     >
       <Seo title={`${name} | ZJU Mirror`} />

@@ -11,7 +11,7 @@ export default () => {
   const ZjuIcon = theme.palette.mode === 'light' ? Zju : ZjuDark;
 
   return (
-    <Box sx={{ px: { xs: 4, sm: 8 }, py: 6 }}>
+    <Box sx={{ px: { xs: 4, sm: 8 }, py: 6, mt: 'auto' }}>
       <Grid
         container
         direction="row"
