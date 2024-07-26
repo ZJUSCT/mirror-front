@@ -1,7 +1,19 @@
-import { Box, Chip, ChipProps, Grid, Link, Typography } from '@mui/material';
+import {
+  Box,
+  Chip,
+  ChipProps,
+  Grid,
+  IconButton,
+  InputBase,
+  Link,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import Fuse from 'fuse.js';
 import Footer from '../components/footer';
 import FrequentlyUsedMirrorCard from '../components/frequently-used-mirror-card';
 import LanguageIconButton from '../components/language-icon-button';
@@ -90,6 +102,7 @@ const Index = ({ data }: { data: Data }) => {
   const [mirrorsRaw, setMirrorsRaw] = useState<MirrorDto[]>(
     readCache('mirrors', [])
   );
+  const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     fetchMirrors()
@@ -123,6 +136,7 @@ const Index = ({ data }: { data: Data }) => {
       ),
     [mirrorsRaw, mirrorDocUrls]
   );
+
   const newsUrls = React.useMemo<Array<[string, Date, string]>>(
     () =>
       data.news.nodes
@@ -138,6 +152,23 @@ const Index = ({ data }: { data: Data }) => {
         .sort((a, b) => b[1].getTime() - a[1].getTime()),
     [data, language]
   );
+
+  const fuseSearch = React.useMemo(
+    () =>
+      new Fuse(mirrorsRaw, {
+        keys: ['id', `name.${language}`, `desc.${language}`],
+      }),
+    [mirrorsRaw, language]
+  );
+
+  const [searching, searchResults] = React.useMemo(() => {
+    const input = searchInput.trim();
+    if (input.length === 0) return [false, null];
+
+    const searchedItems = fuseSearch.search(input).map(r => r.item);
+    if (searchedItems.length === 0) return [false, null];
+    return [true, searchedItems];
+  }, [fuseSearch, searchInput]);
 
   return (
     <>
@@ -278,12 +309,32 @@ const Index = ({ data }: { data: Data }) => {
             <Typography gutterBottom variant="h5" component="div">
               <Trans>所有镜像</Trans>
             </Typography>
-            <SearchTable queryResults={Object.values(mirrors)} />
+            <Box id="search-box">
+              <Paper
+                component="form"
+                sx={{ my: 2, p: '2px 4px', display: 'flex' }}
+              >
+                <IconButton sx={{ p: '10px' }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder={t('搜索') ?? ''}
+                  inputProps={{ 'aria-label': 'search mirrors' }}
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                />
+              </Paper>
+            </Box>
+            <SearchTable
+              queryResults={searchResults ?? Object.values(mirrors)}
+              searching={searching}
+            />
           </Grid>
         </Grid>
         <Footer />
       </Box>
-      <NavBar data={Object.values(mirrors)} />
+      <NavBar data={Object.values(mirrors)} searching={searching} />
     </>
   );
 };

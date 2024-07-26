@@ -2,7 +2,13 @@ import React from 'react';
 import { Link, Grid, Hidden } from '@mui/material';
 import { MirrorDto } from '../types/mirror';
 
-export default ({ data }: { data: MirrorDto[] }) => {
+export default ({
+  data,
+  searching,
+}: {
+  data: MirrorDto[];
+  searching: boolean;
+}) => {
   const caps: { [key: string]: boolean } = {};
 
   data.forEach(mirror => {
@@ -24,27 +30,31 @@ export default ({ data }: { data: MirrorDto[] }) => {
           {char}
         </Link>
       );
-    };
+    }
   }
 
   return (
-    <Hidden smDown>
-      <Grid
-        container
-        flexDirection="column"
-        flexWrap="nowrap"
-        spacing={1}
-        sx={{
-          position: 'fixed',
-          bottom: '1rem',
-          right: '1rem',
-          width: 'fit-content',
-        }}
-      >
-        {buttons.map(fab => (
-          <Grid item>{fab}</Grid>
-        ))}
-      </Grid>
-    </Hidden>
+    <Grid
+      container
+      flexDirection="column"
+      flexWrap="nowrap"
+      spacing={1}
+      sx={{
+        position: 'fixed',
+        bottom: '1rem',
+        right: '1rem',
+        width: 'fit-content',
+        display: searching
+          ? 'none'
+          : {
+              xs: 'none',
+              sm: 'block',
+            },
+      }}
+    >
+      {buttons.map(fab => (
+        <Grid item>{fab}</Grid>
+      ))}
+    </Grid>
   );
 };
