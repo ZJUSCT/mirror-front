@@ -20,10 +20,16 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
   return (
     <Card className="zju-mirror-card" style={{ height: '100%' }}>
       <CardActionArea
+        component="a"
         to={getUrl(
           props.queryItem.docUrl || props.queryItem.url,
           !!props.queryItem.docUrl
         )}
+        href={getUrl(
+          props.queryItem.docUrl || props.queryItem.url,
+          !!props.queryItem.docUrl
+        )}
+        onClick={e => e.preventDefault()}
         style={{ height: '100%' }}
       >
         <Grid

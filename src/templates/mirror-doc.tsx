@@ -86,7 +86,13 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
           >
             <Grid item sx={{ width: '100%' }}>
               <Grid container justifyContent="space-between">
-                <Link color="primary" underline="hover" to="/">
+                <Link
+                  color="primary"
+                  underline="hover"
+                  to="/"
+                  href="/"
+                  onClick={e => e.preventDefault()}
+                >
                   <Typography variant="h5" component="div" color="primary">
                     <Trans>ZJU Mirror</Trans>
                   </Typography>
@@ -158,6 +164,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
                   variant="contained"
                   startIcon={<FolderIcon />}
                   to={mirrorUrl}
+                  href={mirrorUrl}
                 >
                   <Trans>文件列表</Trans>
                 </Button>

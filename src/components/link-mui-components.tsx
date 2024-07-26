@@ -8,6 +8,7 @@ import { ButtonBaseProps } from '@mui/material';
 
 interface LinkProps {
   to?: string;
+  href?: string;
 }
 
 function linkifyComponent<T, PropType>(
