@@ -155,10 +155,10 @@ const Index = ({ data }: { data: Data }) => {
 
   const fuseSearch = React.useMemo(
     () =>
-      new Fuse(mirrorsRaw, {
+      new Fuse(Object.values(mirrors), {
         keys: ['id', `name.${language}`, `desc.${language}`],
       }),
-    [mirrorsRaw, language]
+    [mirrors, language]
   );
 
   const [searching, searchResults] = React.useMemo(() => {
