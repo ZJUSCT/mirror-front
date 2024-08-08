@@ -6,19 +6,21 @@ import { Mirror } from '../types/mirror';
 export default (props: { queryResults: Mirror[]; searching: boolean }) => {
   const lexicoMap: { [key: string]: Mirror[] } = {};
   const caps: string[] = [];
-  props.queryResults.forEach(mirror => {
-    if (mirror.id.length < 0) {
-      throw new Error('mirror id empty');
-    }
-    const cap = mirror.id[0].toLocaleUpperCase();
+  props.queryResults
+    .filter(mirror => mirror.id != 'ius')  // FIXME: remove this after permanently remove ius
+    .forEach(mirror => {
+      if (mirror.id.length < 0) {
+        throw new Error('mirror id empty');
+      }
+      const cap = mirror.id[0].toLocaleUpperCase();
 
-    if (lexicoMap[cap]) {
-      lexicoMap[cap].push(mirror);
-    } else {
-      caps.push(cap);
-      lexicoMap[cap] = [mirror];
-    }
-  });
+      if (lexicoMap[cap]) {
+        lexicoMap[cap].push(mirror);
+      } else {
+        caps.push(cap);
+        lexicoMap[cap] = [mirror];
+      }
+    });
   if (!props.searching) {
     caps.sort();
   }
