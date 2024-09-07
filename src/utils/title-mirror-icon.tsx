@@ -10,6 +10,7 @@ import debianIcon from '@iconify/icons-simple-icons/debian';
 import deepinIcon from '@iconify/icons-simple-icons/deepin';
 import dockerIcon from '@iconify/icons-simple-icons/docker';
 import fedoraIcon from '@iconify/icons-simple-icons/fedora';
+import firefoxIcon from '@iconify/icons-simple-icons/firefox';
 import gentooIcon from '@iconify/icons-simple-icons/gentoo';
 import gnuIcon from '@iconify/icons-simple-icons/gnu';
 import gnuEmacsIcon from '@iconify/icons-simple-icons/gnuemacs';
@@ -87,6 +88,8 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={llvmIcon} color={color} />;
     case 'manjaro':
       return <Icon height={size} icon={manjaroIcon} color={color} />;
+    case 'mozilla':
+      return <Icon height={size} icon={firefoxIcon} color={color} />;
     case 'npm':
       return <Icon height={size} icon={npmIcon} color={color} />;
     case 'opensuse':
