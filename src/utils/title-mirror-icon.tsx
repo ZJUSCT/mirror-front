@@ -24,6 +24,7 @@ import npmIcon from '@iconify/icons-simple-icons/npm';
 import openSuseIcon from '@iconify/icons-simple-icons/opensuse';
 import openWrtIcon from '@iconify/icons-simple-icons/openwrt';
 import pythonIcon from '@iconify/icons-simple-icons/python';
+import qtIcon from '@iconify/icons-simple-icons/qt';
 import raspberryPiIcon from '@iconify/icons-simple-icons/raspberrypi';
 import rLanguageIcon from '@iconify/icons-mdi/language-r';
 import rockyIcon from '@iconify/icons-simple-icons/rockylinux';
@@ -98,6 +99,8 @@ export default function TitleMirrorIcon(
       return <Icon height={size} icon={openWrtIcon} color={color} />;
     case 'pypi':
       return <Icon height={size} icon={pythonIcon} color={color} />;
+    case 'qt':
+      return <Icon height={size} icon={qtIcon} color={color} />;
     case 'raspberrypi':
       return <Icon height={size} icon={raspberryPiIcon} color={color} />;
     case 'raspbian':
