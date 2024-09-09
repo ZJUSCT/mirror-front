@@ -2,7 +2,7 @@
 mirrorId: mozilla
 ---
 
-import ConfigGenerator from '../../src/components/config-generator'
+import MozillaConfigGenerator from '../../src/components/mozilla-config-generator'
 
 > mozilla 镜像目前正在测试中，行为可能不稳定，预计将在9月下旬完成测试。当下，不建议在生产环境下使用此镜像。
 
@@ -14,7 +14,7 @@ import ConfigGenerator from '../../src/components/config-generator'
 
 下面的内容修改自 [Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux#w_install-firefox-deb-package-for-debian-based-distributions)。
 
-首先导入和检查 keyring：
+首先，导入和检查 keyring：
 
 ```bash
 sudo install -d -m 0755 /etc/apt/keyrings
@@ -22,19 +22,9 @@ wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /et
 gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}'
 ```
 
-然后在 `/etc/apt/sources.list.d/mozilla.list` 添加 APT 源：
+#### APT 配置
 
-export const mozillaArchMap = {
-    "amd64": "amd64",
-    "arm64": "arm64",
-}
-
-export const GetConfig = (version) => {
-    var archName = mozillaArchMap[version]
-    return `deb [arch=${archName} signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://mirrors.zju.edu.cn/mozilla/apt mozilla main`
-}
-
-<ConfigGenerator promptString="请选择您的系统架构：" versionList={Object.keys(mozillaArchMap)} defaultVersion="amd64" configGen={GetConfig} language="bash" />
+<MozillaConfigGenerator ubuntuVariant="ubuntu" />
 
 如有需要，在 `/etc/apt/preferences.d/mozilla` 配置 APT 优先级：
 
@@ -44,7 +34,7 @@ Pin: release a=mozilla
 Pin-Priority: 1000
 ```
 
-更新 APT 缓存并安装：
+最后，更新 APT 缓存并安装：
 
 ```bash
 sudo apt update && sudo apt install firefox
