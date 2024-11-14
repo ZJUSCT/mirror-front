@@ -46,7 +46,7 @@ sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-pr
 
 根据你的发行版，下面的内容有所不同。你使用的发行版： 
 
-<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList} defaultVersion={'Debian'} configGen={genCommand} />
+<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList} defaultVersion={'Debian'} language="bash" configGen={genCommand} />
 
 #### Fedora/CentOS/RHEL
 
@@ -66,7 +66,7 @@ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 
 根据你的发行版下载repo文件: 
 
-<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList2} defaultVersion={'CentOS/RHEL'} configGen={genCommand2} />
+<ConfigGenerator promptString="选择你使用的发行版：" versionList={osList2} defaultVersion={'CentOS/RHEL'} language="bash" configGen={genCommand2} />
 
 把软件仓库地址替换为浙大源:
 
