@@ -4,8 +4,9 @@ mirrorId: raspberrypi
 
 import ConfigGenerator from '../../src/components/config-generator'
 
-export const osVersion = ['11', '10', '9'];
+export const osVersion = ['12', '11', '10', '9'];
 export const versionName = [
+    'Debian 12 (bookworm)',
     'Debian 11 (bullseye)',
     'Debian 10 (buster)',
     'Debian 9 (stretch)',
@@ -15,6 +16,7 @@ export const configGen = (version) => {
         '9': 'stretch',
         '10': 'buster',
         '11': 'bullseye',
+        '12': 'bookworm',
     };
     const release_name = versionMap[version];
     return `deb https://mirrors.zju.edu.cn/raspberrypi/ ${release_name} main
