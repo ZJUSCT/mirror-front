@@ -32,7 +32,7 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
     "fuse.js": "^7.0.0",
-    "gatsby": "^5.13.7",
+    "gatsby": "^5.14.0",
     "gatsby-plugin-manifest": "^5.13.1",
     "gatsby-plugin-mdx": "^5.13.1",
     "gatsby-plugin-react-helmet": "^6.13.1",
