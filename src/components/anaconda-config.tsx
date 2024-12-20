@@ -25,7 +25,6 @@ const osNameDict: Record<string, string> = {
   MacOSX: 'macOS',
   Linux: 'Linux',
 };
-
 const installerDict: Record<string, HumanReadableInstallerName> = {
   '': {},
   'Windows': {
@@ -46,6 +45,28 @@ const installerDict: Record<string, HumanReadableInstallerName> = {
     'armv7l.sh': 'armv7l SH',
     'ppc64le.sh': 'ppc64le SH',
     's390x.sh': 's390x SH',
+  },
+};
+
+const mf3Prefix = 'https://mirrors.zju.edu.cn/miniforge/';
+const mf3OsNameDict: Record<string, string> = {
+  Windows: 'Windows',
+  Darwin: 'macOS',
+  Linux: 'Linux',
+};
+const mf3InstallerDict: Record<string, HumanReadableInstallerName> = {
+  '': {},
+  'Windows': {
+    'x86_64.exe': 'x86_64 EXE',
+  },
+  'Darwin': {
+    'arm64.sh': 'ARM64 SH (Apple Silicon)',
+    'x86_64.sh': 'x86_64 SH (Intel)',
+  },
+  'Linux': {
+    'x86_64.sh': 'x86_64 SH',
+    'aarch64.sh': 'arm64 SH',
+    'ppc64le.sh': 'ppc64le SH',
   },
 };
 
@@ -107,6 +128,72 @@ const MinicondaInstaller = () => {
         sx={{ m: 1 }}
         disabled={!installerName}
         href={prefix + installerName}
+      >
+        <Typography textTransform="none">
+          下载 {installerName && `(${installerName})`}
+        </Typography>
+      </Button>
+    </div>
+  );
+};
+
+const Miniforge3Installer = () => {
+  const [os, setOS] = useState('');
+  const [variant, setVariant] = useState('');
+  const installerName = os && variant ? `Miniforge3-${os}-${variant}` : '';
+
+  const handleOSChange: SelectProps['onChange'] = event => {
+    setOS(event.target.value as string);
+    setVariant('');
+  };
+
+  const handleVariantChange: SelectProps['onChange'] = event => {
+    setVariant(event.target.value as string);
+  };
+
+  return (
+    <div>
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="os-select-label">操作系统</InputLabel>
+        <Select
+          labelId="os-select-label"
+          id="os-select"
+          value={os}
+          onChange={handleOSChange}
+          label="操作系统"
+        >
+          {Object.keys(mf3OsNameDict).map(osKey => (
+            <MenuItem value={osKey} key={osKey}>
+              {mf3OsNameDict[osKey]}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
+        <InputLabel id="variant-select-label">
+          系统架构 及 安装包类型
+        </InputLabel>
+        <Select
+          labelId="variant-select-label"
+          id="variant-select"
+          value={variant}
+          onChange={handleVariantChange}
+          label="系统架构及安装包类型"
+        >
+          {Object.keys(mf3InstallerDict[os]).map(k => (
+            <MenuItem value={k} key={`${os}-${k}`}>
+              {mf3InstallerDict[os][k]}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <br />
+      <Button
+        variant="contained"
+        startIcon={<DownloadIcon />}
+        sx={{ m: 1 }}
+        disabled={!installerName}
+        href={mf3Prefix + installerName}
       >
         <Typography textTransform="none">
           下载 {installerName && `(${installerName})`}
@@ -207,7 +294,9 @@ const channelOriginToUrl = (origin: ChannelOrigin) => {
   return 'https://mirrors.zju.edu.cn/anaconda-r';
 };
 
-const CondaConfigGen = () => {
+const CondaConfigGen: React.FC<{
+  isMiniforge3?: boolean;
+}> = ({ isMiniforge3 }) => {
   const [showCustom, setShowCustom] = useState(false);
   const [channelStatus, setChannelStatus] = useState(defaultChannelStatus);
 
@@ -221,7 +310,7 @@ const CondaConfigGen = () => {
     });
   };
 
-  let conf = baseConf;
+  let conf = isMiniforge3 ? '' : baseConf;
   if (Object.values(channelStatus).some(v => v)) {
     conf += 'custom_channels:\n';
   }
@@ -243,18 +332,22 @@ const CondaConfigGen = () => {
       </FormGroup>
       <Collapse in={showCustom}>
         <FormGroup sx={{ flexDirection: 'row' }}>
-          <FormControlLabel
-            control={<Checkbox defaultChecked disabled />}
-            label="pkgs/main"
-          />
-          <FormControlLabel
-            control={<Checkbox defaultChecked disabled />}
-            label="pkgs/r"
-          />
-          <FormControlLabel
-            control={<Checkbox defaultChecked disabled />}
-            label="pkgs/msys2"
-          />
+          {!isMiniforge3 && (
+            <>
+              <FormControlLabel
+                control={<Checkbox defaultChecked disabled />}
+                label="pkgs/main"
+              />
+              <FormControlLabel
+                control={<Checkbox defaultChecked disabled />}
+                label="pkgs/r"
+              />
+              <FormControlLabel
+                control={<Checkbox defaultChecked disabled />}
+                label="pkgs/msys2"
+              />
+            </>
+          )}
           {Object.keys(channelStatus).map(channel => {
             return (
               <FormControlLabel
@@ -281,4 +374,4 @@ const CondaConfigGen = () => {
   );
 };
 
-export { MinicondaInstaller, CondaConfigGen };
+export { MinicondaInstaller, Miniforge3Installer, CondaConfigGen };

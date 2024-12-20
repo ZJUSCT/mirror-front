@@ -1,0 +1,41 @@
+---
+mirrorId: miniforge
+---
+import  { Miniforge3Installer, CondaConfigGen } from '../../src/components/anaconda-config';
+
+Miniforge 类似 Anaconda/Miniconda ，但以 conda-forge 为主要 channel ，使用 conda 和 mamba 管理软件包。
+
+### 安装包下载
+
+<Miniforge3Installer />
+
+
+### 设置软件包镜像
+
+修改用户目录下的 `.condarc` 文件来使用浙大镜像源。
+
+Windows 用户无法直接创建名为 `.condarc` 的文件，可先执行 `conda config --set show_channel_urls yes` 生成该文件之后再修改。
+
+1. 根据需要修改 `.condarc` 配置如下：
+
+<hr />
+
+<CondaConfigGen isMiniforge3 />
+
+<hr />
+
+2. 运行 `conda clean -i` 清除索引缓存，保证用的是镜像站提供的索引。
+
+3. 运行 `conda create -n myenv numpy` 测试一下吧。
+
+### 反代 channel 说明
+
+为解决校内访问问题，以下 channel 通过反代方式提供服务：
+
+- nvidia
+
+这些 channel 在校外访问时，会通过 302 请求重定向至官方源。
+
+### 其他第三方源
+
+暂不支持。
