@@ -84,6 +84,7 @@ module.exports = {
     'react/jsx-no-constructed-context-values': 'off',
     'no-empty-function': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    'no-console': 'off',
   },
   settings: {
     'import/resolver': {
