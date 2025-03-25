@@ -128,6 +128,10 @@ module.exports = {
     {
       resolve: "gatsby-plugin-sitemap",
       options: {
+        sassOptions: {
+          api: 'modern',
+          silenceDeperacations: ['legacy-js-api'],
+        },
         serialize: ({ path }) => {
           return {
             url: path,
