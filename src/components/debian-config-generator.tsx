@@ -16,7 +16,7 @@ import CodeBlock from './code-block';
 
 type ConfigStyle = 'default' | 'new' | 'old';
 const VERSION_SID = -2;
-const VERSION_TESTING = -1;
+// const VERSION_TESTING = -1;
 
 const debianVersionMap: Record<string, string> = {
   '13': 'trixie',
@@ -146,17 +146,18 @@ const configGenNew = (
     : 'security.debian.org';
 
   let sources = `Types: deb${debSrcText}
-  URIs: ${httpProtocol}://mirrors.zju.edu.cn/debian/
-  Suites: ${components}
-  Components: main contrib non-free non-free-firmware
-  Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg`;
+URIs: ${httpProtocol}://mirrors.zju.edu.cn/debian/
+Suites: ${components}
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg`;
   if (version !== VERSION_SID) {
-    sources += `\u200b
-  Types: deb${debSrcText}
-  URIs: ${httpProtocol}://${securityRepo}/debian-security/
-  Suites: ${codeName}-security
-  Components: main contrib non-free non-free-firmware
-  Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+    sources += `
+
+Types: deb${debSrcText}
+URIs: ${httpProtocol}://${securityRepo}/debian-security/
+Suites: ${codeName}-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
   `;
   }
   return sources;
