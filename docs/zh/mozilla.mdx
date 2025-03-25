@@ -26,7 +26,7 @@ gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozil
 
 如有需要，在 `/etc/apt/preferences.d/mozilla` 配置 APT 优先级：
 
-```properties
+```plaintext
 Package: *
 Pin: release a=mozilla
 Pin-Priority: 1000
