@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
   Box,
-  Grid,
+  Grid2 as Grid,
   Typography,
 } from '@mui/material';
 import { Language } from 'prism-react-renderer';
@@ -36,10 +36,10 @@ export default ({
         justifyContent="flex-start"
         alignItems="flex-end"
       >
-        <Grid item sx={{ mb: 1 }}>
+        <Grid sx={{ mb: 1 }}>
           <Typography component="p">{promptString}</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="demo-simple-select-helper-label">
               <Trans>版本</Trans>

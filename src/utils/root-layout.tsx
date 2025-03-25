@@ -1,11 +1,9 @@
-import React from "react";
-import { ThemeProvider } from "../components/theme-context";
-import { CssBaseline } from "@mui/material";
-import { PrefsProvider } from "../components/preferences-context";
+import React from 'react';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '../components/theme-context';
+import { PrefsProvider } from '../components/preferences-context';
 
-export default function RootLayout({ children } : {
-  children: React.ReactNode;
-}) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.StrictMode>
       <PrefsProvider>
@@ -16,4 +14,6 @@ export default function RootLayout({ children } : {
       </PrefsProvider>
     </React.StrictMode>
   );
-}
+};
+
+export default RootLayout;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid2 as Grid, Typography } from '@mui/material';
 import SearchItemCard from './search-item-card';
 import { Mirror } from '../types/mirror';
 
@@ -32,15 +32,15 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
       wrap="nowrap"
     >
       {props.searching ? (
-        <Grid item>
+        <Grid>
           <Grid
             container
             spacing={{ xs: 2 }}
-            columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+            columns={{ xs: 2, sm: 2, md: 3, lg: 4 }}
             alignItems="stretch"
           >
             {props.queryResults.map(mirror => (
-              <Grid item xs={1} key={mirror.id}>
+              <Grid key={mirror.id} size={1}>
                 <SearchItemCard queryItem={mirror} />
               </Grid>
             ))}
@@ -48,19 +48,19 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
         </Grid>
       ) : (
         caps.map(cap => (
-          <Grid item>
+          <Grid>
             <Typography gutterBottom variant="h6" component="div" id={cap}>
               {cap}
             </Typography>
             <Grid
               container
               spacing={{ xs: 2 }}
-              columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+              columns={{ xs: 2, sm: 2, md: 3, lg: 4 }}
               alignItems="stretch"
               key={cap}
             >
               {lexicoMap[cap].map(mirror => (
-                <Grid item xs={1} key={mirror.id}>
+                <Grid key={mirror.id} size={1}>
                   <SearchItemCard queryItem={mirror} />
                 </Grid>
               ))}

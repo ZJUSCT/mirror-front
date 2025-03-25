@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import { DateRange, AccountCircle } from '@mui/icons-material';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
@@ -20,7 +20,12 @@ interface Data {
   };
 }
 
-const News = ({ data, children }: { data: Data }) => {
+interface NewsProps {
+  data: Data;
+  children: React.ReactNode;
+}
+
+const News = ({ data, children }: NewsProps) => {
   const { language } = useI18next();
 
   const news = {
@@ -49,14 +54,14 @@ const News = ({ data, children }: { data: Data }) => {
             justifyContent="flex-start"
             alignItems="flex-start"
           >
-            <Grid item sx={{ width: '100%' }}>
+            <Grid size={12}>
               <Grid container justifyContent="space-between">
                 <Link color="primary" underline="hover" to="/">
                   <Typography variant="h5" component="div" color="primary">
                     <Trans>ZJU Mirror</Trans>
                   </Typography>
                 </Link>
-                <Grid item>
+                <Grid>
                   <LanguageIconButton />
                   <ThemeIconButton />
                 </Grid>
@@ -84,6 +89,8 @@ const News = ({ data, children }: { data: Data }) => {
                   variant="subtitle1"
                   component="div"
                   color="text.disabled"
+                  display="flex"
+                  alignItems="center"
                   sx={{ ml: 1 }}
                 >
                   <AccountCircle sx={{ fontSize: '1em', mr: 0.5 }} />
@@ -95,6 +102,8 @@ const News = ({ data, children }: { data: Data }) => {
                   component="div"
                   color="text.disabled"
                   sx={{ ml: 1 }}
+                  display="flex"
+                  alignItems="center"
                 >
                   <DateRange sx={{ fontSize: '1em', mr: 0.5 }} />
                   <Trans>
@@ -107,9 +116,7 @@ const News = ({ data, children }: { data: Data }) => {
           </Grid>
         </Box>
         <Paper sx={{ px: { xs: 4, sm: 8 }, py: 4 }} elevation={0}>
-          <MDXProvider components={components}>
-            {children}
-          </MDXProvider>
+          <MDXProvider components={components}>{children}</MDXProvider>
         </Paper>
       </Box>
       <Footer />
