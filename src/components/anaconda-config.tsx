@@ -14,7 +14,7 @@ import {
   Collapse,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
-import CodeBlock from './code-block2';
+import CodeBlock from './code-block';
 
 type HumanReadableInstallerName = Record<string, string>;
 
