@@ -20,7 +20,7 @@ export default ({ children, codeStyle, language }: CodeBlockProps) => {
   }, []);
   const theme = useTheme();
   const prismTheme =
-    theme.palette.mode === 'light' ? themes.github : themes.vsDark;
+    theme.palette.mode === 'light' ? themes.github : themes.okaidia;
 
   return (
     <Highlight
