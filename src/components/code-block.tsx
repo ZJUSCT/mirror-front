@@ -1,8 +1,4 @@
-import {
-  Highlight,
-  Language,
-  PrismTheme,
-} from 'prism-react-renderer';
+import { Highlight, Language, PrismTheme, themes } from 'prism-react-renderer';
 import React from 'react';
 import { useTheme } from '@mui/material';
 
@@ -15,7 +11,7 @@ export interface CodeBlockProps {
 export default ({ children, codeStyle, language }: CodeBlockProps) => {
   const theme = useTheme();
   const prismTheme =
-    theme.palette.mode === 'light' ? require('prism-react-renderer').themes.github : require('prism-react-renderer').themes.vsDark;
+    theme.palette.mode === 'light' ? themes.github : themes.vsDark;
 
   return (
     <Highlight
