@@ -20,6 +20,10 @@ const loadPrismLanguages = async () => {
 
   await import('prismjs/components/prism-bash');
   await import('prismjs/components/prism-yaml');
+  await import('prismjs/components/prism-r');
+  await import('prismjs/components/prism-toml');
+  await import('prismjs/components/prism-lisp');
+  await import('prismjs/components/prism-ini');
 
   languageLoaded = true;
   resolves.forEach(resolve => resolve(true));
