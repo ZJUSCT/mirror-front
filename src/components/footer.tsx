@@ -1,9 +1,9 @@
 import { Box, Grid2 as Grid, Link, Typography, useTheme } from '@mui/material';
 import { Trans } from 'gatsby-plugin-react-i18next';
 import React from 'react';
-import Zjusct from '../../resource/icons/zjusct.svg';
-import Zju from '../../resource/icons/zju.svg';
-import ZjuDark from '../../resource/icons/zju-dark.svg';
+import { ReactComponent as Zjusct } from '../../resource/icons/zjusct.svg';
+import { ReactComponent as Zju } from '../../resource/icons/zju.svg';
+import { ReactComponent as ZjuDark } from '../../resource/icons/zju-dark.svg';
 
 export default () => {
   const theme = useTheme();
