@@ -48,7 +48,7 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
         </Grid>
       ) : (
         caps.map(cap => (
-          <Grid>
+          <Grid key={cap}>
             <Typography gutterBottom variant="h6" component="div" id={cap}>
               {cap}
             </Typography>
@@ -57,7 +57,6 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
               spacing={{ xs: 2 }}
               columns={{ xs: 2, sm: 2, md: 3, lg: 4 }}
               alignItems="stretch"
-              key={cap}
             >
               {lexicoMap[cap].map(mirror => (
                 <Grid key={mirror.id} size={1}>
