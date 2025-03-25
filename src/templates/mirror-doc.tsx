@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import FolderIcon from '@mui/icons-material/Folder';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Typography } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
@@ -84,7 +84,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
             justifyContent="flex-start"
             alignItems="flex-start"
           >
-            <Grid item sx={{ width: '100%' }}>
+            <Grid size={12}>
               <Grid container justifyContent="space-between">
                 <Link
                   color="primary"
@@ -97,7 +97,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
                     <Trans>ZJU Mirror</Trans>
                   </Typography>
                 </Link>
-                <Grid item>
+                <Grid>
                   {/* TODO: add English docs
                     <LanguageIconButton />
                     */}
@@ -145,7 +145,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
             </Grid>
 
             {(mirror.files?.length ?? 0) > 0 && (
-              <Grid item width="100%">
+              <Grid size={12}>
                 <Box>
                   <Typography gutterBottom variant="h5" component="div">
                     <Trans>安装映像</Trans>
@@ -157,7 +157,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
             )}
 
             {!data.document.frontmatter?.isGit && (
-              <Grid item>
+              <Grid>
                 <Button
                   color="primary"
                   size="medium"

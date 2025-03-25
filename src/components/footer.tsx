@@ -1,10 +1,9 @@
-import { Box, Grid, Link, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Link, Typography, useTheme } from '@mui/material';
 import { Trans } from 'gatsby-plugin-react-i18next';
 import React from 'react';
 import Zjusct from '../../resource/icons/zjusct.svg';
 import Zju from '../../resource/icons/zju.svg';
 import ZjuDark from '../../resource/icons/zju-dark.svg';
-import { useTheme } from '@mui/material';
 
 export default () => {
   const theme = useTheme();
@@ -19,7 +18,7 @@ export default () => {
         alignItems="flex-start"
         rowSpacing={2}
       >
-        <Grid item>
+        <Grid>
           <Grid
             container
             direction="row"
@@ -29,7 +28,7 @@ export default () => {
             rowSpacing={2}
             columnSpacing={8}
           >
-            <Grid item xs={2} md={1}>
+            <Grid>
               <Box maxWidth={520}>
                 <Typography gutterBottom variant="body2" color="text.secondary">
                   <Trans>
@@ -56,7 +55,7 @@ export default () => {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={2} md={1}>
+            <Grid>
               <Grid
                 container
                 direction="row"
@@ -64,7 +63,7 @@ export default () => {
                 alignItems="flex-end"
                 columnSpacing={8}
               >
-                <Grid item>
+                <Grid>
                   <Typography
                     gutterBottom
                     variant="body1"
@@ -101,7 +100,7 @@ export default () => {
                     </Link>
                   </Typography>
                 </Grid>
-                <Grid item>
+                <Grid>
                   <Typography
                     gutterBottom
                     variant="body1"
@@ -142,16 +141,22 @@ export default () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item>
-          <Grid container direction="row" columnSpacing={4} rowSpacing={2} alignItems="center">
-            <Grid item>
+        <Grid>
+          <Grid
+            container
+            direction="row"
+            columnSpacing={4}
+            rowSpacing={2}
+            alignItems="center"
+          >
+            <Grid>
               <Link href="https://zuits.zju.edu.cn/">
-                <ZjuIcon width="16rem"/>
+                <ZjuIcon width="16rem" />
               </Link>
             </Grid>
-            <Grid item>
+            <Grid>
               <Link href="https://www.zjusct.io">
-                <Zjusct width="12rem"/>
+                <Zjusct width="12rem" />
               </Link>
             </Grid>
           </Grid>

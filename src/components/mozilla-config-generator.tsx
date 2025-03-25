@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
   Box,
-  Grid,
+  Grid2 as Grid,
   Typography,
   FormControlLabel,
   Switch,
@@ -14,15 +14,13 @@ import {
 import { Trans } from 'gatsby-plugin-react-i18next';
 import CodeBlock from './code-block';
 
-type ArchTypes = "amd64" | "arm64";
+type ArchTypes = 'amd64' | 'arm64';
+const archs: ArchTypes[] = ['amd64', 'arm64'];
 
-const configGenOld = (
-  arch: ArchTypes,
-): string => `deb [arch=${arch} signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://mirrors.zju.edu.cn/mozilla/apt mozilla main`;
+const configGenOld = (arch: ArchTypes): string =>
+  `deb [arch=${arch} signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://mirrors.zju.edu.cn/mozilla/apt mozilla main`;
 
-const configGenNew = (
-  arch: ArchTypes,
-) => `
+const configGenNew = (arch: ArchTypes) => `
 Types: deb
 URIs: https://mirrors.zju.edu.cn/mozilla/apt
 Suites: mozilla
@@ -34,8 +32,7 @@ Architectures: ${arch}
 export default () => {
   const [enableDeb822, setEnableDeb822] = useState(false);
 
-  type ArchTypes = "amd64" | "arm64";
-  const [arch, setArch] = useState("amd64" as ArchTypes);
+  const [arch, setArch] = useState('amd64' as ArchTypes);
 
   return (
     <Box>
@@ -45,10 +42,10 @@ export default () => {
         justifyContent="flex-start"
         alignItems="flex-end"
       >
-        <Grid item sx={{ mb: 1 }}>
+        <Grid>
           <Typography component="p">请选择您的系统架构：</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="simple-select-helper-label">
               <Trans>系统架构</Trans>
@@ -62,14 +59,13 @@ export default () => {
               }}
               defaultValue={arch}
             >
-              {Array<ArchTypes>("amd64", "arm64")
-                .map((v: ArchTypes) => {
-                  return (
-                    <MenuItem key={v} value={v}>
-                      {v}
-                    </MenuItem>
-                  );
-                })}
+              {archs.map((v: ArchTypes) => {
+                return (
+                  <MenuItem key={v} value={v}>
+                    {v}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </Grid>
@@ -89,11 +85,15 @@ export default () => {
         <Grid container direction="row">
           <Typography>请在</Typography>
           <code
-            style={{ margin: "0 0.5rem", fontWeight: 400, color: "rgb(156, 39, 176)" }}
+            style={{
+              margin: '0 0.5rem',
+              fontWeight: 400,
+              color: 'rgb(156, 39, 176)',
+            }}
           >
             {enableDeb822
-              ? "/etc/apt/sources.list.d/mozilla.sources"
-              : "/etc/apt/sources.list.d/mozilla.list"}
+              ? '/etc/apt/sources.list.d/mozilla.sources'
+              : '/etc/apt/sources.list.d/mozilla.list'}
           </code>
           <Typography>添加 APT 源：</Typography>
         </Grid>

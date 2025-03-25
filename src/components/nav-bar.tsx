@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Grid, Hidden } from '@mui/material';
+import { Link, Grid2 as Grid } from '@mui/material';
 import { MirrorDto } from '../types/mirror';
 
 export default ({
@@ -53,7 +53,7 @@ export default ({
       }}
     >
       {buttons.map(fab => (
-        <Grid item>{fab}</Grid>
+        <Grid>{fab}</Grid>
       ))}
     </Grid>
   );

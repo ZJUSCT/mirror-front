@@ -2,13 +2,14 @@ import {
   Box,
   Chip,
   ChipProps,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   InputBase,
   Link,
   Paper,
   Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
 import React, { useEffect, useState } from 'react';
@@ -93,6 +94,13 @@ async function fetchNetworkMode(): Promise<number> {
   return c;
 }
 
+const NoOverflowChip = styled(Chip)(() => ({
+  '& .MuiChip-label': {
+    overflow: 'unset',
+    textOverflow: 'unset',
+  },
+}));
+
 const Index = ({ data }: { data: Data }) => {
   const { language, t } = useI18next();
 
@@ -118,6 +126,7 @@ const Index = ({ data }: { data: Data }) => {
       Object.fromEntries(
         data.mirrorDocs.nodes
           .filter(d => d.frontmatter?.mirrorId && d.locale === language)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .map(d => [d.frontmatter!.mirrorId, d.slug])
       ),
     [data, language]
@@ -188,7 +197,7 @@ const Index = ({ data }: { data: Data }) => {
           columns={{ xs: 1 }}
           sx={{ px: { xs: 4, sm: 8 }, py: 8 }}
         >
-          <Grid item xs={1}>
+          <Grid size={12}>
             <Box
               sx={{
                 display: 'flex',
@@ -210,7 +219,7 @@ const Index = ({ data }: { data: Data }) => {
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Grid item>
+                  <Grid container direction="column">
                     <Typography
                       variant="h1"
                       component="div"
@@ -219,60 +228,60 @@ const Index = ({ data }: { data: Data }) => {
                     >
                       <Trans>ZJU Mirror</Trans>
                     </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        mt: { xs: -1, sm: -2 },
+                        flexWrap: 'wrap',
+                        columnGap: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        color="primary"
+                        sx={{
+                          whiteSpace: 'nowrap',
+                          fontSize: { xs: 21, sm: 28 },
+                        }}
+                      >
+                        <Trans>浙江大学开源软件镜像站</Trans>
+                      </Typography>
+                      <NoOverflowChip
+                        size="medium"
+                        label={t(networkMap[networkMode].text)}
+                        color={networkMap[networkMode].color}
+                        sx={{
+                          fontSize: theme => theme.typography.subtitle1,
+                        }}
+                      />
+                    </Box>
                   </Grid>
-                  <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
+                  <Grid sx={{ display: 'block' }}>
                     <NameIconButton />
                     <LanguageIconButton />
                     <ThemeIconButton />
                   </Grid>
                 </Grid>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    mt: { xs: -1, sm: -2 },
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    component="div"
-                    color="primary"
-                    sx={{ fontSize: { xs: 21, sm: 28 } }}
-                  >
-                    <Trans>浙江大学开源软件镜像站</Trans>
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    component="div"
-                    color="primary"
-                    sx={{ ml: 1 }}
-                  >
-                    <Chip
-                      size="medium"
-                      label={t(networkMap[networkMode].text)}
-                      color={networkMap[networkMode].color}
-                      sx={{ display: { xs: 'none', sm: 'grid' } }}
-                    />
-                  </Typography>
-                </Box>
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={1}>
+          <Grid size={12}>
             <Typography gutterBottom variant="h5" component="div">
               <Trans>常用镜像</Trans>
             </Typography>
             <Grid
               container
               spacing={{ xs: 2 }}
-              columns={{ xs: 1, sm: 3, md: 6 }}
+              columns={{ xs: 2, sm: 3, md: 6 }}
             >
               {frequentlyUsedMirror.map((e, i) => {
                 const mirror = mirrors[e.id];
                 return (
                   mirror && (
-                    <Grid item xs={1} key={i}>
+                    <Grid key={i} size={1}>
                       <FrequentlyUsedMirrorCard
                         name={mirror.name[language as Locale]}
                         desc={mirror.desc[language as Locale]}
@@ -288,7 +297,7 @@ const Index = ({ data }: { data: Data }) => {
               })}
             </Grid>
           </Grid>
-          <Grid item xs={1}>
+          <Grid>
             <Typography gutterBottom variant="h5" component="div">
               <Trans>近期更新</Trans>
             </Typography>
@@ -305,7 +314,7 @@ const Index = ({ data }: { data: Data }) => {
               ))}
             </Grid>
           </Grid>
-          <Grid item xs={1}>
+          <Grid size={12}>
             <Typography gutterBottom variant="h5" component="div">
               <Trans>所有镜像</Trans>
             </Typography>

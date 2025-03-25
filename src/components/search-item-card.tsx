@@ -1,5 +1,5 @@
 import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import { useI18next } from 'gatsby-plugin-react-i18next';
@@ -40,7 +40,7 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
           height="100%"
           padding={2}
         >
-          <Grid item width="100%">
+          <Grid size={12}>
             <Grid
               container
               direction="row"
@@ -49,7 +49,7 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
               alignItems="flex-end"
               spacing={1}
             >
-              <Grid item>
+              <Grid>
                 <Typography variant="h6" component="div">
                   {prefs.friendlyName
                     ? props.queryItem.name[lang]
@@ -57,7 +57,6 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
                 </Typography>
               </Grid>
               <Grid
-                item
                 display={
                   officialCertificatedMirrorList.includes(props.queryItem.id)
                     ? 'block'
@@ -80,7 +79,7 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
               {props.queryItem.desc[lang]}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <StatusIndicator status={props.queryItem.status} fontSize={12} />
           </Grid>
         </Grid>
