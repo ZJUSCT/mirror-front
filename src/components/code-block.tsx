@@ -1,6 +1,7 @@
 import { Highlight, Language, PrismTheme, themes } from 'prism-react-renderer';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material';
+import loadPrismLanguages from '~/utils/prism-languages';
 
 export interface CodeBlockProps {
   children: string;
@@ -9,6 +10,14 @@ export interface CodeBlockProps {
 }
 
 export default ({ children, codeStyle, language }: CodeBlockProps) => {
+  const [_, setLanguageLoaded] = useState(false);
+  useEffect(() => {
+    (async () => {
+      if (await loadPrismLanguages()) {
+        setLanguageLoaded(true);
+      }
+    })();
+  }, []);
   const theme = useTheme();
   const prismTheme =
     theme.palette.mode === 'light' ? themes.github : themes.vsDark;
@@ -37,9 +46,9 @@ export default ({ children, codeStyle, language }: CodeBlockProps) => {
             }
             return (
               <div key={i} {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span key={key} {...getTokenProps({ token, key })} />
-                ))}
+                {line.map((token, key) => {
+                  return <span key={key} {...getTokenProps({ token, key })} />;
+                })}
               </div>
             );
           })}
