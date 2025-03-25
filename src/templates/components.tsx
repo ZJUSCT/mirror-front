@@ -195,9 +195,9 @@ const components: MDXComponents = {
     return memo(Input);
   })(),
   wrapper: (() => {
-    const Wrapper = (props: any) => (
-      <div {...props} className="markdown-body" />
-    );
+    const Wrapper = (props: any) => {
+      return <div className="markdown-body">{props.children}</div>;
+    };
     return memo(Wrapper);
   })(),
   a: (() => {
