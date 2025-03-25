@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
   Box,
-  Grid,
+  Grid2 as Grid,
   Typography,
   FormControlLabel,
   Switch,
@@ -179,10 +179,10 @@ export default () => {
         justifyContent="flex-start"
         alignItems="flex-end"
       >
-        <Grid item sx={{ mb: 1 }}>
+        <Grid sx={{ mb: 1 }}>
           <Typography component="p">请选择您的 Debian 版本：</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="demo-simple-select-helper-label">
               <Trans>版本</Trans>
