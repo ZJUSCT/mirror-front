@@ -4,24 +4,28 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import MuiTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { TableCellProps } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import React, { memo } from 'react';
-import { MDXComponents } from '@mdx-js/react/lib';
+import { Components as MDXComponents } from '@mdx-js/react/lib';
 import { LinkLink as Link } from '~/components/link-mui-components';
 import CodeBlock from '../components/code-block';
 
+type GenericMemoExoticComponent = React.MemoExoticComponent<
+  (props: any) => React.JSX.Element
+>;
+
 const components: MDXComponents = {
   p: (() => {
-    const Paragraph = props => (
+    const Paragraph = (props: any) => (
       <Typography {...props} style={{ margin: '8px 0' }} />
     );
     return memo(Paragraph);
   })(),
   h1: (() => {
-    const H1 = props => (
+    const H1 = (props: any) => (
       <Typography
         {...props}
         component="h1"
@@ -32,7 +36,7 @@ const components: MDXComponents = {
     return memo(H1);
   })(),
   h2: (() => {
-    const H2 = props => (
+    const H2 = (props: any) => (
       <Typography
         {...props}
         component="h2"
@@ -43,7 +47,7 @@ const components: MDXComponents = {
     return memo(H2);
   })(),
   h3: (() => {
-    const H3 = props => (
+    const H3 = (props: any) => (
       <Typography
         {...props}
         component="h3"
@@ -54,7 +58,7 @@ const components: MDXComponents = {
     return memo(H3);
   })(),
   h4: (() => {
-    const H4 = props => (
+    const H4 = (props: any) => (
       <Typography
         {...props}
         component="h4"
@@ -65,7 +69,7 @@ const components: MDXComponents = {
     return memo(H4);
   })(),
   h5: (() => {
-    const H5 = props => (
+    const H5 = (props: any) => (
       <Typography
         {...props}
         component="h5"
@@ -76,13 +80,13 @@ const components: MDXComponents = {
     return memo(H5);
   })(),
   h6: (() => {
-    const H6 = props => (
+    const H6 = (props: any) => (
       <Typography {...props} component="h6" variant="body1" />
     );
     return memo(H6);
   })(),
   blockquote: (() => {
-    const Blockquote = props => {
+    const Blockquote = (props: any) => {
       const theme = useTheme();
       return (
         <Paper
@@ -98,13 +102,13 @@ const components: MDXComponents = {
     return memo(Blockquote);
   })(),
   ul: (() => {
-    const Ul = props => (
+    const Ul = (props: any) => (
       <Typography {...props} component="ul" style={{ paddingLeft: 30 }} />
     );
     return memo(Ul);
   })(),
   ol: (() => {
-    const Ol = props => (
+    const Ol = (props: any) => (
       <Typography
         {...props}
         component="ol"
@@ -114,39 +118,53 @@ const components: MDXComponents = {
     return memo(Ol);
   })(),
   li: (() => {
-    const Li = props => <Typography {...props} component="li" />;
+    const Li = (props: any) => <Typography {...props} component="li" />;
     return memo(Li);
   })(),
   table: (() => {
-    const Table = props => <MuiTable {...props} />;
+    const Table = (props: any) => <MuiTable {...props} />;
     return memo(Table);
   })(),
   tr: (() => {
-    const Tr = props => <TableRow {...props} />;
+    const Tr = (props: any) => <TableRow {...props} />;
     return memo(Tr);
   })(),
   td: (() => {
-    const Td = ({ align, ...props }) => (
-      <TableCell align={align || undefined} {...props} />
-    );
-    return memo(Td);
+    const Td = ({
+      align,
+      ...props
+    }: {
+      align?: TableCellProps['align'];
+      [key: string]: any;
+    }) => <TableCell align={align || undefined} {...props} />;
+    return memo(Td) as GenericMemoExoticComponent;
   })(),
   tbody: (() => {
-    const TBody = props => <TableBody {...props} />;
+    const TBody = (props: any) => <TableBody {...props} />;
     return memo(TBody);
   })(),
   th: (() => {
-    const Th = ({ align, ...props }) => (
-      <TableCell align={align || undefined} {...props} />
-    );
-    return memo(Th);
+    const Th = ({
+      align,
+      ...props
+    }: {
+      align?: TableCellProps['align'];
+      [key: string]: any;
+    }) => <TableCell align={align || undefined} {...props} />;
+    return memo(Th) as GenericMemoExoticComponent;
   })(),
   thead: (() => {
-    const THead = props => <TableHead {...props} />;
+    const THead = (props: any) => <TableHead {...props} />;
     return memo(THead);
   })(),
   code: (() => {
-    const CodeBlk = ({ children, className }) => {
+    const CodeBlk = ({
+      children,
+      className,
+    }: {
+      children: string;
+      className?: string;
+    }) => {
       if (className === undefined) {
         const theme = useTheme();
         return (
@@ -161,25 +179,29 @@ const components: MDXComponents = {
       const lang = className?.match(/language-(?<lang>.*)/)?.groups?.lang || '';
       return <CodeBlock language={lang}>{children}</CodeBlock>;
     };
-    return memo(CodeBlk);
+    return memo(CodeBlk) as GenericMemoExoticComponent;
   })(),
-  hr: Divider,
+  hr: () => {
+    return <Divider />;
+  },
   input: (() => {
-    const Input = props => {
+    const Input = (props: any) => {
       const { type } = props;
       if (type === 'checkbox') {
-        return <Checkbox {...props} disabled={false} readOnly={true} />;
+        return <Checkbox {...props} disabled={false} readOnly />;
       }
       return <input {...props} />;
     };
     return memo(Input);
   })(),
   wrapper: (() => {
-    const Wrapper = props => <div {...props} className="markdown-body" />;
+    const Wrapper = (props: any) => (
+      <div {...props} className="markdown-body" />
+    );
     return memo(Wrapper);
   })(),
   a: (() => {
-    const ALink = props => <Link {...props} />;
+    const ALink = (props: any) => <Link {...props} />;
     return memo(ALink);
   })(),
 };
