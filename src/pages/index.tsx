@@ -27,7 +27,7 @@ import frequentlyUsedMirror from '../utils/frequently-used-mirror-list';
 import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
 import NameIconButton from '../components/name-icon-button';
-import ZjuFalconIcon from '../../resource/icons/zju-falcon.svg';
+import { ReactComponent as ZjuFalconIcon } from '../../resource/icons/zju-falcon.svg';
 
 interface Data {
   mirrorDocs: {

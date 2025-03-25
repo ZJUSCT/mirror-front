@@ -53,8 +53,18 @@ module.exports = {
       }
     },
     {
-      resolve: "gatsby-plugin-react-svg",
+      resolve: 'gatsby-plugin-svgr',
       options: {
+        prettier: true,
+        svgo: true,
+        svgoConfig: {
+          plugins: [
+            { 
+              name: 'preset-default',
+            },
+            'cleanupIds',
+          ],
+        },
         rule: {
           include: /icons/,
           omitKeys: [
@@ -67,6 +77,21 @@ module.exports = {
         }
       }
     },
+    // {
+    //   resolve: "gatsby-plugin-react-svg",
+    //   options: {
+    //     rule: {
+    //       include: /icons/,
+    //       omitKeys: [
+    //         'inkscapePageshadow', 'inkscapePageopacity', 'inkscapePagecheckerboard', 
+    //         'inkscapeZoom', 'inkscapeCx', 'inkscapeCy', 'inkscapeWindowWidth', 'inkscapeWindowHeight', 
+    //         'inkscapeWindowX', 'inkscapeWindowY', 'inkscapeWindowMaximized', 'inkscapeCurrentLayer', 
+    //         'sodipodiNodetypes', 'sodipodiDocname', 'inkscapeVersion', 'xmlnsInkscape', 'xmlnsSodipodi',
+    //         'xmlnsSvg', 
+    //       ]
+    //     }
+    //   }
+    // },
     {
       resolve: `gatsby-plugin-react-i18next`,
       options: {
