@@ -52,8 +52,8 @@ export default ({
             },
       }}
     >
-      {buttons.map(fab => (
-        <Grid>{fab}</Grid>
+      {buttons.map((fab, i) => (
+        <Grid key={i}>{fab}</Grid>
       ))}
     </Grid>
   );
