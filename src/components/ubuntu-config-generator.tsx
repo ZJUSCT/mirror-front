@@ -48,23 +48,23 @@ const configGenOld = (
     ? 'mirrors.zju.edu.cn'
     : 'security.ubuntu.com';
   let sources = `deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
-  deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
-  deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
-  deb ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
+deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
+deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
+deb ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
   if (enableSrc) {
     sources += `
-  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
-  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
-  deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
-  deb-src ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
+deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
+deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
+deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
+deb-src ${httpProtocol}://${securityRepo}/${ubuntuVariant}/ ${ubuntuName}-security main restricted universe multiverse`;
   }
 
   if (enableProposed) {
     sources += `
-  ${proposedText}deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
+${proposedText}deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
     if (enableSrc) {
       sources += `
-  ${proposedText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
+${proposedText}deb-src ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-proposed main restricted universe multiverse`;
     }
   }
   return sources;
@@ -85,24 +85,24 @@ const configGenNew = (
     ? 'mirrors.zju.edu.cn'
     : 'security.ubuntu.com';
   let sources = `Types: deb${debSrcText}
-  URIs: ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/
-  Suites: ${ubuntuName} ${ubuntuName}-updates ${ubuntuName}-backports
-  Components: main restricted universe multiverse
-  Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-  \u200b
-  Types: deb${debSrcText}
-  URIs: ${httpProtocol}://${securityRepo}/${ubuntuVariant}/
-  Suites: ${ubuntuName}-security
-  Components: main restricted universe multiverse
-  Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+URIs: ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/
+Suites: ${ubuntuName} ${ubuntuName}-updates ${ubuntuName}-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb${debSrcText}
+URIs: ${httpProtocol}://${securityRepo}/${ubuntuVariant}/
+Suites: ${ubuntuName}-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
   `;
   if (enableProposed) {
-    sources += `\u200b
-  Types: deb${debSrcText}
-  URIs: ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/
-  Suites: ${ubuntuName}-proposed
-  Components: main restricted universe multiverse
-  Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+    sources += `
+Types: deb${debSrcText}
+URIs: ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/
+Suites: ${ubuntuName}-proposed
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
   `;
   }
   return sources;
