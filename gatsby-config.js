@@ -130,7 +130,7 @@ module.exports = {
       options: {
         sassOptions: {
           api: 'modern',
-          silenceDeperacations: ['legacy-js-api'],
+          silenceDeprecations: ['legacy-js-api'],
         },
         serialize: ({ path }) => {
           return {
