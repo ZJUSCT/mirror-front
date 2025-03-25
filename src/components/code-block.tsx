@@ -47,7 +47,12 @@ export default ({ children, codeStyle, language }: CodeBlockProps) => {
             return (
               <div key={i} {...getLineProps({ line, key: i })}>
                 {line.map((token, key) => {
-                  return <span key={key} {...getTokenProps({ token, key })} />;
+                  const tokenProps = getTokenProps({ token, key });
+                  tokenProps.style = {
+                    ...tokenProps.style,
+                    whiteSpace: 'pre',
+                  };
+                  return <span key={key} {...tokenProps} />;
                 })}
               </div>
             );
