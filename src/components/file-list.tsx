@@ -14,8 +14,8 @@ export default ({ files }: FileListProps) => {
   const { t } = useTranslation();
   const [showAll, setShowAll] = React.useState<boolean>(false);
 
-  var sorter = natsort({desc: true});
-  files.sort(function (a, b) {
+  const sorter = natsort({ desc: true });
+  files.sort((a, b) => {
     return sorter(a.name, b.name);
   });
 

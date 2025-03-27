@@ -7,7 +7,7 @@ type Preferences = {
 
 type PrefsContextInterface = [
   Preferences,
-  React.Dispatch<React.SetStateAction<Preferences>>
+  React.Dispatch<React.SetStateAction<Preferences>>,
 ];
 
 const defaultPrefs: Preferences = {

@@ -124,14 +124,18 @@ module.exports = {
         icon: 'resource/icons/favicon.svg',
       },
     },
-    `gatsby-plugin-sass`,
     {
-      resolve: "gatsby-plugin-sitemap",
+      resolve: "gatsby-plugin-sass",
       options: {
         sassOptions: {
           api: 'modern',
           silenceDeprecations: ['legacy-js-api'],
         },
+      },
+    },
+    {
+      resolve: "gatsby-plugin-sitemap",
+      options: {
         serialize: ({ path }) => {
           return {
             url: path,

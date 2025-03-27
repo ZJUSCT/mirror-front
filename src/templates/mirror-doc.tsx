@@ -15,6 +15,7 @@ import ThemeIconButton from '../components/theme-icon-button';
 import { Locale, MirrorDto } from '../types/mirror';
 import { Link } from '../utils/i18n-link';
 import components from './components';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { popCache, writeCache } from '../utils/cache';
 import { getUrl } from '../utils/url';
 import TitleMirrorIcon from '../utils/title-mirror-icon';
@@ -179,7 +180,11 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
               zIndex: -1,
             }}
           >
-            {TitleMirrorIcon(mirrorId, 'rgb(71 123 210 / 23%)', '20rem')}
+            <TitleMirrorIcon
+              mirrorName={mirrorId}
+              color="rgb(71 123 210 / 23%)"
+              size="20rem"
+            />
           </Box>
         </Box>
         <Box zIndex={1} position="sticky">

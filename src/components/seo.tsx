@@ -5,8 +5,20 @@ import { useI18next } from 'gatsby-plugin-react-i18next';
 
 type MetaProps = React.JSX.IntrinsicElements['meta'];
 
-const Helmet: React.FC = ({children, title, meta}) => {
-  const {languages, language, originalPath, defaultLanguage, siteUrl = ''} = useI18next();
+type HelmetProps = {
+  title: string;
+  meta?: MetaProps[];
+  children?: React.ReactNode;
+};
+
+const Helmet: React.FC<HelmetProps> = ({ children, title, meta }) => {
+  const {
+    languages,
+    language,
+    originalPath,
+    defaultLanguage,
+    siteUrl = '',
+  } = useI18next();
   const createUrlWithLang = (lng: string) => {
     const url = `${siteUrl}${lng === defaultLanguage ? '' : `/${lng}`}${originalPath}`;
     return url.endsWith('/') ? url : `${url}/`;
@@ -15,13 +27,22 @@ const Helmet: React.FC = ({children, title, meta}) => {
     <>
       <html lang={language} />
       <title>{title}</title>
-      {meta?.map((m: MetaProps, i: number) => <meta {...m} key={i}/>)}
+      {meta?.map((m: MetaProps, i: number) => <meta {...m} key={i} />)}
       <link rel="canonical" href={createUrlWithLang(language)} />
-      {languages.map((lng) => (
-        <link rel="alternate" key={lng} href={createUrlWithLang(lng)} hrefLang={lng} />
+      {languages.map(lng => (
+        <link
+          rel="alternate"
+          key={lng}
+          href={createUrlWithLang(lng)}
+          hrefLang={lng}
+        />
       ))}
       {/* adding a fallback page for unmatched languages */}
-      <link rel="alternate" href={createUrlWithLang(defaultLanguage)} hrefLang="x-default" />
+      <link
+        rel="alternate"
+        href={createUrlWithLang(defaultLanguage)}
+        hrefLang="x-default"
+      />
       {children}
     </>
   );
@@ -34,19 +55,17 @@ export interface SeoProps {
 }
 
 export default ({ description, meta = [], title }: SeoProps) => {
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-            author
-          }
+  const { site } = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          description
+          author
         }
       }
-    `
-  );
+    }
+  `);
 
   const defaultTitle = site.siteMetadata?.title;
   const metaDescription = description || site.siteMetadata.description;
