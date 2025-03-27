@@ -273,7 +273,7 @@ export default () => {
           {shouldUseNewConf() && (
             <>
               <Typography style={{ fontWeight: 'bold' }}>
-                如果您从旧版本 Ubuntu 升级到该版本，可能需要同时备份并清除
+                如果您从旧版本 Debian 升级到该版本，可能需要同时备份并清除
               </Typography>
               <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
                 /etc/apt/sources.list
