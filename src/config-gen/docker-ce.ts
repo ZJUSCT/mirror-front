@@ -32,16 +32,16 @@ export const debianGenFunc: ConfigGenerator = genConf => {
   return {
     language: 'shell',
     content: `#信任 Docker 的 GPG 公钥:
-    curl -fsSL ${gpgPath} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL ${gpgPath} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-    #添加软件仓库:
-    echo \\
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.zju.edu.cn/docker-ce/linux/${distro} \\
-      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+#添加软件仓库:
+echo \\
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.zju.edu.cn/docker-ce/linux/${distro} \\
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    #最后安装
-    sudo apt-get update
-    sudo apt-get install docker-ce`,
+#最后安装
+sudo apt-get update
+sudo apt-get install docker-ce`,
   };
 };
 
