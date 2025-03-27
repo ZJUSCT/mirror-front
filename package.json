@@ -14,7 +14,8 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "extract": "yarn run babel --config-file ./babel-extract.config.js -o tmp/chunk.js 'src/**/*.{js,jsx,ts,tsx}' && rm -rf tmp",
     "types-check": "tsc --noEmit --project ./tsconfig.json",
-    "lint-check": "eslint \"src/**/*\""
+    "lint-check": "eslint \"src/**/*\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -76,6 +77,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^4.6.2",
     "http-proxy-middleware": "^3.0.3",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "prettier-eslint": "^16.3.0",
     "typescript": "^5.8.2",
