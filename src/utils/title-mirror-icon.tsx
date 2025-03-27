@@ -33,11 +33,17 @@ import rustIcon from '@iconify/icons-simple-icons/rust';
 import texIcon from '@iconify/icons-file-icons/latex';
 import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
 
-export default function TitleMirrorIcon(
-  mirrorName: string,
-  color: string,
-  size: string
-) {
+type TitleMirrorIconProps = {
+  mirrorName: string;
+  color: string;
+  size: string;
+};
+
+const TitleMirrorIcon: React.FC<TitleMirrorIconProps> = ({
+  mirrorName,
+  color,
+  size,
+}) => {
   switch (mirrorName) {
     case 'CPAN':
       return <Icon height={size} icon={cpanIcon} color={color} />;
@@ -122,4 +128,6 @@ export default function TitleMirrorIcon(
     default:
       return <Box />;
   }
-}
+};
+
+export default TitleMirrorIcon;

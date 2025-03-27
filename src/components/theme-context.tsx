@@ -1,8 +1,5 @@
 import { PaletteMode } from '@mui/material';
-import {
-  createTheme,
-  ThemeProvider as MuiThemeProvider,
-} from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as React from 'react';
 import { lightTheme, darkTheme } from './config-theme';
