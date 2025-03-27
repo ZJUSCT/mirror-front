@@ -85,6 +85,7 @@ module.exports = {
     'no-empty-function': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     'no-console': 'off',
+    'import/prefer-default-export': 'off',
   },
   settings: {
     'import/resolver': {
