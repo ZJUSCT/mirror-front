@@ -308,7 +308,7 @@ const Index = ({ data }: { data: Data }) => {
                     {title}
                   </Link>
                   <Typography color="info.light" component="div">
-                    &nbsp; - {date.toLocaleDateString()}
+                    &nbsp; - {date.toLocaleDateString(language)}
                   </Typography>
                 </Grid>
               ))}
