@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Grid2 as Grid } from '@mui/material';
+import { Link, Grid } from '@mui/material';
 import { MirrorDto } from '../types/mirror';
 
 export default ({

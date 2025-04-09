@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid, Link, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Link, Typography, useTheme } from '@mui/material';
 import { Trans } from 'gatsby-plugin-react-i18next';
 import React from 'react';
 import { ReactComponent as Zjusct } from '../../resource/icons/zjusct.svg';

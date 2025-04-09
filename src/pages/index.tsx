@@ -2,7 +2,7 @@ import {
   Box,
   Chip,
   ChipProps,
-  Grid2 as Grid,
+  Grid,
   IconButton,
   InputBase,
   Link,

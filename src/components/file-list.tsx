@@ -1,6 +1,6 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Box, Button, Collapse } from '@mui/material/';
+import { Box, Button, Collapse } from '@mui/material';
 import natsort from 'natsort';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';

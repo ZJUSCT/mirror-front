@@ -22,10 +22,10 @@ export default ({ name, url }: FileProps) => {
           alignItems="stretch"
           spacing={1}
         >
-          <Grid item height="0px">
+          <Grid height="0px">
             <AlbumIcon color="primary" />
           </Grid>
-          <Grid item>
+          <Grid>
             <Typography
               variant="subtitle1"
               component="div"
@@ -36,7 +36,7 @@ export default ({ name, url }: FileProps) => {
               <Trans>ISO</Trans>
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <Typography variant="subtitle1" component="div" lineHeight={1.5}>
               {name}
             </Typography>
