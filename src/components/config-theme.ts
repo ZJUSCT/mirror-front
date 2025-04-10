@@ -15,6 +15,8 @@ import {
   darkSuccess,
   darkWarn,
   tintLight050,
+  lightSecondary,
+  darkSecondary,
 } from './colors';
 
 function configTheme(mode: PaletteMode): ThemeOptions {
@@ -29,6 +31,9 @@ function configTheme(mode: PaletteMode): ThemeOptions {
             },
             primary: {
               main: lightAccent,
+            },
+            secondary: {
+              main: lightSecondary,
             },
             neutral: {
               main: '#f2f7f9',
@@ -50,15 +55,19 @@ function configTheme(mode: PaletteMode): ThemeOptions {
               default: tintedGrayscale[steps - 2],
               paper: tintLight050,
             },
+            divider: tintedGrayscale[steps - 2],
           }
         : {
             text: {
               primary: grayscale[steps - 1],
               secondary: tintedGrayscale[steps - 7],
-              disabled: tintedGrayscale[Math.ceil(steps * 0.6)],
+              disabled: tintedGrayscale[Math.ceil(steps * 0.8)],
             },
             primary: {
               main: darkAccent,
+            },
+            secondary: {
+              main: darkSecondary,
             },
             neutral: {
               main: '#070707',
@@ -80,6 +89,7 @@ function configTheme(mode: PaletteMode): ThemeOptions {
               default: grayscale[0],
               paper: grayscale[2],
             },
+            divider: 'rgba(255, 255, 255, 0.05)',
           },
     typography: {
       h1: {

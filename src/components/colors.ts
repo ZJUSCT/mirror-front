@@ -21,6 +21,8 @@ const [accentL, accentC, accentH] = colors.convert(
 );
 export const lightAccent = oklch(accentL, accentC, accentH);
 export const darkAccent = oklch(1 - accentL, accentC, accentH);
+export const lightSecondary = oklch(0.8, accentC / 2, accentH);
+export const darkSecondary = oklch(0.4, accentC / 2, accentH);
 
 export const tintedGrayscale: string[] = [];
 export const grayscale: string[] = [];
@@ -57,7 +59,7 @@ function generateAuxColors(chroma: number, hue: number): [string, string] {
 
 export const [lightSuccess, darkSuccess] = generateAuxColors(0.2, 170);
 export const [lightErr, darkErr] = generateAuxColors(0.2, 20);
-export const [lightWarn, darkWarn] = generateAuxColors(0.2, 130);
+export const [lightWarn, darkWarn] = generateAuxColors(0.3, 90);
 export const [lightInfo, darkInfo] = generateAuxColors(0.2, 210);
 // Converted automatically using ./tools/themeFromVsCode
 
@@ -163,7 +165,7 @@ export const lightTheme: PrismTheme = {
 export const darkTheme: PrismTheme = {
   plain: {
     color: tintedGrayscale[steps - 2],
-    backgroundColor: grayscale[0],
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   styles: [
     {
