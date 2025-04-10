@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import FolderIcon from '@mui/icons-material/Folder';
-import { Box, Grid2 as Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';

@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import { DateRange, AccountCircle } from '@mui/icons-material';
-import { Box, Grid2 as Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';

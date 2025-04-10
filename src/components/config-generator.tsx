@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
   Box,
-  Grid2 as Grid,
+  Grid,
   Typography,
 } from '@mui/material';
 import { Language } from 'prism-react-renderer';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid2 as Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import SearchItemCard from './search-item-card';
 import { Mirror } from '../types/mirror';
 
