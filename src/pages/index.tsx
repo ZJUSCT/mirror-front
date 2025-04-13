@@ -338,6 +338,7 @@ const Index = ({ data }: { data: Data }) => {
             <SearchTable
               queryResults={searchResults ?? Object.values(mirrors)}
               searching={searching}
+              keyword={searchInput}
             />
           </Grid>
         </Grid>

@@ -3,7 +3,11 @@ import { Grid, Typography } from '@mui/material';
 import SearchItemCard from './search-item-card';
 import { Mirror } from '../types/mirror';
 
-export default (props: { queryResults: Mirror[]; searching: boolean }) => {
+export default (props: {
+  queryResults: Mirror[];
+  searching: boolean;
+  keyword: string;
+}) => {
   const lexicoMap: { [key: string]: Mirror[] } = {};
   const caps: string[] = [];
   props.queryResults.forEach(mirror => {
@@ -41,7 +45,7 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
           >
             {props.queryResults.map(mirror => (
               <Grid key={mirror.id} size={1}>
-                <SearchItemCard queryItem={mirror} />
+                <SearchItemCard queryItem={mirror} keyword={props.keyword} />
               </Grid>
             ))}
           </Grid>
@@ -60,7 +64,7 @@ export default (props: { queryResults: Mirror[]; searching: boolean }) => {
             >
               {lexicoMap[cap].map(mirror => (
                 <Grid key={mirror.id} size={1}>
-                  <SearchItemCard queryItem={mirror} />
+                  <SearchItemCard queryItem={mirror} keyword="" />
                 </Grid>
               ))}
             </Grid>
