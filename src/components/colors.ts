@@ -64,7 +64,7 @@ export const [lightInfo, darkInfo] = generateAuxColors(0.2, 210);
 // Converted automatically using ./tools/themeFromVsCode
 
 const lightComments = oklch(0.5, 0.05, 170); // green
-const darkComments = tintedGrayscale[6];
+const darkComments = tintedGrayscale[12];
 // const [lightKw, darkKw] = generateAuxColors(0.6, accentH);
 const lightKw = oklch(0.4, 0.25, accentH);
 const darkKw = oklch(0.7, 0.2, accentH);
@@ -142,7 +142,7 @@ export const lightTheme: PrismTheme = {
     {
       types: ['punctuation', 'template-punctuation', 'operator'],
       style: {
-        color: grayscale[4],
+        color: grayscale[8],
       },
     },
     {
@@ -150,7 +150,7 @@ export const lightTheme: PrismTheme = {
       types: ['punctuation'],
       languages: ['markup'],
       style: {
-        color: grayscale[4],
+        color: grayscale[8],
       },
     },
     {
@@ -208,7 +208,7 @@ export const darkTheme: PrismTheme = {
     {
       types: ['punctuation', 'template-punctuation', 'operator'],
       style: {
-        color: tintedGrayscale[8],
+        color: tintedGrayscale[16],
       },
     },
     {
