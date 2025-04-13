@@ -63,17 +63,17 @@ export const [lightWarn, darkWarn] = generateAuxColors(0.3, 90);
 export const [lightInfo, darkInfo] = generateAuxColors(0.2, 210);
 // Converted automatically using ./tools/themeFromVsCode
 
-const lightComments = oklch(0.5, 0.05, 170); // green
+const lightComments = tintedGrayscale[12];
 const darkComments = tintedGrayscale[12];
 // const [lightKw, darkKw] = generateAuxColors(0.6, accentH);
-const lightKw = oklch(0.4, 0.25, accentH);
+const lightKw = oklch(0.5, 0.2, accentH); // oklch(0.5, 0.2, 200);
 const darkKw = oklch(0.7, 0.2, accentH);
-const lightTag = oklch(0.4, 0.1, accentH);
-const darkTag = oklch(0.7, 0.1, accentH);
-const lightVar = oklch(0.4, 0.2, 200); // teal
-const darkVar = oklch(0.7, 0.2, 200); // teal
-const lightConst = oklch(0.2, 0.2, 170);
-const darkConst = oklch(0.7, 0.2, 190);
+const lightTag = oklch(0.5, 0.2, 315);
+const darkTag = oklch(0.7, 0.2, 315);
+const lightVar = oklch(0.5, 0.2, accentH); // teal
+const darkVar = oklch(0.7, 0.2, accentH); // teal
+const lightConst = oklch(0.5, 0.2, 170);
+const darkConst = oklch(0.7, 0.2, 170);
 
 const lightInserted = oklch(0.4, 0.2, 170); // green
 const darkInserted = oklch(0.7, 0.2, 200); // teal
@@ -89,13 +89,19 @@ export const lightTheme: PrismTheme = {
       types: ['comment'],
       style: {
         color: lightComments,
+        fontStyle: 'italic',
       },
     },
     {
-      types: ['builtin', 'changed', 'keyword', 'interpolation-punctuation'],
+      types: [
+        'builtin',
+        'changed',
+        'keyword',
+        'interpolation-punctuation',
+        'key',
+      ],
       style: {
         color: lightKw,
-        fontWeight: 'bold',
       },
     },
     {
@@ -105,14 +111,13 @@ export const lightTheme: PrismTheme = {
       },
     },
     {
-      types: ['constant', 'number', 'string', 'char'],
+      types: ['constant', 'number', 'string', 'char', 'boolean'],
       style: {
-        // fontStyle: 'italic',
         color: lightConst,
       },
     },
     {
-      types: ['attr-name', 'variable', 'selector'],
+      types: ['attr-name', 'variable'],
       style: {
         color: lightVar,
       },
@@ -154,7 +159,7 @@ export const lightTheme: PrismTheme = {
       },
     },
     {
-      types: ['function', 'class-name'],
+      types: ['function', 'class-name', 'selector'],
       style: {
         color: lightTag,
       },
@@ -172,13 +177,19 @@ export const darkTheme: PrismTheme = {
       types: ['comment'],
       style: {
         color: darkComments,
+        fontStyle: 'italic',
       },
     },
     {
-      types: ['builtin', 'changed', 'keyword', 'interpolation-punctuation'],
+      types: [
+        'builtin',
+        'changed',
+        'keyword',
+        'interpolation-punctuation',
+        'key',
+      ],
       style: {
         color: darkKw,
-        fontWeight: 'bold',
       },
     },
     {
@@ -188,13 +199,13 @@ export const darkTheme: PrismTheme = {
       },
     },
     {
-      types: ['constant', 'number', 'string', 'char'],
+      types: ['constant', 'number', 'string', 'char', 'boolean'],
       style: {
         color: darkConst,
       },
     },
     {
-      types: ['attr-name', 'variable', 'selector'],
+      types: ['attr-name', 'variable'],
       style: {
         color: darkVar,
       },
@@ -220,7 +231,7 @@ export const darkTheme: PrismTheme = {
       },
     },
     {
-      types: ['function', 'class-name'],
+      types: ['function', 'class-name', 'selector'],
       style: {
         color: darkTag,
       },

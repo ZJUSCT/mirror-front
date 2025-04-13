@@ -167,11 +167,7 @@ const components: MDXComponents = {
       className?: string;
     }) => {
       if (className === undefined) {
-        return (
-          <Code>
-            {children}
-          </Code>
-        );
+        return <Code>{children}</Code>;
       }
       const lang = className?.match(/language-(?<lang>.*)/)?.groups?.lang || '';
       return <CodeBlock language={lang}>{children}</CodeBlock>;
