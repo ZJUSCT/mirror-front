@@ -170,7 +170,12 @@ const components: MDXComponents = {
         return (
           <Typography
             component="code"
-            style={{ color: theme.palette.secondary.main }}
+            style={{
+              color: theme.palette.text.disabled,
+              backgroundColor: theme.palette.divider,
+              padding: '2px 4px',
+              borderRadius: '4px',
+            }}
           >
             {children}
           </Typography>
