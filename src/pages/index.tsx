@@ -4,6 +4,7 @@ import {
   ChipProps,
   Grid,
   IconButton,
+  InputAdornment,
   InputBase,
   Link,
   Paper,
@@ -12,9 +13,10 @@ import {
 import { styled } from '@mui/material/styles';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Fuse from 'fuse.js';
+import Code from '../components/code';
 import Footer from '../components/footer';
 import FrequentlyUsedMirrorCard from '../components/frequently-used-mirror-card';
 import LanguageIconButton from '../components/language-icon-button';
@@ -179,6 +181,30 @@ const Index = ({ data }: { data: Data }) => {
     return [true, searchedItems];
   }, [fuseSearch, searchInput]);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // ignore key-press while inputting in search bar
+      const { tagName } = e.target as HTMLElement;
+      if (
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        (e.target as HTMLElement).isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.key === '/') {
+        e.preventDefault(); // prevent browser default behaviour
+        inputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <>
       <Box
@@ -328,8 +354,14 @@ const Index = ({ data }: { data: Data }) => {
                 </IconButton>
                 <InputBase
                   sx={{ ml: 1, flex: 1 }}
-                  placeholder={t('搜索') ?? ''}
+                  placeholder={t('搜索镜像...') ?? ''}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Code>/</Code>
+                    </InputAdornment>
+                  }
                   inputProps={{ 'aria-label': 'search mirrors' }}
+                  inputRef={inputRef}
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                 />
