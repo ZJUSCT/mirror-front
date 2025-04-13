@@ -67,11 +67,11 @@ const lightComments = oklch(0.5, 0.05, 170); // green
 const darkComments = tintedGrayscale[12];
 // const [lightKw, darkKw] = generateAuxColors(0.6, accentH);
 const lightKw = oklch(0.4, 0.25, accentH);
-const darkKw = oklch(0.7, 0.2, accentH);
+const darkKw = oklch(0.7, 0.2, 200);
 const lightTag = oklch(0.4, 0.1, accentH);
-const darkTag = oklch(0.7, 0.1, accentH);
+const darkTag = oklch(0.7, 0.1, 200);
 const lightVar = oklch(0.4, 0.2, 200); // teal
-const darkVar = oklch(0.7, 0.2, 200); // teal
+const darkVar = oklch(0.7, 0.2, accentH); // teal
 const lightConst = oklch(0.2, 0.2, 170);
 const darkConst = oklch(0.7, 0.2, 190);
 
@@ -179,6 +179,12 @@ export const darkTheme: PrismTheme = {
       style: {
         color: darkKw,
         fontWeight: 'bold',
+      },
+    },
+    {
+      types: ['key'],
+      style: {
+        color: darkKw,
       },
     },
     {
