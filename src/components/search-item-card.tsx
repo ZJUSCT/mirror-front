@@ -12,7 +12,76 @@ import { getUrl } from '../utils/url';
 import { usePrefs } from './preferences-context';
 import officialCertificatedMirrorList from '../utils/official-certificated-mirror-list';
 
-const SearchItemCard = (props: { queryItem: Mirror }) => {
+const highlightText = (text: string, keywordString: string) => {
+  // If no keywords, just return the original text
+  if (!keywordString) return text;
+
+  // Split, trim, dedupe, remove empties
+  const keywords = Array.from(
+    new Set(
+      keywordString
+        .split(' ')
+        .map(k => k.trim())
+        .filter(k => k.length > 0)
+    )
+  );
+  if (keywords.length === 0) return text;
+
+  // Match longest first (handles "foobar" vs "foo"/"bar")
+  keywords.sort((a, b) => b.length - a.length);
+
+  const lowerText = text.toLowerCase();
+
+  // Checks for a keyword at `pos`
+  const findMatchAt = (pos: number): string | undefined => {
+    return keywords.find(kw => lowerText.startsWith(kw.toLowerCase(), pos));
+  };
+
+  const result: Array<string | React.JSX.Element> = [];
+  let buffer = '';
+  let i = 0;
+
+  // Main scan loop
+  while (i < text.length) {
+    const matchKw = findMatchAt(i);
+
+    if (matchKw) {
+      // Flush buffered text
+      if (buffer) {
+        result.push(buffer);
+        buffer = '';
+      }
+
+      // Preserve original casing
+      const matchedText = text.slice(i, i + matchKw.length);
+
+      // Emit highlight
+      result.push(
+        <mark key={i} style={{ background: '#fcba03' }}>
+          {matchedText}
+        </mark> // FIXME: put colour into config file
+      );
+
+      i += matchKw.length;
+    } else {
+      buffer += text[i];
+      i += 1;
+    }
+  }
+
+  // Flush remainder
+  if (buffer) result.push(buffer);
+
+  return result;
+};
+
+const getCardDisplayName = (
+  friendlyName: boolean,
+  queryItem: Mirror,
+  lang: Locale
+): string => (friendlyName ? queryItem.name[lang] : queryItem.id);
+
+const SearchItemCard = (props: { queryItem: Mirror; keyword: string }) => {
   const { language } = useI18next();
   const lang = language as Locale;
   const [prefs, _] = usePrefs();
@@ -51,9 +120,14 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
             >
               <Grid>
                 <Typography variant="h6" component="div">
-                  {prefs.friendlyName
-                    ? props.queryItem.name[lang]
-                    : props.queryItem.id}
+                  {highlightText(
+                    getCardDisplayName(
+                      prefs.friendlyName,
+                      props.queryItem,
+                      lang
+                    ),
+                    props.keyword
+                  )}
                 </Typography>
               </Grid>
               <Grid
@@ -76,7 +150,7 @@ const SearchItemCard = (props: { queryItem: Mirror }) => {
               </Grid>
             </Grid>
             <Typography gutterBottom variant="body2" color="text.secondary">
-              {props.queryItem.desc[lang]}
+              {highlightText(props.queryItem.desc[lang], props.keyword)}
             </Typography>
           </Grid>
           <Grid>
