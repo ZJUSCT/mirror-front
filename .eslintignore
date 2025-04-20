@@ -3,6 +3,3 @@ public/
 .cache/
 node_modules/
 *.scss
-*.js
-*.json
-
