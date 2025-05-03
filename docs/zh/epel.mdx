@@ -2,20 +2,19 @@
 mirrorId: epel
 ---
 
-EPEL (Extra Packages for Enterprise Linux) 是由 Fedora Special Interest Group 维护的 Enterprise Linux (RHEL、CentOS) 中经
-常用到的包。
+EPEL (Extra Packages for Enterprise Linux) 是由 Fedora Special Interest Group 维护的 Enterprise Linux (RHEL、CentOS) 中经常用到的包。
 
 下面以 AlmaLinux 9 为例讲解如何使用本镜像站的 epel 镜像。
 其他版本的系统可以参照 [Getting started with EPEL](https://docs.fedoraproject.org/en-US/epel/getting-started/) 进行配置。
 
-## 安装 epel-release
+### 安装 epel-release
 
 ```shell
 sudo dnf config-manager --set-enabled crb
 sudo dnf install epel-release
 ```
 
-## 配置 EPEL 镜像
+### 配置 EPEL 镜像
 
 修改 `/etc/yum.repos.d/epel.repo` ，将 `mirrorlist` 和 `metalink` 开头的行注释掉。
 
@@ -31,7 +30,7 @@ sudo sed -e 's!^metalink=!#metalink=!g' \
     -i /etc/yum.repos.d/epel{,-testing}.repo
 ```
 
-## 处理 epel-cisco-openh264 联网问题
+### 处理 epel-cisco-openh264 联网问题
 
 由于 epel-cisco-openh264 暂无镜像，在校网内未联网时产生造成较长的等待时间。因此可以将其手动禁用。
 
@@ -44,7 +43,7 @@ sudo sed -e 's!^enabled=1!enabled=0!g' \
     -i /etc/yum.repos.d/epel-cisco-openh264.repo
 ```
 
-## 重建 dnf 缓存
+### 重建 dnf 缓存
 
 运行以下命令重建缓存：
 
@@ -52,7 +51,7 @@ sudo sed -e 's!^enabled=1!enabled=0!g' \
 sudo dnf makecache
 ```
 
-## 文件修改结果
+### 文件修改结果
 
 修改结果如下：（仅供参考，不同版本可能不同）
 
