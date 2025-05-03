@@ -2,66 +2,128 @@
 mirrorId: epel
 ---
 
+EPEL (Extra Packages for Enterprise Linux) 是由 Fedora Special Interest Group 维护的 Enterprise Linux (RHEL、CentOS) 中经常用到的包。
 
-EPEL(Extra Packages for Enterprise Linux) 是由 Fedora Special Interest Group 维护的 Enterprise Linux（RHEL、CentOS）中经
-常用到的包。
+下面以 AlmaLinux 9 为例讲解如何使用本镜像站的 epel 镜像。
+其他版本的系统可以参照 [Getting started with EPEL](https://docs.fedoraproject.org/en-US/epel/getting-started/) 进行配置。
 
-
-下面以 CentOS 7 为例讲解如何使用本镜像站的 epel 镜像。CentOS 8 同样可用该方法。
-
-首先从 CentOS Extras 这个源里安装 epel-release：
+### 安装 epel-release
 
 ```shell
-yum install epel-release
+sudo dnf config-manager --set-enabled crb
+sudo dnf install epel-release
 ```
 
-修改`/etc/yum.repos.d/epel.repo`，将`mirrorlist`和`metalink`开头的行注释掉。
+### 配置 EPEL 镜像
 
-接下来，取消注释这个文件里`baseurl`开头的行，并将其中的`http://download.fedoraproject.org/pub/epel`替换成`https://mirrors.zju.edu.cn/epel`。
+修改 `/etc/yum.repos.d/epel.repo` ，将 `mirrorlist` 和 `metalink` 开头的行注释掉。
 
-可以用如下命令自动替换：（来自 https://github.com/tuna/issues/issues/687 ） 
+接下来，取消注释这个文件里 `baseurl` 开头的行，并将其中的 `http://download.fedoraproject.org/pub/epel` 替换成 `https://mirrors.zju.edu.cn/epel` 。
 
+可以用如下命令自动替换：
 
 ```shell
-sed -e 's!^metalink=!#metalink=!g' \
+sudo sed -e 's!^metalink=!#metalink=!g' \
     -e 's!^#baseurl=!baseurl=!g' \
-    -e 's!http://download\.fedoraproject\.org/pub/epel!https://mirrors.zju.edu.cn/epel!g' \
-    -e 's!http://download\.example/pub/epel!https://mirrors.zju.edu.cn/epel!g' \
-    -i /etc/yum.repos.d/epel*.repo
+    -e 's!https\?://download\.fedoraproject\.org/pub/epel!https://mirrors.zju.edu.cn/epel!g' \
+    -e 's!https\?://download\.example/pub/epel!https://mirrors.zju.edu.cn/epel!g' \
+    -i /etc/yum.repos.d/epel{,-testing}.repo
 ```
 
+### 处理 epel-cisco-openh264 联网问题
+
+由于 epel-cisco-openh264 暂无镜像，在校网内未联网时产生造成较长的等待时间。因此可以将其手动禁用。
+
+修改 `/etc/yum.repos.d/epel-cisco-openh264.repo` ，将 `enabled=1` 改为 `enabled=0` 。
+
+可以使用以下命令自动替换：
+
+```shell
+sudo sed -e 's!^enabled=1!enabled=0!g' \
+    -i /etc/yum.repos.d/epel-cisco-openh264.repo
+```
+
+### 重建 dnf 缓存
+
+运行以下命令重建缓存：
+
+```shell
+sudo dnf makecache
+```
+
+### 文件修改结果
 
 修改结果如下：（仅供参考，不同版本可能不同）
 
+`epel.repo` ：
 
 ```ini
 [epel]
-name=Extra Packages for Enterprise Linux 7 - $basearch
-baseurl=https://mirrors.zju.edu.cn/epel/7/$basearch
-#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
-failovermethod=priority
+name=Extra Packages for Enterprise Linux 9 - $basearch
+# It is much more secure to use the metalink, but if you wish to use a local mirror
+# place its address here.
+baseurl=https://mirrors.zju.edu.cn/epel/9/Everything/$basearch/
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-9&arch=$basearch&infra=$infra&content=$contentdir
 enabled=1
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 
 [epel-debuginfo]
-name=Extra Packages for Enterprise Linux 7 - $basearch - Debug
-baseurl=https://mirrors.zju.edu.cn/epel/7/$basearch/debug
-#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&arch=$basearch
-failovermethod=priority
+name=Extra Packages for Enterprise Linux 9 - $basearch - Debug
+# It is much more secure to use the metalink, but if you wish to use a local mirror
+# place its address here.
+baseurl=https://mirrors.zju.edu.cn/epel/9/Everything/$basearch/debug/
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-9&arch=$basearch&infra=$infra&content=$contentdir
 enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 gpgcheck=1
 
 [epel-source]
-name=Extra Packages for Enterprise Linux 7 - $basearch - Source
-baseurl=https://mirrors.zju.edu.cn/epel/7/SRPMS
-#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&arch=$basearch
-failovermethod=priority
+name=Extra Packages for Enterprise Linux 9 - $basearch - Source
+# It is much more secure to use the metalink, but if you wish to use a local mirror
+# place its address here.
+baseurl=https://mirrors.zju.edu.cn/epel/9/Everything/source/tree/
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-source-9&arch=$basearch&infra=$infra&content=$contentdir
 enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 gpgcheck=1
 ```
 
+`epel-cisco-openh264.repo` ：
 
-运行 `yum update` 测试一下吧。
+```ini
+[epel-cisco-openh264]
+name=Extra Packages for Enterprise Linux 9 openh264 (From Cisco) - $basearch
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-cisco-openh264-9&arch=$basearch
+type=rpm
+enabled=0
+metadata_expire=14d
+repo_gpgcheck=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
+skip_if_unavailable=True
+
+[epel-cisco-openh264-debuginfo]
+name=Extra Packages for Enterprise Linux 9 openh264 (From Cisco) - $basearch - Debug
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-cisco-openh264-debug-9&arch=$basearch
+type=rpm
+enabled=0
+metadata_expire=14d
+repo_gpgcheck=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
+skip_if_unavailable=True
+
+[epel-cisco-openh264-source]
+name=Extra Packages for Enterprise Linux 9 openh264 (From Cisco) - $basearch - Source
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-cisco-openh264-source-9&arch=$basearch
+type=rpm
+enabled=0
+metadata_expire=14d
+repo_gpgcheck=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
+skip_if_unavailable=True
+```
+
