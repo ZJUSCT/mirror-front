@@ -1,6 +1,13 @@
 import { MDXProvider } from '@mdx-js/react';
 import FolderIcon from '@mui/icons-material/Folder';
-import { Box, CssBaseline, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  CssBaseline,
+  Grid,
+  Typography,
+  useTheme,
+  alpha,
+} from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
@@ -41,6 +48,7 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
 
 const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
   const { language } = useI18next();
+  const theme = useTheme();
 
   const defaultData = {
     id: data.document.frontmatter.mirrorId,
@@ -183,7 +191,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
           >
             <TitleMirrorIcon
               mirrorName={mirrorId}
-              color="rgb(71 123 210 / 23%)"
+              color={alpha(theme.palette.primary.main, 0.15)}
               size="20rem"
             />
           </Box>
