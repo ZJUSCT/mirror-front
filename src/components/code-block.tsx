@@ -1,7 +1,8 @@
-import { Highlight, Language, PrismTheme, themes } from 'prism-react-renderer';
+import { Highlight, Language, PrismTheme } from 'prism-react-renderer';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material';
 import loadPrismLanguages from '~/utils/prism-languages';
+import { lightTheme, darkTheme } from './colors';
 
 export interface CodeBlockProps {
   children: string;
@@ -19,8 +20,7 @@ export default ({ children, codeStyle, language }: CodeBlockProps) => {
     })();
   }, []);
   const theme = useTheme();
-  const prismTheme =
-    theme.palette.mode === 'light' ? themes.github : themes.okaidia;
+  const prismTheme = theme.palette.mode === 'light' ? lightTheme : darkTheme;
 
   return (
     <Highlight
