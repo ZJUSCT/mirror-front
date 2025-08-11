@@ -40,14 +40,13 @@ const configGenOld = (
   enableSrc: boolean,
   enableProposed: boolean,
   enableSecurity: boolean,
-  ubuntuVariant: string
+  ubuntuVariant: string,
+  securityRepoHost: string
 ) => {
   const ubuntuName = ubuntuVersionMap[version];
   const httpProtocol = enableHTTPS ? 'https' : 'http';
   const proposedText = enableProposed ? '' : '# ';
-  const securityRepo = enableSecurity
-    ? 'mirrors.zju.edu.cn'
-    : 'security.ubuntu.com';
+  const securityRepo = enableSecurity ? 'mirrors.zju.edu.cn' : securityRepoHost;
   let sources = `deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName} main restricted universe multiverse
 deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-updates main restricted universe multiverse
 deb ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/ ${ubuntuName}-backports main restricted universe multiverse
@@ -77,14 +76,13 @@ const configGenNew = (
   enableSrc: boolean,
   enableProposed: boolean,
   enableSecurity: boolean,
-  ubuntuVariant: string
+  ubuntuVariant: string,
+  securityRepoHost: string
 ) => {
   const ubuntuName = ubuntuVersionMap[version];
   const httpProtocol = enableHTTPS ? 'https' : 'http';
   const debSrcText = enableSrc ? ' deb-src' : '';
-  const securityRepo = enableSecurity
-    ? 'mirrors.zju.edu.cn'
-    : 'security.ubuntu.com';
+  const securityRepo = enableSecurity ? 'mirrors.zju.edu.cn' : securityRepoHost;
   let sources = `Types: deb${debSrcText}
 URIs: ${httpProtocol}://mirrors.zju.edu.cn/${ubuntuVariant}/
 Suites: ${ubuntuName} ${ubuntuName}-updates ${ubuntuName}-backports
@@ -109,7 +107,13 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
   return sources;
 };
 
-export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
+export default ({
+  ubuntuVariant,
+  securityRepoHost,
+}: {
+  ubuntuVariant: string;
+  securityRepoHost?: string;
+}) => {
   const [version, setVersion] = useState(
     Object.keys(ubuntuVersionMap)
       .reverse()
@@ -122,6 +126,7 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
   const [confStyle, setConfStyle] = useState('default' as ConfigStyle);
   const newConfAvailable = () => parseInt(version, 10) >= 2404;
   const shouldUseNewConf = () => newConfAvailable() && confStyle !== 'old';
+  const securityRepo = securityRepoHost || 'security.ubuntu.com';
 
   return (
     <Box>
@@ -249,7 +254,8 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
               enableSrc,
               enableProposed,
               enableSecurity,
-              ubuntuVariant
+              ubuntuVariant,
+              securityRepo
             )
           : configGenOld(
               version,
@@ -257,7 +263,8 @@ export default ({ ubuntuVariant }: { ubuntuVariant: string }) => {
               enableSrc,
               enableProposed,
               enableSecurity,
-              ubuntuVariant
+              ubuntuVariant,
+              securityRepo
             )}
       </CodeBlock>
     </Box>
