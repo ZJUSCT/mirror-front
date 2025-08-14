@@ -13,7 +13,7 @@ export const debianGenConf: GeneratorConfiguration = {
       ubuntu: 'Ubuntu',
       debian: 'Debian',
     },
-    defaultValue: 'debian',
+    defaultValue: 'ubuntu',
   },
   useLocalGpg: {
     type: 'switch',
@@ -41,7 +41,7 @@ echo \\
 
 #最后安装
 sudo apt-get update
-sudo apt-get install docker-ce`,
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`,
   };
 };
 
@@ -71,6 +71,7 @@ export const elGenFunc: ConfigGenerator = genConf => {
   const distro = genConf.distro.value as string;
   return {
     language: 'shell',
-    content: `yum-config-manager --add-repo ${repoFilePrefix}${distro}/docker-ce.repo`,
+    content: `sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo ${repoFilePrefix}${distro}/docker-ce.repo`,
   };
 };

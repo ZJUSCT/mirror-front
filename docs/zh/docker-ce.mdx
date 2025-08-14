@@ -13,10 +13,10 @@ import { debianGenConf, debianGenFunc, elGenConf, elGenFunc } from '../../src/co
 
 以下内容根据 [官方文档](https://docs.docker.com/engine/install/debian/) 修改而来。
 
-如果你过去安装过 docker ，先删掉:
+如果你过去安装过 docker 或 podman 等不兼容的程序 ，先删掉:
 
 ```bash
-sudo apt-get remove docker docker-engine docker.io containerd runc
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 
 首先安装依赖:
@@ -29,23 +29,24 @@ sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-pr
 
 <ConfigGen config={debianGenConf} generatorFunc={debianGenFunc} />
 
-#### Fedora/CentOS/RHEL
+#### Fedora/CentOS/RHEL/AlmaLinux/Rocky Linux
 
 以下内容根据 [官方文档](https://docs.docker.com/engine/install/centos/) 修改而来。
 
 如果你之前安装过 docker ，先删掉：
 
 ```bash
-sudo yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+sudo dnf remove docker \
+                docker-client \
+                docker-client-latest \
+                docker-common \
+                docker-latest \
+                docker-latest-logrotate \
+                docker-logrotate \
+                docker-engine
 ```
 
-安装一些依赖：
-
-```bash
-sudo yum install -y yum-utils device-mapper-persistent-data lvm2
-```
-
-根据你的发行版下载repo文件: 
+根据你的发行版设置软件源: 
 
 <ConfigGen config={elGenConf} generatorFunc={elGenFunc} />
 
@@ -58,6 +59,5 @@ sudo sed -i 's+download.docker.com+mirrors.zju.edu.cn/docker-ce+' /etc/yum.repos
 最后安装:
 
 ```bash
-sudo yum makecache fast
-sudo yum install docker-ce
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
