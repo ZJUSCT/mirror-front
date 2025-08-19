@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import React, { memo } from 'react';
 import { Components as MDXComponents } from '@mdx-js/react/lib';
 import { LinkLink as Link } from '~/components/link-mui-components';
+import Code from '../components/code';
 import CodeBlock from '../components/code-block';
 
 type GenericMemoExoticComponent = React.MemoExoticComponent<
@@ -166,15 +167,7 @@ const components: MDXComponents = {
       className?: string;
     }) => {
       if (className === undefined) {
-        const theme = useTheme();
-        return (
-          <Typography
-            component="code"
-            style={{ color: theme.palette.secondary.main }}
-          >
-            {children}
-          </Typography>
-        );
+        return <Code>{children}</Code>;
       }
       const lang = className?.match(/language-(?<lang>.*)/)?.groups?.lang || '';
       return <CodeBlock language={lang}>{children}</CodeBlock>;

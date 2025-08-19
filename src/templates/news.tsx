@@ -88,7 +88,7 @@ const News = ({ data, children }: NewsProps) => {
                 <Typography
                   variant="subtitle1"
                   component="div"
-                  color="text.disabled"
+                  color="text.secondary"
                   display="flex"
                   alignItems="center"
                   sx={{ ml: 1 }}
@@ -100,7 +100,7 @@ const News = ({ data, children }: NewsProps) => {
                 <Typography
                   variant="subtitle1"
                   component="div"
-                  color="text.disabled"
+                  color="text.secondary"
                   sx={{ ml: 1 }}
                   display="flex"
                   alignItems="center"
