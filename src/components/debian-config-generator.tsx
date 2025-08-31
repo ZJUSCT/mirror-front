@@ -263,19 +263,15 @@ export default () => {
             margin: '0 0.5rem',
             fontWeight: 'bold',
             color: 'brown',
-            whiteSpace: 'normal',
-            overflowWrap: 'anywhere',
-            wordBreak: 'break-all',
-            display: 'inline-block',
-            maxWidth: '100%',
-            minWidth: 0,
+            textWrap: 'wrap',
+            wordBreak: 'break-word',
           }}
         >
           {shouldUseNewConf()
             ? '/etc/apt/sources.list.d/debian.sources'
             : '/etc/apt/sources.list'}
         </code>
-        <Typography>可以使用如下命令替换软件源配置文件:</Typography>
+        <Typography>, 可以使用如下命令替换软件源配置文件:</Typography>
         <Grid container my={2}>
           <CodeBlock language="bash">
             {shouldUseNewConf()

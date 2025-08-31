@@ -234,7 +234,7 @@ export default ({
             ? '/etc/apt/sources.list.d/ubuntu.sources'
             : '/etc/apt/sources.list'}
         </code>
-        <Typography>可以使用如下命令替换软件源配置文件:</Typography>
+        <Typography>, 可以使用如下命令替换软件源配置文件:</Typography>
         <Grid my={2}>
           <CodeBlock language="bash">
             {shouldUseNewConf()
