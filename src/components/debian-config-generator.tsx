@@ -170,6 +170,7 @@ export default () => {
   const [enableSecurity, setEnableSecurity] = useState(true);
   const [confStyle, setConfStyle] = useState('default' as ConfigStyle);
   const newConfAvailable = () => version >= 12 || version < 0;
+  const aptModernizeAvailable = () => version >= 13 || version < 0;
   const shouldUseNewConf = () => newConfAvailable() && confStyle !== 'old';
 
   return (
@@ -255,39 +256,68 @@ export default () => {
           label="使用 DEB822 格式（Debian 12 起）"
         />
       </FormGroup>
-      <Grid container direction="column" my={2}>
-        <Grid container direction="row">
-          <Typography>软件源配置文件是</Typography>
-          <code
-            style={{ margin: '0 0.5rem', fontWeight: 'bold', color: 'brown' }}
-          >
+      <Grid container direction="row" my={2}>
+        <Typography>软件源配置文件是</Typography>
+        <code
+          style={{
+            margin: '0 0.5rem',
+            fontWeight: 'bold',
+            color: 'brown',
+            whiteSpace: 'normal',
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-all',
+            display: 'inline-block',
+            maxWidth: '100%',
+            minWidth: 0,
+          }}
+        >
+          {shouldUseNewConf()
+            ? '/etc/apt/sources.list.d/debian.sources'
+            : '/etc/apt/sources.list'}
+        </code>
+        <Typography>可以使用如下命令替换软件源配置文件:</Typography>
+        <Grid container my={2}>
+          <CodeBlock language="bash">
             {shouldUseNewConf()
-              ? '/etc/apt/sources.list.d/debian.sources'
-              : '/etc/apt/sources.list'}
-          </code>
+              ? "sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list.d/debian.sources"
+              : "sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list"}
+          </CodeBlock>
         </Grid>
-        <Grid container direction="row">
-          <Typography>
-            将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用我们的软件源镜像。
-          </Typography>
-          {shouldUseNewConf() && (
-            <>
-              <Typography style={{ fontWeight: 'bold' }}>
-                如果您从旧版本 Debian 升级到该版本，可能需要同时备份并清除
-              </Typography>
-              <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
-                /etc/apt/sources.list
-              </code>
-              <Typography style={{ fontWeight: 'bold' }}>的内容。</Typography>
-            </>
-          )}
-        </Grid>
+        <Typography>
+          或将系统自带的配置文件做个备份，将其替换为下面的内容，即可使用我们的软件源镜像。
+        </Typography>
       </Grid>
       <CodeBlock language="bash">
         {shouldUseNewConf()
           ? configGenNew(version, enableHTTPS, enableSrc, enableSecurity)
           : configGenOld(version, enableHTTPS, enableSrc, enableSecurity)}
       </CodeBlock>
+      <Grid container direction="row" my={2}>
+        {shouldUseNewConf() && (
+          <>
+            <Typography style={{ fontWeight: 'bold' }}>
+              请注意: 如果您从旧版本 Debian 升级到该版本，可能需要同时备份并清除
+            </Typography>
+            <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
+              /etc/apt/sources.list
+            </code>
+            <Typography style={{ fontWeight: 'bold' }}>的内容。</Typography>
+            {aptModernizeAvailable() && (
+              <>
+                <Typography style={{ fontWeight: 'bold' }}>
+                  您也可以使用
+                </Typography>
+                <code style={{ margin: '0 0.5rem', fontWeight: 'bold' }}>
+                  apt modernize-sources
+                </code>
+                <Typography style={{ fontWeight: 'bold' }}>
+                  来自动完成这一过程。
+                </Typography>
+              </>
+            )}
+          </>
+        )}
+      </Grid>
     </Box>
   );
 };
