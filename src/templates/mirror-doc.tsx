@@ -5,6 +5,8 @@ import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
 import { Trans, useI18next } from 'gatsby-plugin-react-i18next';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 import { LinkButton as Button } from '~/components/link-mui-components';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import Footer from '../components/footer';
@@ -41,6 +43,14 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
 
 const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
   const { language } = useI18next();
+
+  // Use browser locale for moment on client side
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      const browserLocale = navigator.language?.toLowerCase();
+      if (browserLocale) moment.locale(browserLocale);
+    }
+  }, []);
 
   const defaultData = {
     id: data.document.frontmatter.mirrorId,
@@ -140,7 +150,8 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
                         language
                       ),
                     }}
-                  </Trans>
+                  </Trans>{' '}
+                  ({moment(mirror.lastUpdated * 1000).fromNow()})
                 </Typography>
               </Grid>
             </Grid>
