@@ -2,12 +2,14 @@ import { Box, Grid, Link, Typography, useTheme } from '@mui/material';
 import { Trans } from 'gatsby-plugin-react-i18next';
 import React from 'react';
 import { ReactComponent as Zjusct } from '../../resource/icons/zjusct.svg';
+import { ReactComponent as ZjusctDark } from '../../resource/icons/zjusct-dark.svg';
 import { ReactComponent as Zju } from '../../resource/icons/zju.svg';
 import { ReactComponent as ZjuDark } from '../../resource/icons/zju-dark.svg';
 
 export default () => {
   const theme = useTheme();
   const ZjuIcon = theme.palette.mode === 'light' ? Zju : ZjuDark;
+  const ZjusctIcon = theme.palette.mode === 'light' ? Zjusct : ZjusctDark;
 
   return (
     <Box sx={{ px: { xs: 4, sm: 8 }, py: 6, mt: 'auto' }}>
@@ -156,7 +158,7 @@ export default () => {
             </Grid>
             <Grid>
               <Link href="https://www.zjusct.io">
-                <Zjusct width="12rem" />
+                <ZjusctIcon width="12rem" />
               </Link>
             </Grid>
           </Grid>
