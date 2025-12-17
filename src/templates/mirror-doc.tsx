@@ -1,6 +1,13 @@
 import { MDXProvider } from '@mdx-js/react';
 import FolderIcon from '@mui/icons-material/Folder';
-import { Box, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  CssBaseline,
+  Grid,
+  Typography,
+  useTheme,
+  alpha,
+} from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import Paper from '@mui/material/Paper';
 import { graphql } from 'gatsby';
@@ -18,7 +25,7 @@ import { Locale, MirrorDto } from '../types/mirror';
 import { Link } from '../utils/i18n-link';
 import components from './components';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { popCache, writeCache } from '../utils/cache';
+import { popCache } from '../utils/cache';
 import { getUrl } from '../utils/url';
 import TitleMirrorIcon from '../utils/title-mirror-icon';
 
@@ -43,6 +50,7 @@ async function fetchMirror(id: string): Promise<MirrorDto> {
 
 const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
   const { language } = useI18next();
+  const theme = useTheme();
 
   // Use browser locale for moment on client side
   useEffect(() => {
@@ -85,6 +93,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
         justifyContent: 'flex-start',
       }}
     >
+      <CssBaseline enableColorScheme />
       <Seo title={`${name} | ZJU Mirror`} />
       <Box>
         <Box sx={{ px: { xs: 4, sm: 8 }, py: 4 }} position="relative">
@@ -140,7 +149,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
                 <Typography
                   variant="subtitle1"
                   component="div"
-                  color="text.disabled"
+                  color="text.secondary"
                   display={mirror.status === 'cached' ? 'none' : 'block'}
                 >
                   <Trans>
@@ -193,7 +202,7 @@ const MirrorDoc = ({ data, children }: PropsWithChildren<MirrorDocProps>) => {
           >
             <TitleMirrorIcon
               mirrorName={mirrorId}
-              color="rgb(71 123 210 / 23%)"
+              color={alpha(theme.palette.primary.main, 0.15)}
               size="20rem"
             />
           </Box>

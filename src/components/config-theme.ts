@@ -1,58 +1,95 @@
 import { PaletteMode, ThemeOptions, createTheme } from '@mui/material';
 import '@fontsource/poppins';
+import {
+  grayscale,
+  steps,
+  lightAccent,
+  lightWarn,
+  lightSuccess,
+  lightInfo,
+  lightErr,
+  tintedGrayscale,
+  darkAccent,
+  darkErr,
+  darkInfo,
+  darkSuccess,
+  darkWarn,
+  tintLight050,
+  lightSecondary,
+  darkSecondary,
+} from './colors';
 
 function configTheme(mode: PaletteMode): ThemeOptions {
   return {
     palette:
       mode === 'light'
         ? {
+            text: {
+              primary: grayscale[0],
+              secondary: grayscale[12],
+              disabled: grayscale[Math.floor(steps * 0.4)],
+            },
             primary: {
-              main: '#154A87',
+              main: lightAccent,
+            },
+            secondary: {
+              main: lightSecondary,
             },
             neutral: {
               main: '#f2f7f9',
             },
             success: {
-              main: '#27a881',
+              main: lightSuccess,
             },
             warning: {
-              main: '#37adc7',
+              main: lightWarn,
             },
             info: {
-              main: '#6780da',
+              main: lightInfo,
               light: '#63a0cf;',
             },
             error: {
-              main: '#e44918',
+              main: lightErr,
             },
             background: {
-              default: '#F0F3F8',
+              default: tintedGrayscale[steps - 2],
+              paper: tintLight050,
             },
+            divider: tintedGrayscale[steps - 2],
           }
         : {
+            text: {
+              primary: grayscale[steps - 1],
+              secondary: tintedGrayscale[steps - 7],
+              disabled: tintedGrayscale[Math.ceil(steps * 0.8)],
+            },
             primary: {
-              main: '#1d69b5',
+              main: darkAccent,
+            },
+            secondary: {
+              main: darkSecondary,
             },
             neutral: {
               main: '#070707',
             },
             success: {
-              main: '#27a881',
+              main: darkSuccess,
             },
             warning: {
-              main: '#37adc7',
+              main: darkWarn,
             },
             info: {
-              main: '#6780da',
+              main: darkInfo,
               light: '#63a0cf;',
             },
             error: {
-              main: '#e44918',
+              main: darkErr,
             },
             background: {
-              default: '#070707',
-              paper: '#161718',
+              default: grayscale[0],
+              paper: grayscale[2],
             },
+            divider: 'rgba(255, 255, 255, 0.05)',
           },
     typography: {
       h1: {

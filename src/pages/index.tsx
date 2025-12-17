@@ -333,7 +333,7 @@ const Index = ({ data }: { data: Data }) => {
                   <Link href={url} underline="hover">
                     {title}
                   </Link>
-                  <Typography color="info.light" component="div">
+                  <Typography color="secondary" component="div">
                     &nbsp; - {date.toLocaleDateString(language)}
                   </Typography>
                 </Grid>
