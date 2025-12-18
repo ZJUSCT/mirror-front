@@ -17,13 +17,16 @@ export interface File {
 
 export interface MirrorDto {
   id: string;
+  url: string;
   name: Record<Locale, string>;
   desc: Record<Locale, string>;
+  upstream: string;
+  size: number;
   status: MirrorStatus;
-  lastUpdated: number;
+  lastAttempt: number;
   nextScheduled: number;
+  lastFailure: number;
   lastSuccess: number;
-  url: string;
   files?: File[];
 }
 
