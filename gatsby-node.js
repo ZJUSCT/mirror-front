@@ -1,6 +1,7 @@
 const { match, compile } = require("path-to-regexp");
 const { createFilePath } = require(`gatsby-source-filesystem`)
 const { createContentDigest } = require(`gatsby-core-utils`)
+const fs = require('fs').promises;
 const config = require('./config');
 const path = require("path");
 
@@ -196,7 +197,21 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 }
 
-exports.onCreateWebpackConfig = ({ actions }) => {
+// Make `/fancy-index` a client-only catch-all route so it can render for any
+// unknown path while keeping the browser URL unchanged. Static pages still take
+// precedence over matchPath.
+exports.onCreatePage = async ({ page, actions }) => {
+  const { createPage, deletePage } = actions;
+  if (page.path === '/fancy-index/' || page.path === '/fancy-index') {
+    deletePage(page);
+    createPage({
+      ...page,
+      matchPath: '/*',
+    });
+  }
+};
+
+exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
@@ -204,4 +219,53 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       },
     },
   });
+
+  if (stage === "build-html" || stage === "develop-html") {
+    const config = getConfig();
+
+    config.externals = [
+      ...(config.externals || []),
+      { jsdom: "commonjs jsdom" },
+    ];
+
+    actions.replaceWebpackConfig(config);
+  }
+};
+
+exports.onPostBuild = async ({ reporter }) => {
+  try {
+    const htmlPath = path.join(
+      process.cwd(),
+      'public',
+      'fancy-index',
+      'index.html'
+    );
+    const html = await fs.readFile(htmlPath, 'utf8');
+
+    const splitIndex = html.indexOf('<div id="fancy-end">');
+
+    if (splitIndex === -1) {
+      reporter.warn(
+        'Could not find fancy-start/fancy-end markers in fancy-index/index.html'
+      );
+      return;
+    }
+
+    const before = html.slice(0, splitIndex);
+    const after = html.slice(splitIndex);
+
+    const outDir = path.dirname(htmlPath);
+    await Promise.all([
+      fs.writeFile(path.join(outDir, 'before.html'), before, 'utf8'),
+      fs.writeFile(path.join(outDir, 'after.html'), after, 'utf8'),
+    ]);
+
+    reporter.info(
+      'Generated fancy-index/before.html and fancy-index/after.html'
+    );
+  } catch (error) {
+    reporter.warn(
+      `Post-build split for fancy-index failed: ${error?.message || error}`
+    );
+  }
 };
