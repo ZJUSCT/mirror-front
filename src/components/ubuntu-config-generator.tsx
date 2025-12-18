@@ -131,45 +131,38 @@ export default ({
 
   return (
     <Box>
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="flex-end"
-      >
-        <Grid>
-          <Typography component="p">请选择您的 Ubuntu 版本：</Typography>
-        </Grid>
-        <Grid>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">
-              <Trans>版本</Trans>
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              label="Age"
-              onChange={event => {
-                setVersion(event.target.value);
-              }}
-              defaultValue={version}
-            >
-              {Object.keys(ubuntuVersionMap)
-                .reverse()
-                .map((v: string) => {
-                  const item = parseInt(v, 10);
-                  let desc = (item / 100).toFixed(2);
-                  if (isLTSVersion(item)) desc += ' LTS';
-                  desc += ` (${ubuntuVersionMap[item]})`;
-                  return (
-                    <MenuItem key={item} value={item}>
-                      {desc}
-                    </MenuItem>
-                  );
-                })}
-            </Select>
-          </FormControl>
-        </Grid>
+      <Grid>
+        <Typography component="p">请选择您的 Ubuntu 版本：</Typography>
+      </Grid>
+      <Grid>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-helper-label">
+            <Trans>版本</Trans>
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            onChange={event => {
+              setVersion(event.target.value);
+            }}
+            defaultValue={version}
+          >
+            {Object.keys(ubuntuVersionMap)
+              .reverse()
+              .map((v: string) => {
+                const item = parseInt(v, 10);
+                let desc = (item / 100).toFixed(2);
+                if (isLTSVersion(item)) desc += ' LTS';
+                desc += ` (${ubuntuVersionMap[item]})`;
+                return (
+                  <MenuItem key={item} value={item}>
+                    {desc}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
       </Grid>
       <FormGroup>
         <FormControlLabel
@@ -235,20 +228,21 @@ export default ({
             : '/etc/apt/sources.list'}
         </code>
         <Typography>, 可以使用如下命令替换软件源配置文件:</Typography>
-        <Grid my={2}>
-          <CodeBlock language="bash">
-            {shouldUseNewConf()
-              ? "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list.d/ubuntu.sources"
-              : "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list"}
-          </CodeBlock>
-        </Grid>
-        <Typography>
-          或将系统自带的配置文件做个备份，将其替换为下面的内容，即可使用我们的软件源镜像。
-        </Typography>
       </Grid>
-      <CodeBlock language="bash">
-        {shouldUseNewConf()
-          ? configGenNew(
+      <Grid my={2}>
+        <CodeBlock language="bash">
+          {shouldUseNewConf()
+            ? "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list.d/ubuntu.sources"
+            : "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list"}
+        </CodeBlock>
+      </Grid>
+      <Typography>
+        或将系统自带的配置文件做个备份，将其替换为下面的内容，即可使用我们的软件源镜像。
+      </Typography>
+      <Grid my={2}>
+        <CodeBlock language="bash">
+          {shouldUseNewConf()
+            ? configGenNew(
               version,
               enableHTTPS,
               enableSrc,
@@ -257,7 +251,7 @@ export default ({
               ubuntuVariant,
               securityRepo
             )
-          : configGenOld(
+            : configGenOld(
               version,
               enableHTTPS,
               enableSrc,
@@ -266,7 +260,8 @@ export default ({
               ubuntuVariant,
               securityRepo
             )}
-      </CodeBlock>
+        </CodeBlock>
+      </Grid>
       <Grid container direction="row" my={2}>
         {shouldUseNewConf() && (
           <>

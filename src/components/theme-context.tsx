@@ -39,10 +39,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const theme = paletteMode === 'light' ? lightTheme : darkTheme;
 
+  // Reflect resolved palette mode to DOM for CSS selectors like [data-theme='dark']
+  React.useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-theme', paletteMode);
+  }, [paletteMode]);
+
   const updateMode = (newMode: ThemeMode) => {
     setMode(newMode);
     writeCache('themeMode', newMode);
   };
+
   return (
     <MuiThemeProvider theme={theme}>
       <ThemeContext.Provider value={[mode, updateMode]}>

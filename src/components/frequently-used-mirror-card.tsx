@@ -17,14 +17,22 @@ export interface FrequentlyUsedMirrorCardProps {
   icon: React.ReactNode;
   desc: string;
   url: string;
+  hardNavigate?: boolean;
 }
 
-export default ({ name, icon, desc, url }: FrequentlyUsedMirrorCardProps) => {
+export default ({
+  name,
+  icon,
+  desc,
+  url,
+  hardNavigate,
+}: FrequentlyUsedMirrorCardProps) => {
   return (
     <Card className="zju-mirror-card" style={{ height: '100%' }}>
       <CardActionArea
         to={url}
         href={url}
+        hardNavigate={hardNavigate}
         onClick={e => e.preventDefault()}
         style={{ height: '100%' }}
       >

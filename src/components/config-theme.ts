@@ -6,6 +6,7 @@ function configTheme(mode: PaletteMode): ThemeOptions {
     palette:
       mode === 'light'
         ? {
+            mode,
             primary: {
               main: '#154A87',
             },
@@ -30,6 +31,7 @@ function configTheme(mode: PaletteMode): ThemeOptions {
             },
           }
         : {
+            mode,
             primary: {
               main: '#1d69b5',
             },
@@ -87,23 +89,15 @@ function configTheme(mode: PaletteMode): ThemeOptions {
   };
 }
 
-export const lightTheme = createTheme(
-  {
-    palette: {
-      mode: 'light',
-    },
-  },
-  configTheme('light')
-);
+export const lightTheme = createTheme({
+  ...configTheme('light'),
+  cssVariables: { colorSchemeSelector: 'data' },
+});
 
-export const darkTheme = createTheme(
-  {
-    palette: {
-      mode: 'dark',
-    },
-  },
-  configTheme('dark')
-);
+export const darkTheme = createTheme({
+  ...configTheme('dark'),
+  cssVariables: { colorSchemeSelector: 'data' },
+});
 
 /* the code below decares customized color */
 

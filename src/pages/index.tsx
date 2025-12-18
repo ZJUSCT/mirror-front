@@ -30,6 +30,7 @@ import { getUrl } from '../utils/url';
 import { readCache, writeCache } from '../utils/cache';
 import NameIconButton from '../components/name-icon-button';
 import { ReactComponent as ZjuFalconIcon } from '../../resource/icons/zju-falcon.svg';
+import { fetchMirrors } from '../utils/fetch-mirrors';
 
 interface Data {
   mirrorDocs: {
@@ -74,16 +75,6 @@ const networkMap: {
     color: 'success',
   },
 };
-
-async function fetchMirrors(): Promise<MirrorDto[]> {
-  const res = await fetch('/api/mirrors');
-  if (!res.ok) {
-    throw new Error(`API call failed: ${res.status} ${await res.text()}`);
-  }
-  const json = await res.json();
-  writeCache('mirrors', json);
-  return json;
-}
 
 async function fetchNetworkMode(): Promise<number> {
   const res = await fetch('/api/is_campus_network');
@@ -316,6 +307,7 @@ const Index = ({ data }: { data: Data }) => {
                           mirror.docUrl || mirror.url,
                           !!mirror.docUrl
                         )}
+                        hardNavigate={!mirror.docUrl}
                       />
                     </Grid>
                   )

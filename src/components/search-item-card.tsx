@@ -98,6 +98,7 @@ const SearchItemCard = (props: { queryItem: Mirror; keyword: string }) => {
           props.queryItem.docUrl || props.queryItem.url,
           !!props.queryItem.docUrl
         )}
+        hardNavigate={!props.queryItem.docUrl}
         onClick={e => e.preventDefault()}
         style={{ height: '100%' }}
       >

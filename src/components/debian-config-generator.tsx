@@ -175,46 +175,39 @@ export default () => {
 
   return (
     <Box>
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="flex-end"
-      >
-        <Grid sx={{ mb: 1 }}>
-          <Typography component="p">请选择您的 Debian 版本：</Typography>
-        </Grid>
-        <Grid>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">
-              <Trans>版本</Trans>
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              label="Age"
-              onChange={event => {
-                setVersion(event.target.value as number);
-              }}
-              defaultValue={version}
-            >
-              {debianVersions.map((v: number) => {
-                const codeName = debianVersionMap[v];
-                let desc = '';
-                if (v > 0) {
-                  desc = `${v} (${codeName})`;
-                } else {
-                  desc = codeName;
-                }
-                return (
-                  <MenuItem key={v} value={v}>
-                    {desc}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </Grid>
+      <Grid sx={{ mb: 1 }}>
+        <Typography component="p">请选择您的 Debian 版本：</Typography>
+      </Grid>
+      <Grid>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-helper-label">
+            <Trans>版本</Trans>
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            onChange={event => {
+              setVersion(event.target.value as number);
+            }}
+            defaultValue={version}
+          >
+            {debianVersions.map((v: number) => {
+              const codeName = debianVersionMap[v];
+              let desc = '';
+              if (v > 0) {
+                desc = `${v} (${codeName})`;
+              } else {
+                desc = codeName;
+              }
+              return (
+                <MenuItem key={v} value={v}>
+                  {desc}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
       </Grid>
       <FormGroup>
         <FormControlLabel
@@ -256,47 +249,56 @@ export default () => {
           label="使用 DEB822 格式（Debian 12 起）"
         />
       </FormGroup>
-      <Grid container direction="row" my={2}>
-        <Typography>软件源配置文件是</Typography>
-        <code
-          style={{
-            margin: '0 0.5rem',
-            fontWeight: 'bold',
-            color: 'brown',
-            textWrap: 'wrap',
-            wordBreak: 'break-word',
-          }}
-        >
-          {shouldUseNewConf()
-            ? '/etc/apt/sources.list.d/debian.sources'
-            : '/etc/apt/sources.list'}
-        </code>
-        <Typography>, 可以使用如下命令替换软件源配置文件:</Typography>
-        <Grid container my={2}>
-          <CodeBlock language="bash">
+      <Grid container direction="row" my={2} alignItems="center" gap={1}>
+        <Grid>
+          <Typography component="span">软件源配置文件是</Typography>
+        </Grid>
+        <Grid>
+          <code
+            style={{
+              margin: '0 0.5rem',
+              fontWeight: 'bold',
+              color: 'brown',
+              textWrap: 'wrap',
+              wordBreak: 'break-word',
+            }}
+          >
             {shouldUseNewConf()
-              ? "sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list.d/debian.sources"
-              : `sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list
-${
-  enableSecurity
-    ? `# Debian Security
+              ? '/etc/apt/sources.list.d/debian.sources'
+              : '/etc/apt/sources.list'}
+          </code>
+        </Grid>
+        <Grid>
+          <Typography component="span">
+            ，可以使用如下命令替换软件源配置文件:
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid my={2}>
+        <CodeBlock language="bash">
+          {shouldUseNewConf()
+            ? "sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list.d/debian.sources"
+            : `sudo sed -i 's/deb.debian.org/mirrors.zju.edu.cn/g' /etc/apt/sources.list
+${enableSecurity
+              ? `# Debian Security
 sudo sed -i -e 's|security.debian.org/\\? |security.debian.org/debian-security |g' \\
     -e 's|security.debian.org|mirrors.zju.edu.cn|g' \\
     -e 's|deb.debian.org/debian-security|mirrors.zju.edu.cn/debian-security|g' \\
     /etc/apt/sources.list`
-    : ''
-}`}
-          </CodeBlock>
-        </Grid>
-        <Typography>
-          或将系统自带的配置文件做个备份，将其替换为下面的内容，即可使用我们的软件源镜像。
-        </Typography>
+              : ''
+            }`}
+        </CodeBlock>
       </Grid>
-      <CodeBlock language="bash">
-        {shouldUseNewConf()
-          ? configGenNew(version, enableHTTPS, enableSrc, enableSecurity)
-          : configGenOld(version, enableHTTPS, enableSrc, enableSecurity)}
-      </CodeBlock>
+      <Typography>
+        或将系统自带的配置文件做个备份，将其替换为下面的内容，即可使用我们的软件源镜像。
+      </Typography>
+      <Grid my={2}>
+        <CodeBlock language="bash">
+          {shouldUseNewConf()
+            ? configGenNew(version, enableHTTPS, enableSrc, enableSecurity)
+            : configGenOld(version, enableHTTPS, enableSrc, enableSecurity)}
+        </CodeBlock>
+      </Grid>
       <Grid container direction="row" my={2}>
         {shouldUseNewConf() && (
           <>

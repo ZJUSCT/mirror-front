@@ -9,6 +9,7 @@ import { ButtonBaseProps } from '@mui/material';
 interface LinkProps {
   to?: string;
   href?: string;
+  hardNavigate?: boolean;
 }
 
 type LinkComponentProps<T> = ButtonBaseProps & LinkProps & T;
@@ -23,7 +24,14 @@ function linkifyComponent<T, PropType>(
     const propOnClick = props.onClick;
     const clickHandler: React.MouseEventHandler<HTMLButtonElement> = event => {
       if (propOnClick) propOnClick(event);
-      if (props.to) navigate(props.to);
+      if (props.to) {
+        if (props.hardNavigate) {
+          // Force full page reload to allow server (e.g., nginx fancy index) to render content
+          window.location.assign(props.to);
+          return;
+        }
+        navigate(props.to);
+      }
     };
     return (
       <ButtonBaseComponent

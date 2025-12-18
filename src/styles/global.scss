@@ -28,3 +28,91 @@ html {
     color: white;
     background: #1d69b5; /* Gecko Browsers */
 }
+
+[data-theme="light"] .fancy-index {
+    --fi-row: rgba(0, 0, 0, 0.02);
+    --fi-hover: rgba(0, 0, 0, 0.06);
+    --fi-primary: var(--mui-palette-primary-main);
+    --fi-muted: var(--mui-palette-text-secondary);
+}
+
+[data-theme="dark"] .fancy-index {
+    --fi-row: rgba(255,255,255,0.02);
+    --fi-hover: rgba(255,255,255,0.06);
+    --fi-primary: var(--mui-palette-info-light);
+    --fi-muted: var(--mui-palette-text-secondary);
+}
+
+.fancy-index #list {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 1px solid transparent;
+    overflow: hidden;
+}
+
+.fancy-index #list thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--fi-muted);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--fi-border);
+    background: transparent;
+}
+
+.fancy-index #list tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--fi-border);
+    font-size: 0.9rem;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.fancy-index #list tbody tr {
+    background: transparent;
+    transition: background-color 160ms ease-in-out;
+}
+
+.fancy-index #list tbody tr:nth-child(even) {
+    background: var(--fi-row);
+}
+
+.fancy-index #list tbody tr:hover {
+    background: var(--fi-hover);
+}
+
+.fancy-index #list a {
+    color: var(--fi-primary);
+    text-decoration: none;
+}
+
+.fancy-index #list a:hover {
+    text-decoration: underline;
+}
+
+.fancy-index #list td.size,
+.fancy-index #list td.date {
+    color: var(--fi-muted);
+}
+
+.fancy-index #list td,
+.fancy-index #list td a {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.fancy-index #list thead th:nth-child(1),
+.fancy-index #list tbody td:nth-child(1) {
+    width: 55%;
+}
+
+.fancy-index #list thead th:nth-child(2),
+.fancy-index #list tbody td:nth-child(2) {
+    width: 20%;
+}
+
+.fancy-index #list thead th:nth-child(3),
+.fancy-index #list tbody td:nth-child(3) {
+    width: 25%;
+}
