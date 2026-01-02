@@ -232,8 +232,8 @@ export default ({
       <Grid my={2}>
         <CodeBlock language="bash">
           {shouldUseNewConf()
-            ? "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list.d/ubuntu.sources"
-            : "sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list"}
+            ? "sudo sed -i 's@//.*.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list.d/ubuntu.sources"
+            : "sudo sed -i 's@//.*.ubuntu.com@//mirrors.zju.edu.cn@g' /etc/apt/sources.list"}
         </CodeBlock>
       </Grid>
       <Typography>
