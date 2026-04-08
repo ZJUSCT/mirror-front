@@ -21,3 +21,48 @@ pip config set global.index-url https://mirrors.zju.edu.cn/pypi/web/simple
 ```bash
 pip install -i https://mirrors.zju.edu.cn/pypi/web/simple pip -U
 ```
+
+### PDM
+
+通过如下命令设置默认镜像：
+
+```bash
+pdm config pypi.url https://mirrors.zju.edu.cn/pypi/web/simple
+```
+
+### Poetry
+
+通过以下命令为单个项目设置首选镜像：
+
+```bash
+poetry source add --priority=primary mirrors https://mirrors.zju.edu.cn/pypi/web/simple/
+```
+
+通过以下命令为单个项目设置补充镜像：
+
+```bash
+poetry source add --priority=supplemental mirrors https://mirrors.zju.edu.cn/pypi/web/simple/
+```
+
+Poetry 尚未支持全局设置镜像。参考 [python-poetry/poetry#1632](https://github.com/python-poetry/poetry/issues/1632)。
+
+使用全局镜像的临时方案是将 Poetry 的安装器切换回 pip，如下所示。但该方式会在将来的版本中停止支持，参考 [python-poetry/poetry#7356](https://github.com/python-poetry/poetry/pull/7356)。
+
+```bash
+poetry config experimental.new-installer false
+```
+
+### Astral uv
+
+- Linux/macOS/WSL/Unix: 在 `~/.config/uv/uv.toml` 或者 `/etc/uv/uv.toml`
+- Windows: 在 `%APPDATA%\uv\uv.toml` 或者 `%PROGRAMDATA%\uv\uv.toml`
+
+填写下面的内容：
+
+```toml
+[[index]]
+url = "https://mirrors.zju.edu.cn/pypi/web/simple/"
+default = true
+```
+
+详情参考[官方配置文件文档](https://docs.astral.sh/uv/configuration/files/)。
