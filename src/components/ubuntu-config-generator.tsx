@@ -17,6 +17,8 @@ import CodeBlock from './code-block';
 type ConfigStyle = 'default' | 'new' | 'old';
 
 const ubuntuVersionMap: Record<number | string, string> = {
+  2604: 'resolute',
+  2510: 'questing',
   2504: 'plucky',
   2410: 'oracular',
   2404: 'noble',
