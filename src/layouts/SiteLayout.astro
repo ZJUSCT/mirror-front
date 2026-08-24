@@ -1,0 +1,548 @@
+---
+import falconLogo from '../../resource/icons/zju-falcon.svg?url';
+import favicon from '../../resource/icons/favicon.svg?url';
+import zjuLogoDark from '../../resource/icons/zju-dark.svg?url';
+import zjuLogo from '../../resource/icons/zju.svg?url';
+import zjusctLogoDark from '../../resource/icons/zjusct-dark.svg?url';
+import zjusctLogo from '../../resource/icons/zjusct.svg?url';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import NetworkBadge from '../components/react/NetworkBadge';
+import {
+  brightnessAutoIcon,
+  brightnessDarkIcon,
+  brightnessLightIcon,
+  folderIcon,
+  helpIcon,
+  historyIcon,
+  infoIcon,
+  labelIcon,
+  translateIcon,
+} from '../lib/ui-icons';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: 'zh' | 'en';
+  canonicalPath?: string;
+  alternatePath?: string;
+  home?: boolean;
+  pageKind?: 'default' | 'news' | 'docs' | 'autoindex';
+  contentSecurityPolicy?: string;
+  usesGitHubAvatars?: boolean;
+}
+
+const {
+  title = 'ZJU Mirror',
+  description = 'Zhejiang University open-source mirror site',
+  lang = 'zh',
+  canonicalPath = Astro.url.pathname,
+  alternatePath: configuredAlternatePath,
+  home = false,
+  pageKind = 'default',
+  contentSecurityPolicy,
+  usesGitHubAvatars = false,
+} = Astro.props;
+const fullTitle = title === 'ZJU Mirror' ? title : `${title} · ZJU Mirror`;
+const alternatePath =
+  configuredAlternatePath ??
+  (lang === 'zh'
+    ? canonicalPath === '/'
+      ? '/en/'
+      : `/en${canonicalPath}`
+    : canonicalPath.replace(/^\/en(?=\/|$)/, '') || '/');
+const chinesePath = lang === 'zh' ? canonicalPath : alternatePath;
+const englishPath = lang === 'en' ? canonicalPath : alternatePath;
+// The legacy Chinese guide header only exposed the theme control. The English
+// fallback keeps the language menu so visitors can return to the source guide.
+const showLanguage =
+  pageKind !== 'autoindex' && (home || pageKind !== 'docs' || lang === 'en');
+const showPortalActions = pageKind !== 'autoindex';
+const portalLinks = [
+  {
+    href: `${lang === 'zh' ? '' : '/en'}/about/`,
+    label: lang === 'zh' ? '关于' : 'About',
+    icon: infoIcon,
+  },
+  {
+    href: `${lang === 'zh' ? '' : '/en'}/history/`,
+    label: lang === 'zh' ? '历史' : 'History',
+    icon: historyIcon,
+  },
+  {
+    href: `${lang === 'zh' ? '' : '/en'}/faq/`,
+    label: lang === 'zh' ? '常见问题' : 'FAQ',
+    icon: helpIcon,
+  },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1d69b5" />
+    {
+      contentSecurityPolicy && (
+        <meta
+          http-equiv="Content-Security-Policy"
+          content={contentSecurityPolicy}
+        />
+      )
+    }
+    <link rel="icon" href={favicon} />
+    {
+      (pageKind === 'news' || usesGitHubAvatars) && (
+        <link
+          rel="preconnect"
+          href="https://avatars.githubusercontent.com"
+          crossorigin
+        />
+      )
+    }
+    {
+      pageKind !== 'autoindex' && (
+        <link rel="manifest" href="/manifest.webmanifest" />
+      )
+    }
+    {
+      pageKind !== 'autoindex' && (
+        <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
+      )
+    }
+    <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem('zju-mirror:theme');
+        } catch {}
+        const preference = saved || 'auto';
+        const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+        const effective =
+          preference === 'dark' || (preference === 'auto' && prefersDark)
+            ? 'dark'
+            : 'light';
+        document.documentElement.dataset.theme = effective;
+        document.documentElement.dataset['themePref'] = preference;
+      })();
+    </script>
+  </head>
+  <body class:list={[`page-${pageKind}`, { 'page-home': home }]}>
+    <a class="skip-link" href="#main-content">
+      {lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}
+    </a>
+    <header class:list={['site-header', { 'site-header-home': home }]}>
+      <a class="brand" href={lang === 'zh' ? '/' : '/en/'}>
+        {home && <img src={falconLogo} alt="" width="72" height="93" />}
+        <span class="brand-copy">
+          {
+            home ? (
+              <h1 class="brand-title">ZJU Mirror</h1>
+            ) : (
+              <span class="brand-title">ZJU Mirror</span>
+            )
+          }
+          {
+            home && (
+              <span class="brand-subtitle">
+                <span>
+                  {lang === 'zh'
+                    ? '浙江大学开源软件镜像站'
+                    : 'Open Source Software Mirror Site of Zhejiang University'}
+                </span>
+                <NetworkBadge client:load locale={lang} />
+              </span>
+            )
+          }
+        </span>
+      </a>
+      <nav
+        class="site-actions"
+        aria-label={lang === 'zh' ? '主要导航' : 'Primary'}
+      >
+        {
+          showPortalActions &&
+            portalLinks.map((item) => (
+              <a
+                class="site-action"
+                href={item.href}
+                aria-label={item.label}
+                data-touch-navigation
+              >
+                <span class="site-action-label">{item.label}</span>
+                <svg
+                  viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
+                  aria-hidden="true"
+                >
+                  <g set:html={item.icon.body} />
+                </svg>
+              </a>
+            ))
+        }
+        {
+          home && (
+            <button
+              id="name-toggle"
+              class="site-action"
+              type="button"
+              aria-label={
+                lang === 'zh' ? '切换友好名称' : 'Toggle friendly name'
+              }
+              title={lang === 'zh' ? '显示镜像目录名称' : 'Show path names'}
+            >
+              <span class="site-action-label" data-name-label>
+                {lang === 'zh' ? '显示镜像目录名称' : 'Show path names'}
+              </span>
+              <svg
+                class="name-icon name-icon-friendly"
+                viewBox={`0 0 ${folderIcon.width} ${folderIcon.height}`}
+                aria-hidden="true"
+              >
+                <g set:html={folderIcon.body} />
+              </svg>
+              <svg
+                class="name-icon name-icon-raw"
+                viewBox={`0 0 ${labelIcon.width} ${labelIcon.height}`}
+                aria-hidden="true"
+              >
+                <g set:html={labelIcon.body} />
+              </svg>
+            </button>
+          )
+        }
+        {
+          showLanguage && (
+            <div class="language-switcher">
+              <button
+                id="language-toggle"
+                class="site-action"
+                type="button"
+                aria-label={lang === 'zh' ? '切换语言' : 'Switch languages'}
+                aria-expanded="false"
+                aria-controls="language-menu"
+                title={lang === 'zh' ? '语言' : 'Language'}
+              >
+                <span class="site-action-label">
+                  {lang === 'zh' ? '语言' : 'Language'}
+                </span>
+                <svg
+                  viewBox={`0 0 ${translateIcon.width} ${translateIcon.height}`}
+                  aria-hidden="true"
+                >
+                  <g set:html={translateIcon.body} />
+                </svg>
+              </button>
+              <div id="language-menu" class="language-menu" role="menu" hidden>
+                <a href={chinesePath} hreflang="zh" role="menuitem">
+                  {lang === 'zh' ? '中文' : '中文 (Chinese)'}
+                </a>
+                <a href={englishPath} hreflang="en" role="menuitem">
+                  {lang === 'zh' ? 'English (英语)' : 'English'}
+                </a>
+              </div>
+            </div>
+          )
+        }
+        <button
+          id="theme-toggle"
+          class="site-action"
+          type="button"
+          aria-label={lang === 'zh' ? '切换配色' : 'Toggle color theme'}
+          title={lang === 'zh' ? '系统默认' : 'System default'}
+        >
+          <span class="site-action-label" data-theme-label>
+            {lang === 'zh' ? '系统默认' : 'System default'}
+          </span>
+          <svg
+            class="theme-icon theme-icon-auto"
+            viewBox={`0 0 ${brightnessAutoIcon.width} ${brightnessAutoIcon.height}`}
+            aria-hidden="true"
+          >
+            <g set:html={brightnessAutoIcon.body} />
+          </svg>
+          <svg
+            class="theme-icon theme-icon-light"
+            viewBox={`0 0 ${brightnessLightIcon.width} ${brightnessLightIcon.height}`}
+            aria-hidden="true"
+          >
+            <g set:html={brightnessLightIcon.body} />
+          </svg>
+          <svg
+            class="theme-icon theme-icon-dark"
+            viewBox={`0 0 ${brightnessDarkIcon.width} ${brightnessDarkIcon.height}`}
+            aria-hidden="true"
+          >
+            <g set:html={brightnessDarkIcon.body} />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="footer-about">
+        <p>
+          {
+            lang === 'zh'
+              ? '浙江大学开源软件镜像站是一个致力于普及开源软件，方便校内外用户高效访问开源项目的各种资源的非盈利计划。'
+              : 'ZJU Mirror is a non-profit program aimed at popularizing open source software and facilitating efficient access to various resources of open source projects by all users.'
+          }
+        </p>
+        <p>
+          {
+            lang === 'zh'
+              ? '本镜像站提供了包括 Docker, PostgreSQL, Ubuntu 等项目源的镜像，以服务教育和科学研究为目的，提倡自由、平等、协作、共享的精神。'
+              : 'We provide a variety of mirrors including Docker, PostgreSQL, and Ubuntu, for the purpose of serving education and scientific research, and promoting the spirit of freedom, equality, collaboration, and sharing.'
+          }
+        </p>
+        <p>
+          <a href="https://github.com/ZJUSCT/mirror-issues">
+            {
+              lang === 'zh'
+                ? '问题反馈与镜像请求（GitHub）'
+                : 'Issues and mirror requests (GitHub)'
+            }
+          </a>
+        </p>
+        <p>
+          {
+            lang === 'zh'
+              ? '根据相关法律法规，本站不对欧盟用户提供服务。'
+              : 'According to the relevant laws and regulations, this site does not provide services to EU users.'
+          }
+        </p>
+      </div>
+      <div class="footer-columns">
+        <section>
+          <h2>{lang === 'zh' ? '关于我们' : 'About us'}</h2>
+          <a href="mailto:mirrors@zju.edu.cn">Email</a>
+          <a href="https://github.com/zjusct">GitHub</a>
+          <a href="https://www.zjusct.io/">Blog</a>
+        </section>
+        <section>
+          <h2>{lang === 'zh' ? '特别鸣谢' : 'Special thanks'}</h2>
+          <a href="http://zuits.zju.edu.cn/">
+            {
+              lang === 'zh'
+                ? '浙江大学信息技术中心'
+                : 'ZJU Information Technology Center'
+            }
+          </a>
+          <a href="https://tuna.moe/">
+            {
+              lang === 'zh'
+                ? '清华大学 TUNA 协会'
+                : 'TUNA Association at Tsinghua University'
+            }
+          </a>
+          <a href="https://mirrorz.org/">
+            {lang === 'zh' ? 'MirrorZ 镜像站项目' : 'The MirrorZ Project'}
+          </a>
+        </section>
+      </div>
+      <div
+        class="footer-logos"
+        aria-label={lang === 'zh' ? '合作伙伴' : 'Partners'}
+      >
+        <a href="https://zuits.zju.edu.cn/">
+          <img
+            class="logo-light"
+            src={zjuLogo}
+            alt={lang === 'zh'
+              ? '浙江大学信息技术中心'
+              : 'ZJU Information Technology Center'}
+          />
+          <img
+            class="logo-dark"
+            src={zjuLogoDark}
+            alt={lang === 'zh'
+              ? '浙江大学信息技术中心'
+              : 'ZJU Information Technology Center'}
+          />
+        </a>
+        <a href="https://www.zjusct.io/">
+          <img class="logo-light" src={zjusctLogo} alt="ZJUSCT" />
+          <img class="logo-dark" src={zjusctLogoDark} alt="ZJUSCT" />
+        </a>
+      </div>
+    </footer>
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const applyTheme = (preference) => {
+          const prefersDark = matchMedia(
+            '(prefers-color-scheme: dark)'
+          ).matches;
+          const effective =
+            preference === 'dark' || (preference === 'auto' && prefersDark)
+              ? 'dark'
+              : 'light';
+          root.dataset.theme = effective;
+          root.dataset['themePref'] = preference;
+          const labels = {
+            zh: { light: '浅色', dark: '深色', auto: '系统默认' },
+            en: { light: 'Light', dark: 'Dark', auto: 'System default' },
+          };
+          const button = document.querySelector('#theme-toggle');
+          if (button) {
+            button.title = labels[root.lang === 'zh' ? 'zh' : 'en'][preference];
+            const label = button.querySelector('[data-theme-label]');
+            if (label) label.textContent = button.title;
+          }
+        };
+
+        const mq = matchMedia('(prefers-color-scheme: dark)');
+        applyTheme(root.dataset['themePref'] || 'auto');
+        const onMq = () => {
+          let preference = 'auto';
+          try {
+            preference = localStorage.getItem('zju-mirror:theme') || 'auto';
+          } catch {}
+          if (preference === 'auto') applyTheme('auto');
+        };
+        if (mq.addEventListener) mq.addEventListener('change', onMq);
+        else if (mq.addListener) mq.addListener(onMq);
+
+        document
+          .querySelector('#theme-toggle')
+          ?.addEventListener('click', () => {
+            const cycle = { light: 'dark', dark: 'auto', auto: 'light' };
+            const preference = root.dataset['themePref'] || 'auto';
+            const next = cycle[preference] || 'auto';
+            applyTheme(next);
+            try {
+              localStorage.setItem('zju-mirror:theme', next);
+            } catch {}
+          });
+
+        const nameButton = document.querySelector('#name-toggle');
+        if (nameButton) {
+          let friendly = true;
+          try {
+            const saved = localStorage.getItem('zju-mirror:friendlyName');
+            friendly = saved === null || saved === '1';
+          } catch {}
+          const reflectNameMode = () => {
+            root.dataset['nameMode'] = friendly ? 'friendly' : 'raw';
+            const actionLabel =
+              root.lang === 'zh'
+                ? friendly
+                  ? '显示镜像目录名称'
+                  : '显示镜像名称'
+                : friendly
+                  ? 'Show path names'
+                  : 'Show mirror names';
+            nameButton.title = actionLabel;
+            const label = nameButton.querySelector('[data-name-label]');
+            if (label) label.textContent = actionLabel;
+          };
+          reflectNameMode();
+          nameButton.addEventListener('click', () => {
+            friendly = !friendly;
+            reflectNameMode();
+            try {
+              localStorage.setItem(
+                'zju-mirror:friendlyName',
+                friendly ? '1' : '0'
+              );
+            } catch {}
+            window.dispatchEvent(
+              new CustomEvent('zju-mirror:friendly-name-change', {
+                detail: friendly,
+              })
+            );
+          });
+        }
+
+        const languageButton = document.querySelector('#language-toggle');
+        const languageMenu = document.querySelector('#language-menu');
+        if (languageButton && languageMenu) {
+          const closeLanguageMenu = () => {
+            languageMenu.hidden = true;
+            languageButton.setAttribute('aria-expanded', 'false');
+          };
+          languageButton.addEventListener('click', () => {
+            const opening = languageMenu.hidden;
+            languageMenu.hidden = !opening;
+            languageButton.setAttribute('aria-expanded', String(opening));
+            if (opening) languageMenu.querySelector('a')?.focus();
+          });
+          document.addEventListener('click', (event) => {
+            if (!event.target.closest('.language-switcher'))
+              closeLanguageMenu();
+          });
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+              closeLanguageMenu();
+              languageButton.focus();
+            }
+          });
+        }
+
+        const actionNav = document.querySelector('.site-actions');
+        if (actionNav) {
+          let expandedTouchAction = null;
+          const clearTouchAction = () => {
+            expandedTouchAction?.removeAttribute('data-touch-expanded');
+            expandedTouchAction = null;
+          };
+          const expandTouchAction = (action) => {
+            if (expandedTouchAction !== action) clearTouchAction();
+            expandedTouchAction = action;
+            action.setAttribute('data-touch-expanded', 'true');
+          };
+          const isTouchActivation = (event) =>
+            event.pointerType === 'touch' ||
+            event.pointerType === 'pen' ||
+            (!event.pointerType && matchMedia('(hover: none)').matches);
+
+          actionNav
+            .querySelectorAll('[data-touch-navigation]')
+            .forEach((link) => {
+              link.addEventListener('click', (event) => {
+                if (!isTouchActivation(event)) return;
+                if (expandedTouchAction !== link) {
+                  event.preventDefault();
+                  expandTouchAction(link);
+                } else {
+                  clearTouchAction();
+                }
+              });
+            });
+          actionNav
+            .querySelectorAll('.site-action:not([data-touch-navigation])')
+            .forEach((button) => {
+              button.addEventListener('click', (event) => {
+                if (isTouchActivation(event)) expandTouchAction(button);
+              });
+            });
+          document.addEventListener('pointerdown', (event) => {
+            if (!event.target.closest('.site-action')) clearTouchAction();
+          });
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') clearTouchAction();
+          });
+        }
+
+        document
+          .querySelectorAll('time[data-localize-date]')
+          .forEach((time) => {
+            const date = new Date(time.dateTime);
+            if (!Number.isNaN(date.getTime()))
+              time.textContent = date.toLocaleDateString(
+                root.lang === 'zh' ? 'zh-CN' : 'en-US',
+                // Announcement frontmatter stores calendar dates, not
+                // instants; keep the authored day in every reader timezone.
+                { timeZone: 'UTC' }
+              );
+          });
+      })();
+    </script>
+  </body>
+</html>

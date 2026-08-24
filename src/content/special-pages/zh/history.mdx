@@ -1,0 +1,174 @@
+---
+title: 历史
+lead: 从志愿维护的早期站点，到云平台上的重构，再到面向稳定性与性能建设的第三代基础设施。
+---
+
+import ContributorList from '../../../components/static/ContributorList.astro';
+import ImageGallery from '../../../components/static/ImageGallery.astro';
+
+<ol className="history-timeline">
+  <li>
+    <p className="history-period">2025—至今</p>
+    <h2>第三代：重回物理基础设施</h2>
+    <p>
+      随着 AIRA 协会成立，ZJULUG
+      重新组建并吸纳更多成员参与运维。在信息技术中心支持下，镜像站从云平台迁移到由三台存储服务器、两台业务服务器和万兆网络组成的物理基础设施，重点提升性能与稳定性。
+    </p>
+    <ImageGallery
+      locale="zh"
+      images={[
+        {
+          src: '/images/about/infra.svg',
+          alt: '第三代镜像站基础设施拓扑图',
+          caption: '第三代镜像站基础设施拓扑',
+          fit: 'contain',
+        },
+        {
+          src: '/images/about/infra-1.webp',
+          thumbnail: '/images/about/infra-1-thumb.webp',
+          alt: '镜像站服务器机柜（后视图）',
+          caption: '镜像站服务器机柜（后视图）',
+        },
+        {
+          src: '/images/about/infra-2.webp',
+          thumbnail: '/images/about/infra-2-thumb.webp',
+          alt: '镜像站服务器机柜（前视图）',
+          caption: '镜像站存储服务器（前视图）',
+        },
+      ]}
+    />
+  </li>
+  <li>
+    <p className="history-period">2021—2024</p>
+    <h2>第二代：全面重构与上云</h2>
+    <p>
+      ZJUSCT Falcon
+      接手镜像站，对前端和后端进行重写，并引入管控服务，以增强同步任务的感知和调度能力。2022
+      年初，镜像站迁移至信息技术中心提供的 vSphere
+      平台；现代化卡片界面和统一品牌也在这一阶段逐步成形。
+      一位第二代镜像站维护者也在校园论坛回顾了这一过程：
+      <a href="https://www.cc98.org/topic/5586111">
+        十年，浙大镜像站的变化，也聊聊我开发的过程。
+      </a>
+    </p>
+    <ImageGallery
+      locale="zh"
+      images={[
+        {
+          src: '/images/history/history-2021-1.webp',
+          thumbnail: '/images/history/history-2021-1-thumb.webp',
+          alt: '2021 年镜像站前端的早期 Figma 原型',
+          caption: '2021 年的早期 Figma 原型',
+        },
+        {
+          src: '/images/history/history-2023-1.webp',
+          thumbnail: '/images/history/history-2023-1-thumb.webp',
+          alt: '2023 年镜像站前端界面',
+          caption: '2023 年的镜像站前端',
+        },
+        {
+          src: '/images/history/history-2023-2.webp',
+          thumbnail: '/images/history/history-2023-2-thumb.webp',
+          alt: '第二代镜像站的 ZJU Mirror 图标',
+          caption: '第二代镜像站图标',
+        },
+      ]}
+    />
+  </li>
+  <li>
+    <p className="history-period">2013—2020</p>
+    <h2>第一代：社区起点</h2>
+    <p>
+      浙江大学最早的镜像站由图书馆老师志愿维护设备，ZJULUG
+      负责内容维护。随着早期成员毕业，第一代服务逐渐结束。
+    </p>
+    <ImageGallery
+      locale="zh"
+      images={[
+        {
+          src: '/images/history/history-2013.webp',
+          thumbnail: '/images/history/history-2013-thumb.webp',
+          alt: '2013 年第一代镜像站前端界面',
+          caption: '2013 年的镜像站前端',
+        },
+        {
+          src: '/images/history/history-2014.webp',
+          thumbnail: '/images/history/history-2014-thumb.webp',
+          alt: '2014 年第一代镜像站前端界面',
+          caption: '2014 年的镜像站前端',
+        },
+        {
+          src: '/images/history/history-2020.webp',
+          thumbnail: '/images/history/history-2020-thumb.webp',
+          alt: '第一代镜像站的服务器',
+          caption: '第一代镜像站服务器',
+        },
+      ]}
+    />
+  </li>
+</ol>
+
+<ContributorList
+  locale="zh"
+  contributors={[
+    {
+      name: '郝星星',
+      github: 'mrhaoxx',
+      description: '2023 级 · 镜像站维护者',
+    },
+    {
+      name: '朱宝林',
+      github: 'bowling233',
+      description: '2022 级 · 镜像站维护者',
+    },
+    {
+      name: '李晨潇',
+      github: 'YooLc',
+      description: '2022 级 · 镜像站维护者',
+    },
+    {
+      name: '赵紫宸',
+      github: 'RalXYZ',
+      description: '2019 级 · 镜像站维护者',
+    },
+    {
+      name: '陈易',
+      github: 'CHN-ChenYi',
+      description: '2019 级 · 镜像站维护者',
+    },
+    {
+      name: '杨子晗',
+      github: 'yzhblind',
+      description: '2019 级 · 镜像站维护者',
+    },
+    {
+      name: '张梁育',
+      github: 'determ1ne',
+      description: '2018 级 · 镜像站维护者',
+    },
+    {
+      name: '吴郁非',
+      github: 'tespent',
+      description: '2018 级 · 镜像站维护者',
+    },
+    {
+      name: '曾充',
+      github: 'iamNCJ',
+      description: '2018 级 · 镜像站维护者',
+    },
+    {
+      name: '俞炯弛',
+      github: 'fish98',
+      description: '2017 级 · 镜像站维护者',
+    },
+    {
+      name: 'Rynco Maekawa',
+      github: 'lynzrand',
+      description: '用户界面设计 · 特别鸣谢',
+    },
+    {
+      name: '张华',
+      description: '校信息技术中心 · 特别鸣谢',
+    },
+  ]}
+/>

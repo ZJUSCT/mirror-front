@@ -1,0 +1,214 @@
+---
+import { personIcon } from '../../lib/ui-icons';
+
+interface Contributor {
+  name: string;
+  github?: string;
+  description: string;
+}
+
+interface Props {
+  contributors: Contributor[];
+  locale: 'zh' | 'en';
+}
+
+const { contributors, locale } = Astro.props;
+---
+
+<section
+  class="contributors"
+  aria-labelledby="contributors-heading"
+  data-contributor-count={contributors.length}
+>
+  <h2 id="contributors-heading">
+    {locale === 'zh' ? '贡献者' : 'Contributors'}
+  </h2>
+  <div class="contributor-grid">
+    {
+      contributors.map((contributor) => {
+        const profileUrl = contributor.github
+          ? `https://github.com/${contributor.github}`
+          : undefined;
+        const avatarUrl = contributor.github
+          ? `https://avatars.githubusercontent.com/${contributor.github}?s=160`
+          : undefined;
+        const Tag = profileUrl ? 'a' : 'div';
+
+        return (
+          <Tag
+            class:list={[
+              'contributor',
+              { 'contributor-linked': Boolean(profileUrl) },
+            ]}
+            href={profileUrl}
+            rel={profileUrl ? 'external' : undefined}
+          >
+            <span class="contributor-avatar" aria-hidden="true">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                  decoding="async"
+                  referrerpolicy="no-referrer"
+                />
+              ) : (
+                <svg viewBox={`0 0 ${personIcon.width} ${personIcon.height}`}>
+                  <g set:html={personIcon.body} />
+                </svg>
+              )}
+            </span>
+            <span class="contributor-copy">
+              <span class="contributor-name">
+                <strong>{contributor.name}</strong>
+                {contributor.github && <span>@{contributor.github}</span>}
+              </span>
+              <span>{contributor.description}</span>
+            </span>
+          </Tag>
+        );
+      })
+    }
+  </div>
+</section>
+
+<style>
+  .contributors {
+    margin-top: 3.5rem;
+  }
+
+  .contributors h2 {
+    margin-bottom: 1.75rem;
+  }
+
+  .contributor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+  }
+
+  .contributor {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .contributor-avatar {
+    display: grid;
+    width: 5rem;
+    height: 5rem;
+    flex: none;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+    color: var(--primary);
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .contributor-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+
+  .contributor-avatar svg {
+    width: 2.75rem;
+    height: 2.75rem;
+    fill: currentColor;
+  }
+
+  .contributor-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .contributor-copy strong {
+    color: var(--text);
+    font-family: Metropolis, Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.35;
+  }
+
+  .contributor-name {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.125rem 0.5rem;
+  }
+
+  .contributor-name > span {
+    color: var(--metadata);
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .contributor-copy > span {
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .contributor-linked:hover,
+  .contributor-linked:focus-visible {
+    color: var(--text);
+  }
+
+  .contributor-linked:hover strong,
+  .contributor-linked:focus-visible strong {
+    color: var(--primary-strong);
+    text-decoration: underline;
+  }
+
+  .contributor-linked:hover .contributor-avatar {
+    border-color: color-mix(in srgb, var(--primary) 58%, transparent);
+    transform: translateY(-0.125rem);
+  }
+
+  .contributor-linked:focus-visible {
+    border-radius: var(--radius);
+    outline: 2px solid var(--primary);
+    outline-offset: 0.375rem;
+  }
+
+  @media (max-width: 899px) {
+    .contributor-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 599px) {
+    .contributors {
+      margin-top: 3rem;
+    }
+
+    .contributor-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .contributor-avatar {
+      width: 4.5rem;
+      height: 4.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contributor-avatar {
+      transition: none;
+    }
+  }
+</style>

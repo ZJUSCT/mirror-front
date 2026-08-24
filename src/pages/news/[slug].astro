@@ -1,0 +1,78 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+import NewsAuthor from '../../components/static/NewsAuthor.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { calendarTodayIcon } from '../../lib/ui-icons';
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    'announcements',
+    (entry) => !entry.data.draft
+  );
+  const englishSlugs = new Set(
+    entries
+      .filter((entry) => entry.id.startsWith('en/'))
+      .map((entry) =>
+        entry.id
+          .split('/')
+          .at(-1)
+          ?.replace(/\.mdx?$/, '')
+      )
+  );
+  return entries
+    .filter((entry) => entry.id.startsWith('zh/'))
+    .map((entry) => {
+      const slug = entry.id
+        .split('/')
+        .at(-1)
+        ?.replace(/\.mdx?$/, '');
+      return {
+        params: { slug },
+        props: {
+          entry,
+          alternatePath: englishSlugs.has(slug) ? `/en/news/${slug}/` : '/en/',
+        },
+      };
+    });
+}
+
+const { entry, alternatePath } = Astro.props as {
+  entry: CollectionEntry<'announcements'>;
+  alternatePath: string;
+};
+const { Content } = await render(entry);
+const slug = entry.id
+  .split('/')
+  .at(-1)
+  ?.replace(/\.mdx?$/, '');
+---
+
+<SiteLayout
+  title={entry.data.title}
+  lang="zh"
+  canonicalPath={`/news/${slug}/`}
+  alternatePath={alternatePath}
+  pageKind="news"
+>
+  <div class="article-page news-page">
+    <section class="article-hero">
+      <h1 class="article-title">{entry.data.title}</h1>
+      <div class="article-meta">
+        <NewsAuthor username={entry.data.author} />
+        <span class="article-meta-item">
+          <svg
+            viewBox={`0 0 ${calendarTodayIcon.width} ${calendarTodayIcon.height}`}
+            aria-hidden="true"
+          >
+            <g set:html={calendarTodayIcon.body} />
+          </svg>
+          <time datetime={entry.data.date.toISOString()} data-localize-date>
+            {entry.data.date.toISOString().slice(0, 10)}
+          </time>
+        </span>
+      </div>
+    </section>
+    <article class="article-body prose"><Content /></article>
+  </div>
+</SiteLayout>

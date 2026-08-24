@@ -53,26 +53,20 @@ src/typings/
 
 # dotenv environment variable files
 .env*
+playwright-report/
+test-results/
 
-# gatsby files
+# generated site files
+.astro/
 .cache/
+dist/
 public
 
 # Mac files
 .DS_Store
 
-# Yarn
-yarn-error.log
-.pnp/
-.pnp.js
-# Yarn Integrity file
-.yarn-integrity
-
 # JetBrains IDE config
 .idea/
-
-# config file
-config.ts
 
 # vscode config file
 .vscode/

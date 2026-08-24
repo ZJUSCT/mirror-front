@@ -1,19 +1,8 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.231.6/containers/javascript-node/.devcontainer/base.Dockerfile
+FROM mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
 
-# [Choice] Node.js version (use -bullseye variants on local arm64/Apple Silicon): 16, 14, 12, 16-bullseye, 14-bullseye, 12-bullseye, 16-buster, 14-buster, 12-buster
-ARG VARIANT="16-bullseye"
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
-ENV TZ=Asia/Shanghai
+ENV TZ=Asia/Shanghai \
+    ASTRO_TELEMETRY_DISABLED=1 \
+    PNPM_HOME=/home/node/.local/share/pnpm \
+    PATH=/home/node/.local/share/pnpm:$PATH
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-
-# [Optional] Uncomment if you want to install an additional version of node using nvm
-# ARG EXTRA_NODE_VERSION=10
-# RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
-
-# [Optional] Uncomment if you want to install more global node modules
-RUN su node -c "yarn config set registry https://registry.npmmirror.com"
-RUN su node -c "yarn config set sharp_binary_host https://npmmirror.com/mirrors/sharp"
-RUN su node -c "yarn config set sharp_libvips_binary_host https://npmmirror.com/mirrors/sharp-libvips"
+RUN corepack enable && corepack prepare pnpm@10.15.1 --activate

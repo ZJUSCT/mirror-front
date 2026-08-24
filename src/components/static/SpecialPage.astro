@@ -1,0 +1,205 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+interface Props {
+  kind: 'about' | 'history' | 'faq';
+  locale: 'zh' | 'en';
+}
+
+const { kind, locale } = Astro.props;
+const isZh = locale === 'zh';
+const route = `/${kind}/`;
+const canonicalPath = isZh ? route : `/en${route}`;
+const alternatePath = isZh ? `/en${route}` : route;
+const entryId = `${locale}/${kind}`;
+const entries = await getCollection('specialPages');
+const entry = entries.find(
+  (candidate) => candidate.id.replace(/\.mdx?$/, '') === entryId
+);
+
+if (!entry) {
+  throw new Error(`Missing special-page content entry: ${entryId}`);
+}
+
+const { Content } = await render(entry);
+---
+
+<SiteLayout
+  title={entry.data.title}
+  lang={locale}
+  canonicalPath={canonicalPath}
+  alternatePath={alternatePath}
+  usesGitHubAvatars={kind === 'history'}
+>
+  <div class="article-page special-page">
+    <section class="article-hero special-hero">
+      <h1 class="article-title">{entry.data.title}</h1>
+      <p class="special-lead">{entry.data.lead}</p>
+    </section>
+
+    <article class="article-body prose special-body">
+      <Content />
+
+      <nav
+        class="special-page-nav"
+        aria-label={isZh ? '相关页面' : 'Related pages'}
+      >
+        <a href={isZh ? '/' : '/en/'}>{isZh ? '浏览镜像' : 'Browse mirrors'}</a>
+        {
+          kind !== 'about' && (
+            <a href={isZh ? '/about/' : '/en/about/'}>
+              {isZh ? '关于本站' : 'About'}
+            </a>
+          )
+        }
+        {
+          kind !== 'history' && (
+            <a href={isZh ? '/history/' : '/en/history/'}>
+              {isZh ? '历史记录' : 'History'}
+            </a>
+          )
+        }
+        {
+          kind !== 'faq' && (
+            <a href={isZh ? '/faq/' : '/en/faq/'}>
+              {isZh ? '常见问题' : 'FAQ'}
+            </a>
+          )
+        }
+      </nav>
+    </article>
+  </div>
+</SiteLayout>
+
+<style is:global>
+  .special-lead {
+    width: min(50rem, 100%);
+    margin: 0.75rem 0 0;
+    color: var(--muted);
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .special-body > :not(.special-page-nav) {
+    width: min(58rem, 100%);
+  }
+
+  .special-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  .special-body table {
+    white-space: nowrap;
+  }
+
+  .history-timeline {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .history-timeline > li {
+    position: relative;
+    border-left: 2px solid color-mix(in srgb, var(--primary) 28%, transparent);
+    padding: 0 0 2.5rem 2rem;
+  }
+
+  .history-timeline > li::before {
+    position: absolute;
+    top: 0.4rem;
+    left: -0.4375rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    background: var(--primary);
+    content: '';
+  }
+
+  .history-timeline > li:last-child {
+    padding-bottom: 0;
+  }
+
+  .history-timeline h2 {
+    margin: 0.125rem 0 0.5rem;
+  }
+
+  .history-period {
+    margin: 0;
+    color: var(--primary);
+    font-family: Metropolis, Arial, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .faq-list {
+    border-top: 1px solid var(--border);
+  }
+
+  .faq-list details {
+    border-bottom: 1px solid var(--border);
+    padding-block: 1rem;
+  }
+
+  .faq-list summary {
+    color: var(--text);
+    cursor: pointer;
+    font-family: Metropolis, Arial, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .faq-list summary:hover,
+  .faq-list summary:focus-visible {
+    color: var(--primary);
+  }
+
+  .faq-list summary:focus-visible {
+    border-radius: var(--radius);
+    outline: 2px solid var(--primary);
+    outline-offset: 0.25rem;
+  }
+
+  .faq-answer {
+    padding: 0.5rem 1.5rem 0;
+    color: var(--muted);
+  }
+
+  .special-page-nav {
+    display: flex;
+    width: min(58rem, 100%);
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin-top: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+  }
+
+  .special-page-nav a {
+    font-weight: 700;
+  }
+
+  @media (max-width: 599px) {
+    .special-lead {
+      font-size: 1rem;
+    }
+
+    .history-timeline > li {
+      padding-left: 1.5rem;
+    }
+
+    .faq-answer {
+      padding-inline: 0.25rem;
+    }
+  }
+</style>

@@ -1,0 +1,181 @@
+---
+title: History
+lead: From an early volunteer-run service, through a cloud-based rebuild, to third-generation infrastructure designed for greater performance and reliability.
+---
+
+import ContributorList from '../../../components/static/ContributorList.astro';
+import ImageGallery from '../../../components/static/ImageGallery.astro';
+
+<ol className="history-timeline">
+  <li>
+    <p className="history-period">2025–present</p>
+    <h2>Third generation: dedicated infrastructure</h2>
+    <p>
+      With the founding of AIRA, ZJULUG was re-established and opened mirror
+      operations to more contributors. Supported by the Information Technology
+      Center, the service moved from the cloud to dedicated infrastructure
+      comprising three storage servers, two application servers, and a
+      10-gigabit network, with a renewed focus on performance and reliability.
+    </p>
+    <ImageGallery
+      locale="en"
+      images={[
+        {
+          src: '/images/about/infra.svg',
+          alt: 'Topology of the third-generation mirror infrastructure',
+          caption: 'Third-generation mirror infrastructure topology',
+          fit: 'contain',
+        },
+        {
+          src: '/images/about/infra-1.webp',
+          thumbnail: '/images/about/infra-1-thumb.webp',
+          alt: 'Mirror server rack (rear view)',
+          caption: 'Mirror server rack (rear view)',
+        },
+        {
+          src: '/images/about/infra-2.webp',
+          thumbnail: '/images/about/infra-2-thumb.webp',
+          alt: 'Mirror server rack (front view)',
+          caption: 'Mirror storage servers (front view)',
+        },
+      ]}
+    />
+  </li>
+  <li>
+    <p className="history-period">2021–2024</p>
+    <h2>Second generation: rebuild and cloud migration</h2>
+    <p>
+      ZJUSCT Falcon took over the service, rewrote both the frontend and
+      backend, and introduced a control service for better visibility and
+      scheduling of synchronization tasks. In early 2022, ZJU Mirror moved to
+      the vSphere platform provided by the Information Technology Center. Its
+      modern card-based interface and visual identity also took shape during
+      this period. A second-generation maintainer recounts this work in the
+      campus forum post{' '}
+      <a href="https://www.cc98.org/topic/5586111">
+        A decade of change at ZJU Mirror—and how I built it.
+      </a>
+    </p>
+    <ImageGallery
+      locale="en"
+      images={[
+        {
+          src: '/images/history/history-2021-1.webp',
+          thumbnail: '/images/history/history-2021-1-thumb.webp',
+          alt: 'Early Figma concept for the ZJU Mirror frontend in 2021',
+          caption: 'Early Figma concept, 2021',
+        },
+        {
+          src: '/images/history/history-2023-1.webp',
+          thumbnail: '/images/history/history-2023-1-thumb.webp',
+          alt: 'ZJU Mirror frontend in 2023',
+          caption: 'ZJU Mirror frontend, 2023',
+        },
+        {
+          src: '/images/history/history-2023-2.webp',
+          thumbnail: '/images/history/history-2023-2-thumb.webp',
+          alt: 'ZJU Mirror icon from the second generation',
+          caption: 'Second-generation ZJU Mirror icon',
+        },
+      ]}
+    />
+  </li>
+  <li>
+    <p className="history-period">2013–2020</p>
+    <h2>First generation: community beginnings</h2>
+    <p>
+      The earliest ZJU mirror site relied on volunteer hardware support from
+      university library staff, while ZJULUG maintained its content. The
+      first-generation service gradually ended after its original members
+      graduated.
+    </p>
+    <ImageGallery
+      locale="en"
+      images={[
+        {
+          src: '/images/history/history-2013.webp',
+          thumbnail: '/images/history/history-2013-thumb.webp',
+          alt: 'First-generation ZJU Mirror frontend in 2013',
+          caption: 'ZJU Mirror frontend, 2013',
+        },
+        {
+          src: '/images/history/history-2014.webp',
+          thumbnail: '/images/history/history-2014-thumb.webp',
+          alt: 'First-generation ZJU Mirror frontend in 2014',
+          caption: 'ZJU Mirror frontend, 2014',
+        },
+        {
+          src: '/images/history/history-2020.webp',
+          thumbnail: '/images/history/history-2020-thumb.webp',
+          alt: 'Servers used by the first-generation mirror service',
+          caption: 'First-generation mirror servers',
+        },
+      ]}
+    />
+  </li>
+</ol>
+
+<ContributorList
+  locale="en"
+  contributors={[
+    {
+      name: '郝星星',
+      github: 'mrhaoxx',
+      description: '2023 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '朱宝林',
+      github: 'bowling233',
+      description: '2022 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '李晨潇',
+      github: 'YooLc',
+      description: '2022 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '赵紫宸',
+      github: 'RalXYZ',
+      description: '2019 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '陈易',
+      github: 'CHN-ChenYi',
+      description: '2019 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '杨子晗',
+      github: 'yzhblind',
+      description: '2019 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '张梁育',
+      github: 'determ1ne',
+      description: '2018 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '吴郁非',
+      github: 'tespent',
+      description: '2018 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '曾充',
+      github: 'iamNCJ',
+      description: '2018 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: '俞炯弛',
+      github: 'fish98',
+      description: '2017 undergraduate cohort · Mirror maintainer',
+    },
+    {
+      name: 'Rynco Maekawa',
+      github: 'lynzrand',
+      description: 'User-interface design · Special thanks',
+    },
+    {
+      name: '张华',
+      description: 'ZJU Information Technology Center · Special thanks',
+    },
+  ]}
+/>

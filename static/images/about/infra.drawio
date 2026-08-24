@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="26.2.13">
+  <diagram name="Page-1" id="PLZw5Didg9Woypdv-pCe">
+    <mxGraphModel dx="643" dy="1403" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_veUoHLHs1xzvvqsWgao-1" value="万兆交换机&lt;div&gt;H3C S6520X-24ST-SI&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="185" y="360" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-2" value="存储节点&lt;br&gt;&lt;div&gt;H3C X10536 G3&lt;/div&gt;&lt;div&gt;30 x 8TB HDD&lt;/div&gt;&lt;div&gt;6 x 480GB SSD&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="450" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-3" value="业务节点&lt;br&gt;&lt;div&gt;H3C R4900G3&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="270" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-4" value="存储节点&lt;br&gt;&lt;div&gt;H3C X10536 G3&lt;/div&gt;&lt;div&gt;30 x 8TB HDD&lt;/div&gt;&lt;div&gt;6 x 480GB SSD&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="450" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-5" value="存储节点&lt;br&gt;&lt;div&gt;H3C X10536 G3&lt;/div&gt;&lt;div&gt;30 x 8TB HDD&lt;/div&gt;&lt;div&gt;6 x 480GB SSD&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="450" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-6" value="业务节点&lt;br&gt;&lt;div&gt;H3C R4900G3&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="270" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-9" value="2 x 10G SFP" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-1" target="_veUoHLHs1xzvvqsWgao-6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="50" y="410" as="sourcePoint" />
+            <mxPoint x="100" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-10" value="2 x 10G SFP" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-1" target="_veUoHLHs1xzvvqsWgao-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="388.66999999999996" y="360" as="sourcePoint" />
+            <mxPoint x="329.66999999999996" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-11" value="4 x 10G SFP" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-2" target="_veUoHLHs1xzvvqsWgao-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160.32999999999998" y="420" as="sourcePoint" />
+            <mxPoint x="101.33" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-12" value="4 x 10G SFP" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-5" target="_veUoHLHs1xzvvqsWgao-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="219.29000000000002" y="450" as="sourcePoint" />
+            <mxPoint x="290.29" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-13" value="4 x 10G SFP" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-4" target="_veUoHLHs1xzvvqsWgao-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="325" y="460" as="sourcePoint" />
+            <mxPoint x="325" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-14" value="10G SFP" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="_veUoHLHs1xzvvqsWgao-1" target="_veUoHLHs1xzvvqsWgao-15">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="380" as="sourcePoint" />
+            <mxPoint x="450" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-15" value="" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="340" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_veUoHLHs1xzvvqsWgao-16" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;新镜像站基础设施&lt;/h1&gt;&lt;p&gt;位置：浙江大学紫金港校区和同苑 5 幢化四 221 G6 机柜&lt;/p&gt;&lt;p&gt;上次更新：2025 年 04 月 19 日&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;" vertex="1" parent="1">
+          <mxGeometry x="85.61999999999999" y="140" width="338.75" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

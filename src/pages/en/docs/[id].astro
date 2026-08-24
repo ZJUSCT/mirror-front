@@ -1,0 +1,140 @@
+---
+import GuideHero from '../../../components/react/GuideHero';
+import MirrorzDocument from '../../../components/react/MirrorzDocument';
+import {
+  legacyGuideRoutes,
+  type LegacyGuideRoute,
+} from '../../../data/legacy-guide-routes';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import {
+  loadMirrorDocsMapping,
+  loadMirrorzDocument,
+} from '../../../lib/mirrorz-docs/loader';
+import type {
+  MirrorDocsMapping,
+  MirrorzDocument as MirrorzDocumentData,
+} from '../../../lib/mirrorz-docs/types';
+import { federatedMirrorUrl } from '../../../lib/mirror-endpoint';
+
+export async function getStaticPaths() {
+  const mapping = await loadMirrorDocsMapping();
+  const routes = [
+    ...new Set([...Object.keys(mapping), ...Object.keys(legacyGuideRoutes)]),
+  ].sort();
+  return Promise.all(
+    routes.map(async (id) => {
+      const current = mapping[id] ?? null;
+      return {
+        params: { id },
+        props: {
+          id,
+          current,
+          document: current?.docsId ? await loadMirrorzDocument(id) : null,
+          legacy: legacyGuideRoutes[id] ?? null,
+        },
+      };
+    })
+  );
+}
+
+const { id, current, document, legacy } = Astro.props as {
+  id: string;
+  current: MirrorDocsMapping | null;
+  document: MirrorzDocumentData | null;
+  legacy: LegacyGuideRoute | null;
+};
+const title = document?.title ?? legacy?.title.en ?? id;
+const dataUrl = current?.publicPath ?? null;
+const federatedDataUrl = current
+  ? federatedMirrorUrl(current.publicPath)
+  : null;
+const actionHref = legacy?.action
+  ? legacy.action.href.startsWith('/docs/')
+    ? `/en${legacy.action.href}`
+    : legacy.action.href
+  : null;
+---
+
+<SiteLayout
+  title={title}
+  lang="en"
+  canonicalPath={`/en/docs/${id}/`}
+  pageKind="docs"
+>
+  <div class="article-page guide-page">
+    <GuideHero
+      client:load
+      mirrorId={id}
+      fallbackTitle={title}
+      fallbackDataUrl={dataUrl}
+      federatedDataUrl={federatedDataUrl}
+      locale="en"
+    />
+    <section class="article-body guide-body">
+      {
+        document ? (
+          <>
+            <p class="guide-note">
+              This shared guide is currently available only in Chinese. Use the
+              controls below to select the mirror endpoint and command options.
+            </p>
+            <MirrorzDocument client:load document={document} locale="en" />
+            <p class="source-attribution">
+              Guide content comes from{' '}
+              <a
+                class="source-repository"
+                href={`https://github.com/mirrorz-org/mirrorz-docs/tree/${document.sourceCommit}/${document.docsId}`}
+              >
+                mirrorz-org/mirrorz-docs
+              </a>
+              @
+              <a
+                class="source-commit"
+                href={`https://github.com/mirrorz-org/mirrorz-docs/commit/${document.sourceCommit}`}
+                aria-label={`mirrorz-docs commit ${document.sourceCommit}`}
+                title={document.sourceCommit}
+              >
+                {document.sourceCommit.slice(0, 12)}
+              </a>{' '}
+              under{' '}
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                CC BY-NC-SA 4.0
+              </a>
+              .
+            </p>
+          </>
+        ) : legacy ? (
+          <>
+            <p class="callout warning">
+              This route preserves an old link; it is not a usable configuration
+              guide.
+            </p>
+            <p>{legacy.description.en}</p>
+            {legacy.action && (
+              <p>
+                <a href={actionHref}>{legacy.action.label.en}</a>
+              </p>
+            )}
+            <p>
+              <a href="/en/">Return to the ZJU Mirror homepage</a>
+            </p>
+          </>
+        ) : (
+          <>
+            <p class="callout">No reviewed shared guide is available.</p>
+            <p>
+              This mirror remains in the current catalog. To avoid publishing
+              stale commands, the new frontend does not copy unreviewed
+              instructions from the old site.
+            </p>
+            {dataUrl && (
+              <p>
+                <a href={dataUrl}>Browse the {id} mirror files</a>
+              </p>
+            )}
+          </>
+        )
+      }
+    </section>
+  </div>
+</SiteLayout>

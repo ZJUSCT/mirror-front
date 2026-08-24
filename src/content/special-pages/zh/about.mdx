@@ -1,0 +1,123 @@
+---
+title: 关于
+lead: 由浙江大学信息技术中心支持、浙江大学超算队运营的开源软件镜像服务。
+---
+
+import ImageGallery from '../../../components/static/ImageGallery.astro';
+
+## 简介
+
+浙江大学开源软件镜像站 ([https://mirrors.zju.edu.cn](https://mirrors.zju.edu.cn)) 是由 [浙江大学信息中心](https://zuits.zju.edu.cn/) 支持、[浙江大学超算队](https://www.zjusct.io/) 运营的，致力于普及开源软件、方便校内外用户高效访问开源项目的各种资源的非营利计划。本镜像站提供了包括 Docker、PostgreSQL、Ubuntu 等项目的镜像，以服务教育和科学研究为目的，提倡自由、平等、协作、共享的精神。
+
+### 丰富的镜像
+
+浙大镜像站拥有 50+ 个镜像，包括 Anaconda、Ubuntu、Pypi、ArchLinux、Debian、Homebrew 等常用镜像，满足了校内师生日常使用的需求。我们也为大部分镜像提供了帮助文档，帮助用户快速完成配置。
+
+### 官方认证
+
+我们积极与上游联系，申请成为官方镜像。目前，已有 17 个镜像被认证为官方镜像，其中包括 Ubuntu、CentOS、ArchLinux、CTAN、ROS 等。成为官方镜像，证明我们服务的稳定性、实时性、正确性获得了官方的认可。
+
+### 接入[校园网联合镜像站](https://mirrors.cernet.edu.cn/)
+
+校园网联合镜像站是由中国教育和科研计算机网网络中心支持的项目，它提供对校园网镜像站的索引和跳转服务。我们对接了标准化的接口，向外界暴露我们实时的资源使用情况和镜像同步状态信息。可以访问 [浙大镜像站在校园网联合镜像站上的页面](https://mirrors.cernet.edu.cn/site/ZJU)，那里有详细的同步状态信息。
+
+## 软件
+
+浙江大学镜像站的运行离不开以下开源项目：
+
+- 自研：
+  - [ZJUSCT/Falcon](https://github.com/ZJUSCT/falcon)：运行在 Kubernetes 上的软件源镜像编排器
+  - [ZJUSCT/mirror-front](https://github.com/ZJUSCT/mirror-front)：基于 Astro 的镜像站前端
+- 教育网：
+  - [mirrorz-org/mirrorz](https://github.com/mirrorz-org/mirrorz)：教育网联合镜像站
+  - [mirrorz-org/mirrorz-docs](https://github.com/mirrorz-org/mirrorz-docs)：教育网联合镜像站通用镜像文档
+  - [tuna/tunasync-scripts](https://github.com/tuna/tunasync-scripts)：清华大学 TUNA 镜像同步工具
+- 社区：
+  - [kubernetes/kubernetes](https://github.com/kubernetes/kubernetes)：容器编排平台
+  - [nginx/nginx](https://github.com/nginx/nginx)：Web 服务器
+  - [RsyncProject/rsync](https://github.com/RsyncProject/rsync)：镜像同步工具
+
+## 硬件
+
+浙江大学镜像站所有的硬件资源都是由浙大信息中心赞助的。镜像站属于信息中心 [研在浙大·科研软件平台](https://soft.zju.edu.cn/) 的一个子项目。
+
+2025 年 4 月 17 日，我们从信息技术中心收到了第三代镜像站的硬件设施。第三代镜像站由 3 台存储服务器、2 台业务服务器构成，通过万兆交换机互联。
+
+<ImageGallery
+  locale="zh"
+  images={[
+    {
+      src: '/images/about/infra.svg',
+      alt: '第三代镜像站基础设施拓扑图',
+      caption: '第三代镜像站基础设施拓扑',
+      fit: 'contain',
+    },
+    {
+      src: '/images/about/infra-1.webp',
+      thumbnail: '/images/about/infra-1-thumb.webp',
+      alt: '镜像站服务器机柜（后视图）',
+      caption: '镜像站服务器机柜（后视图）',
+    },
+    {
+      src: '/images/about/infra-2.webp',
+      thumbnail: '/images/about/infra-2-thumb.webp',
+      alt: '镜像站服务器机柜（前视图）',
+      caption: '镜像站存储服务器（前视图）',
+    },
+  ]}
+/>
+
+### 存储服务器
+
+- CPU：2 x Intel Xeon Silver 4110
+- 内存：8 x 32GB DDR4 2666MHz RDIMM
+
+- 存储规格：每台配备 2 张 H3C P460 RAID 卡，具有 4GB 缓存和掉电保护。
+
+  其上连接的存储设备有：
+
+  | 数量 | 容量  | 类型                    | 具体型号                 |
+  | ---- | ----- | ----------------------- | ------------------------ |
+  | 2    | 600G  | 12 Gbps SAS HDD 系统盘  | SEAGATE ST600MM0009      |
+  | 6    | 480GB | 12 Gbps SATA SSD 数据盘 | Micron 5200 MTFD         |
+  | 30   | 8TB   | 12 Gbps SATA HDD 数据盘 | SEAGATE ST8000NM0055-1RM |
+
+  系统盘已配置为 RAID1。
+
+- 网络规格：每台配备 2 张双口 10G 以太网卡和 1 张双 1G 以太网卡。
+
+  | 插槽 | 网卡型号              | 规格         | 控制器         |
+  | ---- | --------------------- | ------------ | -------------- |
+  | 板载 | NIC-GE-2P-360T-B2-1-X | 2 x 1GE RJ45 | Intel NHI350AM |
+  | PCIe | CNA-10GE-2P-560F-B2-1 | 2 x 10GE SFP | Intel JL82599  |
+  | FLOM | NIC-10GE-2P-560F-LOM  | 2 x 10GE SFP | Intel JL82599  |
+
+### 业务服务器
+
+- CPU：2 x Intel Xeon Gold 6130
+- 内存：6 x 16GB DDR4 2666MHz RDIMM
+
+- 存储规格：每台配备 1 张 H3C P460 RAID 卡，具有 4GB 缓存 和掉电保护。
+
+  其上连接的存储设备有：
+
+  | 数量 | 容量 | 类型                   | 具体型号            |
+  | ---- | ---- | ---------------------- | ------------------- |
+  | 2    | 600G | 12 Gbps SAS HDD 系统盘 | SEAGATE ST600MM0009 |
+
+  系统盘已配置为 RAID1。
+
+- 网络规格：每台配备 1 张双口 10G 以太网卡。
+
+  | 插槽 | 网卡型号                  | 规格         | 控制器            |
+  | ---- | ------------------------- | ------------ | ----------------- |
+  | PCIe | NIC-BCM957302-F-B-10Gb-2P | 2 x 10GE SFP | Broadcom BCM57302 |
+
+### 交换机
+
+| 参数               | 值                                                                                  |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| 前面板业务端口描述 | 24 个 1/2.5/10GE SFP Plus 端口（2 个 Combo 1G/2.5G/5G/10G Base-T 自适应以太网端口） |
+| 交换容量           | 2.56Tbps/25.6Tbps                                                                   |
+| 包转发率           | 360Mpps                                                                             |
+| 链路聚合           | 支持 10GE 端口聚合                                                                  |

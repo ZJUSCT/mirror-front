@@ -1,0 +1,123 @@
+---
+title: About
+lead: An open-source mirror service supported by the ZJU Information Technology Center and operated by ZJUSCT.
+---
+
+import ImageGallery from '../../../components/static/ImageGallery.astro';
+
+## Introduction
+
+[ZJU Mirror](https://mirrors.zju.edu.cn/) is a non-profit initiative supported by the [Zhejiang University Information Technology Center](https://zuits.zju.edu.cn/) and operated by the [Zhejiang University Supercomputing Team](https://www.zjusct.io/). It promotes open-source software and helps users both on and off campus access resources from open-source projects efficiently. The service provides mirrors for projects including Docker, PostgreSQL, and Ubuntu for the benefit of education and scientific research, and advocates freedom, equality, collaboration, and sharing.
+
+### A rich selection of mirrors
+
+ZJU Mirror hosts more than 50 mirrors, including commonly used sources such as Anaconda, Ubuntu, PyPI, Arch Linux, Debian, and Homebrew, meeting the everyday needs of students and faculty. We also provide documentation for most mirrors to help users configure them quickly.
+
+### Official recognition
+
+We actively work with upstream projects to become an official mirror. Seventeen of our mirrors are currently officially recognized, including Ubuntu, CentOS, Arch Linux, CTAN, and ROS. Official recognition demonstrates that the stability, timeliness, and correctness of our service have earned upstream approval.
+
+### Integration with the [CERNET mirror federation](https://mirrors.cernet.edu.cn/)
+
+The CERNET mirror federation is supported by the China Education and Research Network Center. It provides an index of, and redirects to, mirror sites on campus networks. We use its standardized interfaces to publish real-time resource utilization and mirror synchronization status. Detailed synchronization information is available on [ZJU Mirror’s page in the CERNET mirror federation](https://mirrors.cernet.edu.cn/site/ZJU).
+
+## Software
+
+ZJU Mirror relies on the following open-source projects:
+
+- In-house:
+  - [ZJUSCT/Falcon](https://github.com/ZJUSCT/falcon): A software repository mirror orchestrator that runs on Kubernetes
+  - [ZJUSCT/mirror-front](https://github.com/ZJUSCT/mirror-front): An Astro-based frontend for mirror sites
+- CERNET:
+  - [mirrorz-org/mirrorz](https://github.com/mirrorz-org/mirrorz): The CERNET mirror federation
+  - [mirrorz-org/mirrorz-docs](https://github.com/mirrorz-org/mirrorz-docs): Shared mirror documentation for the CERNET mirror federation
+  - [tuna/tunasync-scripts](https://github.com/tuna/tunasync-scripts): Mirror synchronization tools from Tsinghua University’s TUNA Association
+- Community:
+  - [kubernetes/kubernetes](https://github.com/kubernetes/kubernetes): Container orchestration platform
+  - [nginx/nginx](https://github.com/nginx/nginx): Web server
+  - [RsyncProject/rsync](https://github.com/RsyncProject/rsync): Mirror synchronization tool
+
+## Hardware
+
+All hardware used by ZJU Mirror is sponsored by the ZJU Information Technology Center. The mirror service is a subproject of the Center’s [Research at ZJU · Research Software Platform](https://soft.zju.edu.cn/).
+
+On April 17, 2025, we received the hardware for the third generation of the mirror service from the Information Technology Center. The third-generation infrastructure comprises three storage servers and two application servers interconnected through a 10-gigabit switch.
+
+<ImageGallery
+  locale="en"
+  images={[
+    {
+      src: '/images/about/infra.svg',
+      alt: 'Topology of the third-generation mirror infrastructure',
+      caption: 'Third-generation mirror infrastructure topology',
+      fit: 'contain',
+    },
+    {
+      src: '/images/about/infra-1.webp',
+      thumbnail: '/images/about/infra-1-thumb.webp',
+      alt: 'Mirror server rack (rear view)',
+      caption: 'Mirror server rack (rear view)',
+    },
+    {
+      src: '/images/about/infra-2.webp',
+      thumbnail: '/images/about/infra-2-thumb.webp',
+      alt: 'Mirror server rack (front view)',
+      caption: 'Mirror storage servers (front view)',
+    },
+  ]}
+/>
+
+### Storage servers
+
+- CPU: 2 × Intel Xeon Silver 4110
+- Memory: 8 × 32 GB DDR4-2666 RDIMM
+
+- Storage: Each server has two H3C P460 RAID controllers with 4 GB of cache and power-loss protection.
+
+  The attached storage devices are:
+
+  | Quantity | Capacity | Type                         | Model                    |
+  | -------- | -------- | ---------------------------- | ------------------------ |
+  | 2        | 600 GB   | 12 Gbps SAS HDD system disks | SEAGATE ST600MM0009      |
+  | 6        | 480 GB   | 12 Gbps SATA SSD data disks  | Micron 5200 MTFD         |
+  | 30       | 8 TB     | 12 Gbps SATA HDD data disks  | SEAGATE ST8000NM0055-1RM |
+
+  The system disks are configured as RAID 1.
+
+- Network: Each server has two dual-port 10 GbE adapters and one dual-port 1 GbE adapter.
+
+  | Slot    | Adapter model         | Specification | Controller     |
+  | ------- | --------------------- | ------------- | -------------- |
+  | Onboard | NIC-GE-2P-360T-B2-1-X | 2 × 1GbE RJ45 | Intel NHI350AM |
+  | PCIe    | CNA-10GE-2P-560F-B2-1 | 2 × 10GbE SFP | Intel JL82599  |
+  | FLOM    | NIC-10GE-2P-560F-LOM  | 2 × 10GbE SFP | Intel JL82599  |
+
+### Application servers
+
+- CPU: 2 × Intel Xeon Gold 6130
+- Memory: 6 × 16 GB DDR4-2666 RDIMM
+
+- Storage: Each server has one H3C P460 RAID controller with 4 GB of cache and power-loss protection.
+
+  The attached storage devices are:
+
+  | Quantity | Capacity | Type                         | Model               |
+  | -------- | -------- | ---------------------------- | ------------------- |
+  | 2        | 600 GB   | 12 Gbps SAS HDD system disks | SEAGATE ST600MM0009 |
+
+  The system disks are configured as RAID 1.
+
+- Network: Each server has one dual-port 10 GbE adapter.
+
+  | Slot | Adapter model             | Specification | Controller        |
+  | ---- | ------------------------- | ------------- | ----------------- |
+  | PCIe | NIC-BCM957302-F-B-10Gb-2P | 2 × 10GbE SFP | Broadcom BCM57302 |
+
+### Switch
+
+| Item                      | Specification                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| Front-panel service ports | 24 × 1/2.5/10GbE SFP Plus ports (including 2 × Combo 1/2.5/5/10G Base-T adaptive Ethernet ports) |
+| Switching capacity        | 2.56 Tbps / 25.6 Tbps                                                                            |
+| Packet forwarding rate    | 360 Mpps                                                                                         |
+| Link aggregation          | Supports 10GbE port aggregation                                                                  |

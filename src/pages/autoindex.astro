@@ -1,0 +1,467 @@
+---
+// Self-contained directory listing shell. Origin NGINX internally redirects
+// browser requests for any directory to this page and answers the page's
+// same-origin fetches with `autoindex_format json` output;
+// scripts/generate-autoindex.mjs seals the inline scripts with CSP hashes
+// after the Astro build.
+import alpineLinuxIcon from '@iconify/icons-simple-icons/alpinelinux';
+import anacondaIcon from '@iconify/icons-simple-icons/anaconda';
+import archLinuxIcon from '@iconify/icons-simple-icons/archlinux';
+import centOsIcon from '@iconify/icons-simple-icons/centos';
+import debianIcon from '@iconify/icons-simple-icons/debian';
+import deepinIcon from '@iconify/icons-simple-icons/deepin';
+import dockerIcon from '@iconify/icons-simple-icons/docker';
+import fedoraIcon from '@iconify/icons-simple-icons/fedora';
+import firefoxIcon from '@iconify/icons-simple-icons/firefox';
+import gentooIcon from '@iconify/icons-simple-icons/gentoo';
+import gnuIcon from '@iconify/icons-simple-icons/gnu';
+import gnuEmacsIcon from '@iconify/icons-simple-icons/gnuemacs';
+import homebrewIcon from '@iconify/icons-simple-icons/homebrew';
+import kaliIcon from '@iconify/icons-simple-icons/kalilinux';
+import linuxIcon from '@iconify/icons-simple-icons/linux';
+import linuxMintIcon from '@iconify/icons-simple-icons/linuxmint';
+import llvmIcon from '@iconify/icons-simple-icons/llvm';
+import manjaroIcon from '@iconify/icons-simple-icons/manjaro';
+import npmIcon from '@iconify/icons-simple-icons/npm';
+import openSuseIcon from '@iconify/icons-simple-icons/opensuse';
+import openWrtIcon from '@iconify/icons-simple-icons/openwrt';
+import pythonIcon from '@iconify/icons-simple-icons/python';
+import qtIcon from '@iconify/icons-simple-icons/qt';
+import raspberryPiIcon from '@iconify/icons-simple-icons/raspberrypi';
+import rockyIcon from '@iconify/icons-simple-icons/rockylinux';
+import rosIcon from '@iconify/icons-simple-icons/ros';
+import rustIcon from '@iconify/icons-simple-icons/rust';
+import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
+
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { folderIcon } from '../lib/ui-icons';
+
+interface StaticIcon {
+  width: number;
+  height: number;
+  body: string;
+}
+
+function staticIcon(value: unknown): StaticIcon {
+  const module = value as { default?: StaticIcon };
+  return module.default ?? (value as StaticIcon);
+}
+
+const iconGroups: Array<{ ids: string[]; icon: StaticIcon }> = [
+  { ids: ['alpine'], icon: staticIcon(alpineLinuxIcon) },
+  { ids: ['anaconda'], icon: staticIcon(anacondaIcon) },
+  { ids: ['archlinux', 'archlinuxcn'], icon: staticIcon(archLinuxIcon) },
+  { ids: ['centos', 'centos-vault'], icon: staticIcon(centOsIcon) },
+  { ids: ['debian'], icon: staticIcon(debianIcon) },
+  { ids: ['deepin'], icon: staticIcon(deepinIcon) },
+  { ids: ['docker-ce'], icon: staticIcon(dockerIcon) },
+  { ids: ['fedora'], icon: staticIcon(fedoraIcon) },
+  { ids: ['mozilla'], icon: staticIcon(firefoxIcon) },
+  {
+    ids: ['gentoo', 'gentoo-portage', 'gentoo-portage.git'],
+    icon: staticIcon(gentooIcon),
+  },
+  { ids: ['gnu'], icon: staticIcon(gnuIcon) },
+  { ids: ['elpa'], icon: staticIcon(gnuEmacsIcon) },
+  { ids: ['homebrew'], icon: staticIcon(homebrewIcon) },
+  { ids: ['kali'], icon: staticIcon(kaliIcon) },
+  { ids: ['linux.git'], icon: staticIcon(linuxIcon) },
+  { ids: ['linuxmint'], icon: staticIcon(linuxMintIcon) },
+  { ids: ['llvm-apt'], icon: staticIcon(llvmIcon) },
+  { ids: ['manjaro'], icon: staticIcon(manjaroIcon) },
+  { ids: ['npm'], icon: staticIcon(npmIcon) },
+  { ids: ['opensuse'], icon: staticIcon(openSuseIcon) },
+  { ids: ['openwrt'], icon: staticIcon(openWrtIcon) },
+  { ids: ['pypi'], icon: staticIcon(pythonIcon) },
+  { ids: ['qt'], icon: staticIcon(qtIcon) },
+  {
+    ids: ['raspberrypi', 'raspbian'],
+    icon: staticIcon(raspberryPiIcon),
+  },
+  { ids: ['rocky'], icon: staticIcon(rockyIcon) },
+  { ids: ['ros', 'ros2', 'rosdistro'], icon: staticIcon(rosIcon) },
+  {
+    ids: ['crates.io-index', 'crates.io-index.git', 'rustup'],
+    icon: staticIcon(rustIcon),
+  },
+  { ids: ['ubuntu', 'ubuntu-ports'], icon: staticIcon(ubuntuIcon) },
+];
+
+const contentSecurityPolicy =
+  "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src AUTOINDEX_SCRIPT_HASHES; connect-src 'self'; img-src 'self' data:; font-src 'self' data:; base-uri 'none'; form-action 'none'";
+---
+
+<SiteLayout
+  title="Directory listing"
+  lang="zh"
+  canonicalPath="/autoindex/"
+  pageKind="autoindex"
+  contentSecurityPolicy={contentSecurityPolicy}
+>
+  <article class="autoindex-page">
+    <section class="autoindex-hero" aria-labelledby="listing-title">
+      <h1 id="listing-title" class="autoindex-title">Mirror</h1>
+      <div class="autoindex-status-row">
+        <span id="mirror-status" class="status status-unknown">UNKNOWN</span>
+        <span id="mirror-updated" class="autoindex-updated" hidden></span>
+      </div>
+      <div
+        id="autoindex-watermark"
+        class="autoindex-watermark"
+        aria-hidden="true"
+      >
+        {
+          iconGroups.flatMap(({ ids, icon }) =>
+            ids.map((id) => (
+              <svg
+                class="autoindex-watermark-icon"
+                data-mirror-icon={id}
+                viewBox={`0 0 ${icon.width} ${icon.height}`}
+                focusable="false"
+              >
+                <g set:html={icon.body} />
+              </svg>
+            ))
+          )
+        }
+      </div>
+    </section>
+
+    <section class="autoindex-panel" aria-labelledby="listing-path-heading">
+      <h2 id="listing-path-heading" class="autoindex-path-heading">
+        <svg
+          viewBox={`0 0 ${folderIcon.width} ${folderIcon.height}`}
+          aria-hidden="true"
+        >
+          <g set:html={folderIcon.body} />
+        </svg>
+        <span>Index of <code id="listing-path">/</code></span>
+      </h2>
+      <div
+        class="autoindex-listing"
+        role="region"
+        aria-label="Directory entries"
+        tabindex="0"
+      >
+        <noscript>
+          <p class="autoindex-noscript">
+            浏览目录列表需要启用 JavaScript。也可以直接获取服务器返回的 JSON
+            目录列表，例如{' '}
+            <code>
+              {
+                'curl -H "Accept: application/json" https://mirrors.zju.edu.cn/debian/'
+              }
+            </code>
+            。
+          </p>
+        </noscript>
+        <p id="autoindex-message" class="autoindex-message" role="status"></p>
+        <table id="autoindex-list" hidden>
+          <thead>
+            <tr>
+              <th scope="col" data-sort-key="name">
+                <button type="button" class="autoindex-sort">
+                  File Name
+                </button>
+              </th>
+              <th scope="col" data-sort-key="size">
+                <button type="button" class="autoindex-sort">
+                  File Size
+                </button>
+              </th>
+              <th scope="col" data-sort-key="mtime">
+                <button type="button" class="autoindex-sort">Date</button>
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </article>
+
+  <script is:inline>
+    (() => {
+      const create = (tag, attributes = {}, text) => {
+        const node = document.createElement(tag);
+        for (const [name, value] of Object.entries(attributes))
+          node.setAttribute(name, value);
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+
+      const message = document.querySelector('#autoindex-message');
+      const table = document.querySelector('#autoindex-list');
+      const tableBody = table?.querySelector('tbody');
+
+      const mirrorId = location.pathname.split('/').filter(Boolean)[0] || '';
+      const normalizedMirrorId = mirrorId.toLocaleLowerCase();
+      const title = document.querySelector('#listing-title');
+      const path = document.querySelector('#listing-path');
+      if (title && mirrorId) title.textContent = mirrorId;
+      if (path) path.textContent = location.pathname;
+
+      const watermark = document.querySelector('#autoindex-watermark');
+      const icon = watermark?.querySelector(
+        `[data-mirror-icon="${CSS.escape(normalizedMirrorId)}"]`
+      );
+      if (icon) icon.classList.add('is-visible');
+
+      const stateByCode = {
+        S: ['ready', 'SUCCEEDED'],
+        D: ['pending', 'PENDING'],
+        Y: ['syncing', 'SYNCING'],
+        F: ['failed', 'FAILED'],
+        P: ['paused', 'PAUSED'],
+        C: ['cached', 'CACHED'],
+        R: ['proxied', 'PROXIED'],
+        U: ['unknown', 'UNKNOWN'],
+      };
+      const relativeTime = (timestamp) => {
+        const seconds = timestamp - Math.floor(Date.now() / 1000);
+        const formatter = new Intl.RelativeTimeFormat(navigator.language, {
+          numeric: 'auto',
+        });
+        const ranges = [
+          ['year', 31_536_000],
+          ['month', 2_592_000],
+          ['day', 86_400],
+          ['hour', 3_600],
+          ['minute', 60],
+        ];
+        for (const [unit, divisor] of ranges) {
+          if (Math.abs(seconds) >= divisor)
+            return formatter.format(Math.round(seconds / divisor), unit);
+        }
+        return formatter.format(seconds, 'second');
+      };
+
+      fetch('/mirrorz.json', { signal: AbortSignal.timeout(4000) })
+        .then((response) => (response.ok ? response.json() : Promise.reject()))
+        .then((data) => {
+          const item = data.mirrors?.find((candidate) => {
+            const pathId = (() => {
+              try {
+                return new URL(candidate.url, data.site.url).pathname
+                  .split('/')
+                  .filter(Boolean)[0];
+              } catch {
+                return '';
+              }
+            })();
+            return [candidate.cname, pathId].some(
+              (value) => value?.toLocaleLowerCase() === normalizedMirrorId
+            );
+          });
+          if (!item) return;
+
+          if (title) {
+            title.textContent = item.cname;
+            document.title = `${item.cname} | ZJU Mirror`;
+          }
+          const statusTokens = item.status?.match(/[A-Z](?:\d+)?/g) || [];
+          const mainStatus = statusTokens.find((token) =>
+            'SDYFPCRU'.includes(token[0])
+          );
+          const disabled = data.site?.disable || item.disable;
+          const [state, label] = disabled
+            ? ['disabled', 'DISABLED']
+            : stateByCode[mainStatus?.[0]] || stateByCode.U;
+          const status = document.querySelector('#mirror-status');
+          if (status) {
+            status.className = `status status-${state}`;
+            status.textContent = label;
+          }
+
+          const oldSuccess = statusTokens.find((token) => token[0] === 'O');
+          const timestampToken =
+            ['Y', 'F'].includes(mainStatus?.[0]) && oldSuccess
+              ? oldSuccess
+              : mainStatus;
+          const timestamp = Number(timestampToken?.slice(1));
+          const updated = document.querySelector('#mirror-updated');
+          if (
+            updated &&
+            Number.isFinite(timestamp) &&
+            timestamp > 0 &&
+            !['cached', 'proxied'].includes(state)
+          ) {
+            const date = new Date(timestamp * 1000);
+            updated.textContent = `最近更新于 ${date.toLocaleString('zh-CN')} (${relativeTime(timestamp)})`;
+            updated.hidden = false;
+          }
+        })
+        .catch(() => {});
+
+      const entries = [];
+      let sortKey = 'name';
+      let sortDirection = 'asc';
+
+      // Codepoint order: deterministic for ASCII mirror paths and consistent
+      // with nginx's byte-order directory sorting.
+      const byName = (left, right) =>
+        left.name < right.name ? -1 : left.name > right.name ? 1 : 0;
+      const directoryFirst = (left, right) =>
+        Number(right.type === 'directory') - Number(left.type === 'directory');
+      const comparators = {
+        name: byName,
+        size: (left, right) => (left.size ?? 0) - (right.size ?? 0),
+        mtime: (left, right) =>
+          (Date.parse(left.mtime) || 0) - (Date.parse(right.mtime) || 0),
+      };
+
+      const compareEntries = (left, right) =>
+        directoryFirst(left, right) ||
+        (sortDirection === 'desc' ? -1 : 1) *
+          (comparators[sortKey](left, right) || byName(left, right));
+
+      const SIZE_UNITS = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+      const formatSize = (bytes) => {
+        let value = bytes;
+        let unit = 0;
+        while (value >= 1024 && unit < SIZE_UNITS.length - 1) {
+          value /= 1024;
+          unit += 1;
+        }
+        const digits = unit === 0 || value >= 100 ? 0 : value >= 10 ? 1 : 2;
+        return `${value.toFixed(digits)} ${SIZE_UNITS[unit]}`;
+      };
+
+      // Entry mtimes are GMT strings from nginx autoindex; they are rendered
+      // in the visitor's local time zone.
+      const dateFormat = new Intl.DateTimeFormat('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23',
+      });
+      const formatDate = (value) => {
+        if (!value) return '-';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? '-' : dateFormat.format(date);
+      };
+
+      const renderEntryRow = (entry) => {
+        const row = document.createElement('tr');
+        const nameCell = document.createElement('td');
+        const link = document.createElement('a');
+        link.href = `${encodeURIComponent(entry.name)}${
+          entry.type === 'directory' ? '/' : ''
+        }`;
+        link.textContent =
+          entry.type === 'directory' ? `${entry.name}/` : entry.name;
+        nameCell.appendChild(link);
+        const hasSize = entry.type !== 'directory' && entry.size !== undefined;
+        const sizeCell = create(
+          'td',
+          { class: 'size' },
+          hasSize ? formatSize(entry.size) : '-'
+        );
+        if (hasSize)
+          sizeCell.title = `${entry.size.toLocaleString('zh-CN')} 字节`;
+        const dateCell = create(
+          'td',
+          { class: 'date' },
+          formatDate(entry.mtime)
+        );
+        if (entry.mtime) dateCell.title = entry.mtime;
+        row.append(nameCell, sizeCell, dateCell);
+        return row;
+      };
+
+      const buildParentRow = () => {
+        const row = create('tr', { class: 'autoindex-parent' });
+        const nameCell = document.createElement('td');
+        nameCell.appendChild(create('a', { href: '../' }, 'Parent directory/'));
+        row.append(
+          nameCell,
+          create('td', { class: 'size' }, '-'),
+          create('td', { class: 'date' }, '-')
+        );
+        return row;
+      };
+
+      const renderList = () => {
+        if (!table || !tableBody || !message) return;
+        const visible = entries.slice().sort(compareEntries);
+        const rows = [];
+        if (location.pathname !== '/') rows.push(buildParentRow());
+        for (const entry of visible) rows.push(renderEntryRow(entry));
+        tableBody.replaceChildren(...rows);
+        const hasVisibleEntries = visible.length > 0;
+        table.hidden = !hasVisibleEntries && location.pathname === '/';
+        message.hidden = hasVisibleEntries;
+        if (!hasVisibleEntries) message.textContent = '此目录为空。';
+        for (const header of table.querySelectorAll('th[data-sort-key]')) {
+          if (header.getAttribute('data-sort-key') === sortKey)
+            header.setAttribute(
+              'aria-sort',
+              sortDirection === 'asc' ? 'ascending' : 'descending'
+            );
+          else header.setAttribute('aria-sort', 'none');
+        }
+      };
+
+      for (const header of table?.querySelectorAll('th[data-sort-key]') ?? []) {
+        header.querySelector('button')?.addEventListener('click', () => {
+          const key = header.getAttribute('data-sort-key');
+          if (sortKey === key)
+            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+          else {
+            sortKey = key;
+            sortDirection = 'asc';
+          }
+          renderList();
+        });
+      }
+      const describeError = (error) => {
+        if (error instanceof DOMException && error.name === 'TimeoutError')
+          return '请求超时';
+        if (error instanceof Error && /^HTTP \d+$/.test(error.message))
+          return `服务器返回 ${error.message.slice(5)}`;
+        return '响应不是有效的目录列表 JSON';
+      };
+
+      const loadEntries = async () => {
+        if (!table || !tableBody || !message) return;
+        message.hidden = false;
+        message.textContent = '正在加载目录列表…';
+        try {
+          // Origin NGINX serves autoindex JSON for non-HTML Accept values;
+          // the explicit Accept keeps the request on that branch.
+          const response = await fetch(location.pathname, {
+            headers: { Accept: 'application/json' },
+            signal: AbortSignal.timeout(10_000),
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          if (!Array.isArray(payload)) throw new Error('invalid payload');
+          entries.length = 0;
+          for (const item of payload) {
+            if (!item || typeof item.name !== 'string') continue;
+            entries.push({
+              name: item.name,
+              type:
+                item.type === 'directory'
+                  ? 'directory'
+                  : item.type === 'file'
+                    ? 'file'
+                    : 'other',
+              size: typeof item.size === 'number' ? item.size : undefined,
+              mtime: typeof item.mtime === 'string' ? item.mtime : '',
+            });
+          }
+          renderList();
+        } catch (error) {
+          table.hidden = true;
+          message.hidden = false;
+          message.textContent = `目录列表加载失败：${describeError(error)}`;
+        }
+      };
+      loadEntries();
+    })();
+  </script>
+</SiteLayout>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title description">
+  <title id="title">新镜像站基础设施</title>
+  <desc id="description">三台存储节点和两台业务节点通过万兆交换机连接互联网。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+      <path d="M0 0 8 4 0 8Z" fill="#456c99" />
+    </marker>
+    <style>
+      text { font-family: Arial, "Noto Sans CJK SC", sans-serif; fill: #17202b; text-anchor: middle }
+      .title { font-size: 28px; font-weight: 700 }
+      .meta { font-size: 14px; fill: #5b6570 }
+      .node { fill: #f7f9fc; stroke: #6d88a8; stroke-width: 2 }
+      .node-title { font-size: 16px; font-weight: 700 }
+      .node-detail { font-size: 12px; fill: #465261 }
+      .link { fill: none; stroke: #456c99; stroke-width: 2; marker-start: url(#arrow); marker-end: url(#arrow) }
+      .link-label { font-size: 12px; fill: #456c99; paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round }
+      .cloud { fill: #e7f1fb; stroke: #456c99; stroke-width: 2 }
+    </style>
+  </defs>
+
+  <rect width="720" height="520" fill="#fff" />
+
+  <text class="title" x="360" y="38">新镜像站基础设施</text>
+  <text class="meta" x="360" y="66">位置：浙江大学紫金港校区和同苑 5 幢化四 221 G6 机柜</text>
+  <text class="meta" x="360" y="89">上次更新：2025 年 04 月 19 日</text>
+
+  <rect class="node" x="115" y="125" width="150" height="68" rx="4" />
+  <text class="node-title" x="190" y="151">业务节点</text>
+  <text class="node-detail" x="190" y="176">H3C R4900 G3</text>
+
+  <rect class="node" x="455" y="125" width="150" height="68" rx="4" />
+  <text class="node-title" x="530" y="151">业务节点</text>
+  <text class="node-detail" x="530" y="176">H3C R4900 G3</text>
+
+  <rect class="node" x="265" y="242" width="190" height="68" rx="4" />
+  <text class="node-title" x="360" y="269">万兆交换机</text>
+  <text class="node-detail" x="360" y="294">H3C S6520X-24ST-SI</text>
+
+  <path class="cloud" d="M631 245c-4-26 17-48 43-45 12-26 53-22 59 8 27-4 42 31 20 46 11 28-26 48-48 30-21 23-59 10-61-18-8-3-12-11-13-21Z" transform="translate(-42 0)" />
+  <text class="node-title" x="661" y="252">互联网</text>
+
+  <rect class="node" x="25" y="395" width="190" height="96" rx="4" />
+  <text class="node-title" x="120" y="422">存储节点</text>
+  <text class="node-detail" x="120" y="446">H3C X10536 G3</text>
+  <text class="node-detail" x="120" y="466">30 × 8TB HDD · 6 × 480GB SSD</text>
+
+  <rect class="node" x="265" y="395" width="190" height="96" rx="4" />
+  <text class="node-title" x="360" y="422">存储节点</text>
+  <text class="node-detail" x="360" y="446">H3C X10536 G3</text>
+  <text class="node-detail" x="360" y="466">30 × 8TB HDD · 6 × 480GB SSD</text>
+
+  <rect class="node" x="505" y="395" width="190" height="96" rx="4" />
+  <text class="node-title" x="600" y="422">存储节点</text>
+  <text class="node-detail" x="600" y="446">H3C X10536 G3</text>
+  <text class="node-detail" x="600" y="466">30 × 8TB HDD · 6 × 480GB SSD</text>
+
+  <path class="link" d="M240 193 316 242" />
+  <text class="link-label" x="259" y="223">2 × 10G SFP</text>
+  <path class="link" d="M480 193 404 242" />
+  <text class="link-label" x="461" y="223">2 × 10G SFP</text>
+  <path class="link" d="M455 276 586 252" />
+  <text class="link-label" x="523" y="252">10G SFP</text>
+  <path class="link" d="M307 310 164 395" />
+  <text class="link-label" x="214" y="349">4 × 10G SFP</text>
+  <path class="link" d="M360 310 360 395" />
+  <text class="link-label" x="411" y="356">4 × 10G SFP</text>
+  <path class="link" d="M413 310 556 395" />
+  <text class="link-label" x="506" y="349">4 × 10G SFP</text>
+</svg>

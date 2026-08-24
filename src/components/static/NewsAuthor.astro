@@ -1,0 +1,58 @@
+---
+interface Props {
+  username: string;
+}
+
+const { username } = Astro.props;
+const profileUrl = `https://github.com/${username}`;
+// Use the avatar CDN directly: github.com avatar URLs issue an explicitly
+// uncacheable redirect before reaching this browser-cacheable response.
+const avatarUrl = `https://avatars.githubusercontent.com/${username}?s=64`;
+---
+
+<a
+  class="article-meta-item author-link"
+  href={profileUrl}
+  rel="author external"
+>
+  <img
+    src={avatarUrl}
+    alt=""
+    width="28"
+    height="28"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    referrerpolicy="no-referrer"
+  />
+  <span>@{username}</span>
+</a>
+
+<style>
+  .author-link {
+    gap: 0.4375rem;
+    color: var(--metadata);
+    text-decoration: none;
+  }
+
+  .author-link:hover,
+  .author-link:focus-visible {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+
+  .author-link:focus-visible {
+    border-radius: var(--radius);
+    outline: 2px solid var(--primary);
+    outline-offset: 0.1875rem;
+  }
+
+  img {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--metadata) 22%, transparent);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+</style>

@@ -1,0 +1,234 @@
+---
+import { getCollection } from 'astro:content';
+import archlinuxIcon from '@iconify/icons-logos/archlinux';
+import debianIcon from '@iconify/icons-logos/debian';
+import pythonIcon from '@iconify/icons-logos/python';
+import anacondaIcon from '@iconify/icons-simple-icons/anaconda';
+import fedoraIcon from '@iconify/icons-simple-icons/fedora';
+import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
+
+import MirrorExplorer from '../react/MirrorExplorer';
+import { searchIcon } from '../../lib/ui-icons';
+import { loadMirrorDocsMapping } from '../../lib/mirrorz-docs/loader';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+interface Props {
+  locale: 'zh' | 'en';
+}
+
+interface StaticIcon {
+  width: number;
+  height: number;
+  body: string;
+}
+
+function staticIcon(value: unknown): StaticIcon {
+  const module = value as { default?: StaticIcon };
+  return module.default ?? (value as StaticIcon);
+}
+
+const { locale } = Astro.props;
+const announcements = (
+  await getCollection(
+    'announcements',
+    (entry) => entry.id.startsWith(`${locale}/`) && !entry.data.draft
+  )
+).sort((left, right) => right.data.date.getTime() - left.data.date.getTime());
+const announcementItems = announcements.map((entry) => {
+  const slug = entry.id
+    .split('/')
+    .at(-1)
+    ?.replace(/\.mdx?$/, '');
+  return {
+    href: locale === 'zh' ? `/news/${slug}/` : `/en/news/${slug}/`,
+    title: entry.data.title,
+    date: entry.data.date,
+  };
+});
+const visibleAnnouncements = announcementItems.slice(0, 2);
+const additionalAnnouncements = announcementItems.slice(2);
+const mapping = await loadMirrorDocsMapping();
+const docsByMirrorId = Object.fromEntries(
+  Object.entries(mapping).map(([mirrorId, value]) => [mirrorId, value.docsId])
+);
+const isZh = locale === 'zh';
+const quickLinks = [
+  {
+    name: 'Ubuntu',
+    id: 'ubuntu',
+    description: isZh ? 'Ubuntu 软件包镜像' : 'Ubuntu package mirror',
+    icon: staticIcon(ubuntuIcon),
+    color: '#e95420',
+  },
+  {
+    name: 'PyPI',
+    id: 'pypi',
+    description: isZh
+      ? 'Python 第三方软件包索引'
+      : 'Third-party Python package index',
+    icon: staticIcon(pythonIcon),
+  },
+  {
+    name: 'Debian',
+    id: 'debian',
+    description: isZh ? 'Debian 发行版软件包' : 'Debian distribution packages',
+    icon: staticIcon(debianIcon),
+  },
+  {
+    name: 'Arch Linux',
+    id: 'archlinux',
+    description: isZh ? 'Arch Linux 软件包' : 'Arch Linux packages',
+    icon: staticIcon(archlinuxIcon),
+  },
+  {
+    name: 'Anaconda',
+    id: 'anaconda',
+    description: isZh ? '科学计算工具包' : 'Scientific computing toolkit',
+    icon: staticIcon(anacondaIcon),
+    color: '#3ba740',
+  },
+  {
+    name: 'Fedora',
+    id: 'fedora',
+    description: isZh ? 'Fedora 发行版软件包' : 'Fedora distribution packages',
+    icon: staticIcon(fedoraIcon),
+    color: '#51a2da',
+  },
+];
+---
+
+<SiteLayout lang={locale} canonicalPath={isZh ? '/' : '/en/'} home>
+  <div class="page-shell">
+    <label class="search-field homepage-search">
+      <span class="search-icon" aria-hidden="true">
+        <svg
+          viewBox={`0 0 ${searchIcon.width} ${searchIcon.height}`}
+          focusable="false"
+        >
+          <g set:html={searchIcon.body} />
+        </svg>
+      </span>
+      <span class="visually-hidden">
+        {isZh ? '搜索镜像' : 'Search mirrors'}
+      </span>
+      <input
+        id="mirror-search"
+        name="mirror-search"
+        type="search"
+        placeholder={isZh
+          ? '今天你想来点镜像吗？'
+          : 'What mirror are you looking for today?'}
+        aria-controls="all-mirrors"
+        autocomplete="off"
+      />
+      <kbd>/</kbd>
+    </label>
+
+    <section
+      id="announcements"
+      class="section-block"
+      aria-labelledby="announcements-heading"
+      data-hide-during-search
+    >
+      <h2 id="announcements-heading">
+        {isZh ? '近期更新' : 'Latest Updates'}
+      </h2>
+      {
+        announcementItems.length ? (
+          <div class="announcement-list">
+            {visibleAnnouncements.map((item) => (
+              <div class="announcement-item">
+                <a href={item.href}>{item.title}</a>
+                <span aria-hidden="true">&nbsp;-&nbsp;</span>
+                <time datetime={item.date.toISOString()} data-localize-date>
+                  {item.date.toISOString().slice(0, 10)}
+                </time>
+              </div>
+            ))}
+            {additionalAnnouncements.length ? (
+              <details class="announcement-more">
+                <summary
+                  aria-label={
+                    isZh ? '查看更多近期更新' : 'View more latest updates'
+                  }
+                >
+                  {isZh ? '查看更多' : 'View more'}
+                </summary>
+                <div class="announcement-list">
+                  {additionalAnnouncements.map((item) => (
+                    <div class="announcement-item">
+                      <a href={item.href}>{item.title}</a>
+                      <span aria-hidden="true">&nbsp;-&nbsp;</span>
+                      <time
+                        datetime={item.date.toISOString()}
+                        data-localize-date
+                      >
+                        {item.date.toISOString().slice(0, 10)}
+                      </time>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ) : null}
+          </div>
+        ) : (
+          <p>
+            {isZh
+              ? '当前语言暂无公告。'
+              : 'No announcements are available in this language.'}
+          </p>
+        )
+      }
+    </section>
+
+    <section
+      class="section-block"
+      aria-labelledby="common-mirrors-heading"
+      data-hide-during-search
+    >
+      <h2 id="common-mirrors-heading">
+        {isZh ? '常用镜像' : 'Popular Mirrors'}
+      </h2>
+      <div class="quick-links">
+        {
+          quickLinks.map((item) => (
+            <a
+              class="quick-link"
+              href={`${isZh ? '' : '/en'}/docs/${item.id}/`}
+            >
+              <span
+                class="quick-link-icon"
+                aria-hidden="true"
+                style={item.color ? `color: ${item.color}` : undefined}
+              >
+                <svg
+                  viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
+                  focusable="false"
+                >
+                  <g set:html={item.icon.body} />
+                </svg>
+              </span>
+              <strong>{item.name}</strong>
+              <span>{item.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <noscript>
+      <p class="callout">
+        {
+          isZh
+            ? 'JavaScript 已禁用。常用镜像、公告和帮助文档仍可访问；实时状态和搜索需要 JavaScript。'
+            : 'JavaScript is disabled. Common mirrors, announcements, and guides remain available; live status and search require JavaScript.'
+        }
+      </p>
+    </noscript>
+    <MirrorExplorer
+      client:load
+      locale={locale}
+      docsByMirrorId={docsByMirrorId}
+    />
+  </div>
+</SiteLayout>
