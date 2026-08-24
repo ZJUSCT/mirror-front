@@ -1,0 +1,213 @@
+---
+import falconLogo from '../../resource/icons/zju-falcon.svg?url';
+import favicon from '../../resource/icons/favicon.svg?url';
+import zjuLogoDark from '../../resource/icons/zju-dark.svg?url';
+import zjuLogo from '../../resource/icons/zju.svg?url';
+import zjusctLogoDark from '../../resource/icons/zjusct-dark.svg?url';
+import zjusctLogo from '../../resource/icons/zjusct.svg?url';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import NetworkBadge from '../components/react/NetworkBadge';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: 'zh' | 'en';
+  canonicalPath?: string;
+  alternatePath?: string;
+  home?: boolean;
+}
+
+const {
+  title = 'ZJU Mirror',
+  description = 'Zhejiang University open-source mirror site',
+  lang = 'zh',
+  canonicalPath = Astro.url.pathname,
+  alternatePath: configuredAlternatePath,
+  home = false,
+} = Astro.props;
+const fullTitle = title === 'ZJU Mirror' ? title : `${title} · ZJU Mirror`;
+const alternatePath =
+  configuredAlternatePath ??
+  (lang === 'zh'
+    ? canonicalPath === '/'
+      ? '/en/'
+      : `/en${canonicalPath}`
+    : canonicalPath.replace(/^\/en(?=\/|$)/, '') || '/');
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1d69b5" />
+    <link rel="icon" href={favicon} />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
+    <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem('zju-mirror:theme');
+        } catch {}
+        const preferred = matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
+        document.documentElement.dataset.theme = saved || preferred;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">
+      {lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}
+    </a>
+    <header class:list={['site-header', { 'site-header-home': home }]}>
+      <a class="brand" href={lang === 'zh' ? '/' : '/en/'}>
+        <img src={falconLogo} alt="" width="72" height="72" />
+        <span class="brand-copy">
+          {
+            home ? (
+              <h1 class="brand-title">ZJU Mirror</h1>
+            ) : (
+              <span class="brand-title">ZJU Mirror</span>
+            )
+          }
+          <span class="brand-subtitle">
+            <span>
+              {
+                lang === 'zh'
+                  ? '浙江大学开源软件镜像站'
+                  : 'Open Source Software Mirror Site of Zhejiang University'
+              }
+            </span>
+            {home && <NetworkBadge client:load locale={lang} />}
+          </span>
+        </span>
+      </a>
+      <nav aria-label={lang === 'zh' ? '主要导航' : 'Primary'}>
+        <a href={lang === 'zh' ? '/#announcements' : '/en/#announcements'}>
+          {lang === 'zh' ? '公告' : 'News'}
+        </a>
+        <a href="https://github.com/ZJUSCT/mirror-issues">
+          {lang === 'zh' ? '反馈' : 'Feedback'}
+        </a>
+        <a href={alternatePath} hreflang={lang === 'zh' ? 'en' : 'zh'}>
+          {lang === 'zh' ? 'English' : '中文'}
+        </a>
+        <button
+          id="theme-toggle"
+          class="icon-button"
+          type="button"
+          aria-label={lang === 'zh' ? '切换配色' : 'Toggle color theme'}
+        >
+          ◐
+        </button>
+      </nav>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="footer-about">
+        <p>
+          {
+            lang === 'zh'
+              ? '浙江大学开源软件镜像站是一个致力于普及开源软件，方便校内外用户高效访问开源项目各种资源的非盈利计划。'
+              : 'ZJU Mirror is a non-profit program that promotes open-source software and provides efficient access to open-source resources.'
+          }
+        </p>
+        <p>
+          {
+            lang === 'zh'
+              ? '本站服务于教育和科学研究，倡导自由、平等、协作与共享。'
+              : 'The service supports education and scientific research in the spirit of freedom, equality, collaboration, and sharing.'
+          }
+        </p>
+        <p>
+          <a href="https://github.com/ZJUSCT/mirror-issues">
+            {
+              lang === 'zh'
+                ? '问题反馈与镜像请求（GitHub）'
+                : 'Issues and mirror requests (GitHub)'
+            }
+          </a>
+        </p>
+        <p>
+          {
+            lang === 'zh'
+              ? '根据相关法律法规，本站不对欧盟用户提供服务。'
+              : 'According to applicable laws and regulations, this site does not provide services to users in the European Union.'
+          }
+        </p>
+      </div>
+      <div class="footer-columns">
+        <section>
+          <h2>{lang === 'zh' ? '关于我们' : 'About us'}</h2>
+          <a href="mailto:mirrors@zju.edu.cn">Email</a>
+          <a href="https://github.com/ZJUSCT">GitHub</a>
+          <a href="https://www.zjusct.io/">Blog</a>
+        </section>
+        <section>
+          <h2>{lang === 'zh' ? '特别鸣谢' : 'Special thanks'}</h2>
+          <a href="https://zuits.zju.edu.cn/">
+            {
+              lang === 'zh'
+                ? '浙江大学信息技术中心'
+                : 'ZJU Information Technology Center'
+            }
+          </a>
+          <a href="https://tuna.moe/">
+            {
+              lang === 'zh'
+                ? '清华大学 TUNA 协会'
+                : 'TUNA Association at Tsinghua University'
+            }
+          </a>
+          <a href="https://mirrorz.org/"
+            >{lang === 'zh' ? 'MirrorZ 镜像站项目' : 'The MirrorZ Project'}</a
+          >
+        </section>
+      </div>
+      <div
+        class="footer-logos"
+        aria-label={lang === 'zh' ? '合作伙伴' : 'Partners'}
+      >
+        <a href="https://zuits.zju.edu.cn/">
+          <img
+            class="logo-light"
+            src={zjuLogo}
+            alt={lang === 'zh'
+              ? '浙江大学信息技术中心'
+              : 'ZJU Information Technology Center'}
+          />
+          <img
+            class="logo-dark"
+            src={zjuLogoDark}
+            alt={lang === 'zh'
+              ? '浙江大学信息技术中心'
+              : 'ZJU Information Technology Center'}
+          />
+        </a>
+        <a href="https://www.zjusct.io/">
+          <img class="logo-light" src={zjusctLogo} alt="ZJUSCT" />
+          <img class="logo-dark" src={zjusctLogoDark} alt="ZJUSCT" />
+        </a>
+      </div>
+    </footer>
+    <script is:inline>
+      document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+        const next =
+          document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        try {
+          localStorage.setItem('zju-mirror:theme', next);
+        } catch {}
+      });
+    </script>
+  </body>
+</html>

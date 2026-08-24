@@ -1,0 +1,93 @@
+[
+  {
+    "id": "syncing-mirror",
+    "url": "/syncing/",
+    "name": { "zh": "同步中", "en": "Syncing" },
+    "desc": { "zh": "同步中镜像", "en": "A syncing mirror" },
+    "upstream": "rsync://upstream.example.invalid/syncing/",
+    "size": 1024,
+    "status": "syncing",
+    "lastAttempt": 1787544000,
+    "nextScheduled": 1787547600,
+    "lastFailure": -62135596800,
+    "lastSuccess": 1787544060
+  },
+  {
+    "id": "ready-mirror",
+    "url": "/ready/",
+    "name": { "zh": "就绪", "en": "Ready" },
+    "desc": { "zh": "就绪镜像", "en": "A ready mirror" },
+    "upstream": "https://upstream.example.invalid/ready/",
+    "size": 2048,
+    "status": "succeeded",
+    "lastAttempt": 1787544000,
+    "nextScheduled": 1787547600,
+    "lastFailure": 0,
+    "lastSuccess": 1787544060
+  },
+  {
+    "id": "pending-mirror",
+    "url": "/pending/",
+    "name": { "zh": "等待中" },
+    "desc": { "zh": "等待中的镜像" },
+    "upstream": "",
+    "size": 0,
+    "status": "pending",
+    "lastAttempt": 0,
+    "nextScheduled": 1787547600,
+    "lastFailure": 0,
+    "lastSuccess": 0
+  },
+  {
+    "id": "failed-mirror",
+    "url": "/failed/",
+    "name": { "en": "Failed" },
+    "desc": { "en": "A failed mirror" },
+    "upstream": "https://upstream.example.invalid/failed/",
+    "size": 4096,
+    "status": "failed",
+    "lastAttempt": 1787544000,
+    "nextScheduled": 1787547600,
+    "lastFailure": 1787544010,
+    "lastSuccess": 1787540000
+  },
+  {
+    "id": "paused-mirror",
+    "url": "/paused/",
+    "name": { "zh": "已暂停", "en": "Paused" },
+    "desc": { "zh": "暂停的镜像", "en": "A paused mirror" },
+    "upstream": "",
+    "size": 512,
+    "status": "paused",
+    "lastAttempt": 1787544000,
+    "nextScheduled": 0,
+    "lastFailure": 0,
+    "lastSuccess": 1787540000
+  },
+  {
+    "id": "cached-mirror",
+    "url": "/cached/",
+    "name": { "zh": "缓存", "en": "Cached" },
+    "desc": { "zh": "缓存镜像", "en": "A cached mirror" },
+    "upstream": "https://upstream.example.invalid/cached/",
+    "size": 8192,
+    "status": "cached",
+    "lastAttempt": 1787544000,
+    "nextScheduled": 1787547600,
+    "lastFailure": 0,
+    "lastSuccess": 1787540000
+  },
+  {
+    "id": "unknown-mirror",
+    "url": "/unknown/",
+    "name": { "zh": "未知", "en": "Unknown" },
+    "desc": { "zh": "未知状态", "en": "Unknown state" },
+    "upstream": "",
+    "size": 0,
+    "status": "unknown",
+    "lastAttempt": 0,
+    "nextScheduled": 0,
+    "lastFailure": 0,
+    "lastSuccess": 0
+  }
+]

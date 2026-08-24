@@ -1,0 +1,68 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    'announcements',
+    (entry) => !entry.data.draft
+  );
+  const englishSlugs = new Set(
+    entries
+      .filter((entry) => entry.id.startsWith('en/'))
+      .map((entry) =>
+        entry.id
+          .split('/')
+          .at(-1)
+          ?.replace(/\.mdx?$/, '')
+      )
+  );
+  return entries
+    .filter((entry) => entry.id.startsWith('zh/'))
+    .map((entry) => {
+      const slug = entry.id
+        .split('/')
+        .at(-1)
+        ?.replace(/\.mdx?$/, '');
+      return {
+        params: { slug },
+        props: {
+          entry,
+          alternatePath: englishSlugs.has(slug) ? `/en/news/${slug}/` : '/en/',
+        },
+      };
+    });
+}
+
+const { entry, alternatePath } = Astro.props as {
+  entry: CollectionEntry<'announcements'>;
+  alternatePath: string;
+};
+const { Content } = await render(entry);
+const slug = entry.id
+  .split('/')
+  .at(-1)
+  ?.replace(/\.mdx?$/, '');
+---
+
+<SiteLayout
+  title={entry.data.title}
+  lang="zh"
+  canonicalPath={`/news/${slug}/`}
+  alternatePath={alternatePath}
+>
+  <div class="page-shell">
+    <div class="content-panel">
+      <p class="eyebrow">Announcement</p>
+      <h1 class="page-title">{entry.data.title}</h1>
+      <p class="page-meta">
+        <time datetime={entry.data.date.toISOString()}>
+          {entry.data.date.toLocaleDateString('zh-CN')}
+        </time>
+        · {entry.data.author}
+      </p>
+      <article class="prose"><Content /></article>
+    </div>
+  </div>
+</SiteLayout>

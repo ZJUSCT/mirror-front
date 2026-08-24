@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrors.zju.edu.cn/schemas/frontend-mirrors-v1.schema.json",
+  "title": "ZJU Mirror frontend projection v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "items"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/mirror" }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zh", "en"],
+      "properties": {
+        "zh": { "type": "string" },
+        "en": { "type": "string" }
+      }
+    },
+    "nullableDateTime": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "mirror": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "description",
+        "dataUrl",
+        "upstream",
+        "mode",
+        "state",
+        "sizeBytes",
+        "lastAttemptAt",
+        "lastSucceededAt",
+        "lastFailedAt",
+        "nextScheduledAt",
+        "documentation"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "displayName": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "dataUrl": { "type": "string", "format": "uri" },
+        "upstream": { "type": "string" },
+        "mode": { "enum": ["sync", "cache", "unknown"] },
+        "state": {
+          "enum": [
+            "ready",
+            "syncing",
+            "pending",
+            "failed",
+            "paused",
+            "cached",
+            "unknown"
+          ]
+        },
+        "sizeBytes": { "type": "number", "minimum": 0 },
+        "lastAttemptAt": { "$ref": "#/$defs/nullableDateTime" },
+        "lastSucceededAt": { "$ref": "#/$defs/nullableDateTime" },
+        "lastFailedAt": { "$ref": "#/$defs/nullableDateTime" },
+        "nextScheduledAt": { "$ref": "#/$defs/nullableDateTime" },
+        "documentation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "available"],
+          "properties": {
+            "id": { "type": ["string", "null"] },
+            "available": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}

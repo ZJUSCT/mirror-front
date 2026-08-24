@@ -1,3 +1,8 @@
+.astro/
 .cache/
+.git
 node_modules/
+dist/
+playwright-report/
 public/
+test-results/

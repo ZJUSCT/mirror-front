@@ -1,0 +1,123 @@
+---
+import MirrorzDocument from '../../../components/react/MirrorzDocument';
+import {
+  legacyGuideRoutes,
+  type LegacyGuideRoute,
+} from '../../../data/legacy-guide-routes';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import {
+  loadMirrorDocsMapping,
+  loadMirrorzDocument,
+} from '../../../lib/mirrorz-docs/loader';
+import type {
+  MirrorDocsMapping,
+  MirrorzDocument as MirrorzDocumentData,
+} from '../../../lib/mirrorz-docs/types';
+
+export async function getStaticPaths() {
+  const mapping = await loadMirrorDocsMapping();
+  const routes = [
+    ...new Set([...Object.keys(mapping), ...Object.keys(legacyGuideRoutes)]),
+  ].sort();
+  return Promise.all(
+    routes.map(async (id) => {
+      const current = mapping[id] ?? null;
+      return {
+        params: { id },
+        props: {
+          id,
+          current,
+          document: current?.docsId ? await loadMirrorzDocument(id) : null,
+          legacy: legacyGuideRoutes[id] ?? null,
+        },
+      };
+    })
+  );
+}
+
+const { id, current, document, legacy } = Astro.props as {
+  id: string;
+  current: MirrorDocsMapping | null;
+  document: MirrorzDocumentData | null;
+  legacy: LegacyGuideRoute | null;
+};
+const title = document?.title ?? legacy?.title.en ?? id;
+const dataUrl = current
+  ? new URL(current.publicPath, 'https://mirrors.zju.edu.cn').href
+  : null;
+const actionHref = legacy?.action
+  ? legacy.action.href.startsWith('/docs/')
+    ? `/en${legacy.action.href}`
+    : legacy.action.href
+  : null;
+---
+
+<SiteLayout title={title} lang="en" canonicalPath={`/en/docs/${id}/`}>
+  <div class="page-shell">
+    <div class="content-panel">
+      {
+        document ? (
+          <>
+            <p class="eyebrow">MirrorZ Docs · pinned upstream</p>
+            <h1 class="page-title" lang="zh">
+              {document.title}
+            </h1>
+            <p class="callout">
+              This shared guide is currently available only in Chinese. Commands
+              use the Zhejiang University mirror endpoint.
+            </p>
+            <MirrorzDocument client:load document={document} locale="en" />
+            <p class="source-attribution">
+              Guide content comes from
+              <a
+                href={`https://github.com/mirrorz-org/mirrorz-docs/tree/${document.sourceCommit}/${document.docsId}`}
+              >
+                mirrorz-org/mirrorz-docs@
+                {document.sourceCommit.slice(0, 12)}
+              </a>
+              under
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                CC BY-NC-SA 4.0
+              </a>
+              .
+            </p>
+          </>
+        ) : legacy ? (
+          <>
+            <p class="eyebrow">Legacy guide</p>
+            <h1 class="page-title">{legacy.title.en}</h1>
+            <p class="callout warning">
+              This route preserves an old link; it is not a usable configuration
+              guide.
+            </p>
+            <p>{legacy.description.en}</p>
+            {legacy.action && (
+              <p>
+                <a href={actionHref}>{legacy.action.label.en}</a>
+              </p>
+            )}
+            <p>
+              <a href="/en/">Return to the ZJU Mirror homepage</a>
+            </p>
+          </>
+        ) : (
+          <>
+            <p class="eyebrow">Guide availability</p>
+            <h1 class="page-title">{id}</h1>
+            <p class="callout">No reviewed shared guide is available.</p>
+            <p>
+              This mirror remains in the current catalog. To avoid publishing
+              stale commands, the new frontend does not copy unreviewed
+              instructions from the old site.
+            </p>
+            {dataUrl && (
+              <p>
+                <a href={dataUrl}>Browse the {id} mirror files</a>
+              </p>
+            )}
+          </>
+        )
+      }
+    </div>
+  </div>
+</SiteLayout>

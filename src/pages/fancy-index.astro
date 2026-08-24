@@ -1,0 +1,187 @@
+---
+// This page is split after the Astro build. Origin NGINX inserts its generated
+// autoindex table between the two marker elements.
+---
+
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-FANCY_INDEX_SCRIPT_HASH'; connect-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Directory listing · ZJU Mirror</title>
+    <style is:inline>
+      :root {
+        color-scheme: light dark;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      body {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+        background: #f7f9fc;
+        color: #172033;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      h1 {
+        margin: 0;
+        color: #1d69b5;
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: -0.04em;
+      }
+      header a {
+        color: #1d69b5;
+      }
+      #list {
+        width: 100%;
+        border: 1px solid #dce4ef;
+        border-collapse: collapse;
+        table-layout: fixed;
+        background: #fff;
+      }
+      #list th,
+      #list td {
+        border-bottom: 1px solid #dce4ef;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        overflow-wrap: anywhere;
+      }
+      #list tbody tr:nth-child(even) {
+        background: rgba(29, 105, 181, 0.035);
+      }
+      #list tbody tr:hover {
+        background: rgba(29, 105, 181, 0.08);
+      }
+      #list a {
+        color: #1d69b5;
+        text-decoration: none;
+      }
+      .listing-meta {
+        margin-top: 1rem;
+        color: #647087;
+        font-size: 0.85rem;
+      }
+      .status {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 0.3rem 0.6rem;
+        background: #e8f4ff;
+        color: #104f8e;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0d1421;
+          color: #edf3fb;
+        }
+        #list {
+          border-color: #2d3b51;
+          background: #172133;
+        }
+        #list th,
+        #list td {
+          border-color: #2d3b51;
+        }
+        #list tbody tr:nth-child(even) {
+          background: rgba(255, 255, 255, 0.025);
+        }
+        #list tbody tr:hover {
+          background: rgba(117, 184, 255, 0.08);
+        }
+        #list a,
+        h1,
+        header a {
+          color: #75b8ff;
+        }
+        .listing-meta {
+          color: #aab8ca;
+        }
+      }
+      @media (max-width: 640px) {
+        #list .date,
+        #list .size {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <p>Zhejiang University · ZJUSCT</p>
+        <h1 id="listing-title">Mirror files</h1>
+      </div>
+      <a href="/">Portal</a>
+    </header>
+    <main>
+      <div id="fancy-start"></div><div id="fancy-end"></div>
+      <p class="listing-meta">
+        <span id="mirror-status" class="status">Status unavailable</span>
+      </p>
+    </main>
+    <script is:inline>
+      (() => {
+        const start = document.querySelector('#fancy-start');
+        const end = document.querySelector('#fancy-end');
+        const blocked =
+          'script, iframe, object, embed, style, link, meta, base, form, svg, math';
+        const sanitizeElement = (root) => {
+          if (root.matches(blocked)) {
+            root.remove();
+            return;
+          }
+          root.querySelectorAll(blocked).forEach((element) => element.remove());
+          [root, ...root.querySelectorAll('*')].forEach((element) => {
+            [...element.attributes].forEach((attribute) => {
+              const name = attribute.name.toLowerCase();
+              const value = attribute.value.trim();
+              if (
+                name.startsWith('on') ||
+                name === 'style' ||
+                name === 'srcdoc' ||
+                (['href', 'src', 'xlink:href', 'action', 'formaction'].includes(
+                  name
+                ) &&
+                  /^(?:javascript|data|vbscript):/i.test(value))
+              ) {
+                element.removeAttribute(attribute.name);
+              }
+            });
+          });
+        };
+        if (start && end) {
+          let candidate = start.nextSibling;
+          while (candidate && candidate !== end) {
+            const next = candidate.nextSibling;
+            if (candidate instanceof Element) sanitizeElement(candidate);
+            candidate = next;
+          }
+        }
+
+        const mirrorId = location.pathname.split('/').filter(Boolean)[0];
+        if (mirrorId)
+          document.querySelector('#listing-title').textContent = mirrorId;
+        fetch('/api/v2/mirrorgo.json', { signal: AbortSignal.timeout(4000) })
+          .then((response) =>
+            response.ok ? response.json() : Promise.reject()
+          )
+          .then((items) => {
+            const item = items.find((candidate) => candidate.id === mirrorId);
+            if (item)
+              document.querySelector('#mirror-status').textContent =
+                `Status: ${item.status}`;
+          })
+          .catch(() => {});
+      })();
+    </script>
+  </body>
+</html>

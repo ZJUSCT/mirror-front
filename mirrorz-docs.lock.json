@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/mirrorz-org/mirrorz-docs.git",
+  "commit": "50cb65f78be4e8a772c5430d7e10b072f81bebe8",
+  "contentLicense": "CC BY-NC-SA 4.0",
+  "referenceImplementation": {
+    "repository": "https://github.com/mirrorz-org/mirrorz-help.git",
+    "commit": "d3a54d6bdb4bcf645492809647d84a9a6af29994"
+  }
+}

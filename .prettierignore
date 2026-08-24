@@ -1,4 +1,7 @@
-.cache
-package.json
-package-lock.json
-public
+.astro/
+.cache/
+dist/
+node_modules/
+public/
+vendor/
+pnpm-lock.yaml

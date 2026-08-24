@@ -1,0 +1,112 @@
+---
+import MirrorzDocument from '../../components/react/MirrorzDocument';
+import {
+  legacyGuideRoutes,
+  type LegacyGuideRoute,
+} from '../../data/legacy-guide-routes';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import {
+  loadMirrorDocsMapping,
+  loadMirrorzDocument,
+} from '../../lib/mirrorz-docs/loader';
+import type {
+  MirrorDocsMapping,
+  MirrorzDocument as MirrorzDocumentData,
+} from '../../lib/mirrorz-docs/types';
+
+export async function getStaticPaths() {
+  const mapping = await loadMirrorDocsMapping();
+  const routes = [
+    ...new Set([...Object.keys(mapping), ...Object.keys(legacyGuideRoutes)]),
+  ].sort();
+  return Promise.all(
+    routes.map(async (id) => {
+      const current = mapping[id] ?? null;
+      return {
+        params: { id },
+        props: {
+          id,
+          current,
+          document: current?.docsId ? await loadMirrorzDocument(id) : null,
+          legacy: legacyGuideRoutes[id] ?? null,
+        },
+      };
+    })
+  );
+}
+
+const { id, current, document, legacy } = Astro.props as {
+  id: string;
+  current: MirrorDocsMapping | null;
+  document: MirrorzDocumentData | null;
+  legacy: LegacyGuideRoute | null;
+};
+const title = document?.title ?? legacy?.title.zh ?? id;
+const dataUrl = current
+  ? new URL(current.publicPath, 'https://mirrors.zju.edu.cn').href
+  : null;
+---
+
+<SiteLayout title={title} lang="zh" canonicalPath={`/docs/${id}/`}>
+  <div class="page-shell">
+    <div class="content-panel">
+      {
+        document ? (
+          <>
+            <p class="eyebrow">MirrorZ Docs · pinned upstream</p>
+            <h1 class="page-title">{document.title}</h1>
+            <p class="callout">
+              此共享帮助目前仅提供中文。命令中的镜像地址已固定为浙江大学镜像站。
+            </p>
+            <MirrorzDocument client:load document={document} locale="zh" />
+            <p class="source-attribution">
+              文档内容来自
+              <a
+                href={`https://github.com/mirrorz-org/mirrorz-docs/tree/${document.sourceCommit}/${document.docsId}`}
+              >
+                mirrorz-org/mirrorz-docs@
+                {document.sourceCommit.slice(0, 12)}
+              </a>
+              ，依据
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                CC BY-NC-SA 4.0
+              </a>
+              提供。
+            </p>
+          </>
+        ) : legacy ? (
+          <>
+            <p class="eyebrow">Legacy guide</p>
+            <h1 class="page-title">{legacy.title.zh}</h1>
+            <p class="callout warning">
+              该地址仅为保留旧链接，不是可用的配置帮助。
+            </p>
+            <p>{legacy.description.zh}</p>
+            {legacy.action && (
+              <p>
+                <a href={legacy.action.href}>{legacy.action.label.zh}</a>
+              </p>
+            )}
+            <p>
+              <a href="/">返回 ZJU Mirror 首页</a>
+            </p>
+          </>
+        ) : (
+          <>
+            <p class="eyebrow">Guide availability</p>
+            <h1 class="page-title">{id}</h1>
+            <p class="callout">暂无经审核的共享使用帮助。</p>
+            <p>
+              该镜像仍在当前目录中。为避免发布过时命令，新前端不会从旧页面复制未经审核的说明。
+            </p>
+            {dataUrl && (
+              <p>
+                <a href={dataUrl}>浏览 {id} 镜像文件</a>
+              </p>
+            )}
+          </>
+        )
+      }
+    </div>
+  </div>
+</SiteLayout>

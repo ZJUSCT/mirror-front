@@ -1,0 +1,15 @@
+{
+  "name": "ZJU Mirror",
+  "short_name": "ZJU Mirror",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f9fc",
+  "theme_color": "#1d69b5",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/png"
+    }
+  ]
+}
