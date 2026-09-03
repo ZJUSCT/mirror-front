@@ -41,7 +41,7 @@ import { folderIcon } from '../../lib/ui-icons';
 
 interface Props {
   mirrorId: string;
-  fallbackTitle: string;
+  title: string;
   fallbackDataUrl?: string | null;
   federatedDataUrl?: string | null;
   locale: 'zh' | 'en';
@@ -172,7 +172,7 @@ function relativeTimestamp(value: number, locale: 'zh' | 'en'): string {
 
 export default function GuideHero({
   mirrorId,
-  fallbackTitle,
+  title,
   fallbackDataUrl = null,
   federatedDataUrl = null,
   locale,
@@ -232,7 +232,7 @@ export default function GuideHero({
 
   return (
     <section className="article-hero guide-hero">
-      <h1 className="article-title">{mirror?.cname ?? fallbackTitle}</h1>
+      <h1 className="article-title">{title}</h1>
       <div className="guide-status-row">
         <span className={`status status-${state}`}>{statusLabels[state]}</span>
         {timestamp ? (

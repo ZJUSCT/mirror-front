@@ -53,12 +53,7 @@ const alternatePath =
       ? '/en/'
       : `/en${canonicalPath}`
     : canonicalPath.replace(/^\/en(?=\/|$)/, '') || '/');
-const chinesePath = lang === 'zh' ? canonicalPath : alternatePath;
-const englishPath = lang === 'en' ? canonicalPath : alternatePath;
-// The legacy Chinese guide header only exposed the theme control. The English
-// fallback keeps the language menu so visitors can return to the source guide.
-const showLanguage =
-  pageKind !== 'autoindex' && (home || pageKind !== 'docs' || lang === 'en');
+const showLanguage = pageKind !== 'autoindex';
 const showPortalActions = pageKind !== 'autoindex';
 const portalLinks = [
   {
@@ -217,35 +212,25 @@ const portalLinks = [
         }
         {
           showLanguage && (
-            <div class="language-switcher">
-              <button
-                id="language-toggle"
-                class="site-action"
-                type="button"
-                aria-label={lang === 'zh' ? '切换语言' : 'Switch languages'}
-                aria-expanded="false"
-                aria-controls="language-menu"
-                title={lang === 'zh' ? '语言' : 'Language'}
+            <a
+              class="site-action"
+              href={alternatePath}
+              hreflang={lang === 'zh' ? 'en' : 'zh'}
+              aria-label={
+                lang === 'zh' ? '切换至 English' : 'Switch to Chinese'
+              }
+              title={lang === 'zh' ? '切换至 English' : 'Switch to Chinese'}
+            >
+              <span class="site-action-label">
+                {lang === 'zh' ? 'English' : '中文'}
+              </span>
+              <svg
+                viewBox={`0 0 ${translateIcon.width} ${translateIcon.height}`}
+                aria-hidden="true"
               >
-                <span class="site-action-label">
-                  {lang === 'zh' ? '语言' : 'Language'}
-                </span>
-                <svg
-                  viewBox={`0 0 ${translateIcon.width} ${translateIcon.height}`}
-                  aria-hidden="true"
-                >
-                  <g set:html={translateIcon.body} />
-                </svg>
-              </button>
-              <div id="language-menu" class="language-menu" role="menu" hidden>
-                <a href={chinesePath} hreflang="zh" role="menuitem">
-                  {lang === 'zh' ? '中文' : '中文 (Chinese)'}
-                </a>
-                <a href={englishPath} hreflang="en" role="menuitem">
-                  {lang === 'zh' ? 'English (英语)' : 'English'}
-                </a>
-              </div>
-            </div>
+                <g set:html={translateIcon.body} />
+              </svg>
+            </a>
           )
         }
         <button
@@ -460,31 +445,6 @@ const portalLinks = [
           });
         }
 
-        const languageButton = document.querySelector('#language-toggle');
-        const languageMenu = document.querySelector('#language-menu');
-        if (languageButton && languageMenu) {
-          const closeLanguageMenu = () => {
-            languageMenu.hidden = true;
-            languageButton.setAttribute('aria-expanded', 'false');
-          };
-          languageButton.addEventListener('click', () => {
-            const opening = languageMenu.hidden;
-            languageMenu.hidden = !opening;
-            languageButton.setAttribute('aria-expanded', String(opening));
-            if (opening) languageMenu.querySelector('a')?.focus();
-          });
-          document.addEventListener('click', (event) => {
-            if (!event.target.closest('.language-switcher'))
-              closeLanguageMenu();
-          });
-          document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-              closeLanguageMenu();
-              languageButton.focus();
-            }
-          });
-        }
-
         const actionNav = document.querySelector('.site-actions');
         if (actionNav) {
           let expandedTouchAction = null;
@@ -516,7 +476,7 @@ const portalLinks = [
               });
             });
           actionNav
-            .querySelectorAll('.site-action:not([data-touch-navigation])')
+            .querySelectorAll('button.site-action:not([data-touch-navigation])')
             .forEach((button) => {
               button.addEventListener('click', (event) => {
                 if (isTouchActivation(event)) expandTouchAction(button);

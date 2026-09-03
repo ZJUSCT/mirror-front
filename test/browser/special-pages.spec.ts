@@ -16,9 +16,8 @@ test('serves every localized special page', async ({ page }) => {
   }
 
   await page.goto('/about/');
-  await page.getByRole('button', { name: '切换语言' }).click();
   await expect(
-    page.getByRole('menuitem', { name: 'English (英语)' })
+    page.getByRole('link', { name: '切换至 English' })
   ).toHaveAttribute('href', '/en/about/');
 });
 

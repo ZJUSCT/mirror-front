@@ -86,7 +86,7 @@ test('keeps the static portal useful without JavaScript', async ({
   await expect(
     page.getByRole('heading', { name: 'ZJU Mirror', exact: true })
   ).toBeVisible();
-  await expect(page.getByPlaceholder('今天你想来点镜像吗？')).toBeVisible();
+  await expect(page.getByPlaceholder('请问您今天要来点镜像吗？')).toBeVisible();
   await expect(
     page.getByRole('link', { name: '关于', exact: true })
   ).toHaveAttribute('href', '/about/');
@@ -122,7 +122,9 @@ test('uses production mirror links and persists the name display mode', async ({
   ).toBeVisible();
 });
 
-test('searches only MirrorZ mirror names', async ({ page }) => {
+test('fuzzy-searches mirror fields and highlights matches', async ({
+  page,
+}) => {
   await page.goto('/en/');
 
   const search = page.getByPlaceholder(
@@ -137,14 +139,31 @@ test('searches only MirrorZ mirror names', async ({ page }) => {
     page.getByRole('heading', { name: 'Popular Mirrors' })
   ).toBeHidden();
 
-  await search.fill('mirror data links');
-  await expect(page.getByText('No mirrors match your search.')).toBeVisible();
+  await search.fill('brws');
+  const fuzzyName = page.getByRole('heading', {
+    name: 'Browser fixture mirror',
+  });
+  await expect(fuzzyName).toBeVisible();
+  expect(await fuzzyName.locator('mark').count()).toBeGreaterThan(0);
+
+  await search.fill('directory');
+  const ubuntuName = page.getByRole('heading', { name: 'Ubuntu' });
+  await expect(ubuntuName).toBeVisible();
+  expect(
+    await ubuntuName.locator('xpath=..').locator('p mark').count()
+  ).toBeGreaterThan(0);
 
   await search.fill('d');
   await expect(
     page.getByRole('heading', { name: 'disabled fixture' })
   ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ubuntu' })).toBeHidden();
+  await expect(ubuntuName).toBeVisible();
+  expect(
+    await ubuntuName.locator('xpath=..').locator('p mark').count()
+  ).toBeGreaterThan(0);
+  await expect(
+    ubuntuName.locator('xpath=..').locator('p mark').first()
+  ).toHaveCSS('color', 'rgb(176, 31, 36)');
 });
 
 test('exposes every mirror status as text', async ({ page }) => {
@@ -176,9 +195,8 @@ test('expands announcements and links translated news and GitHub authors', async
   ).toBeGreaterThan(2);
 
   await page.goto('/news/240410_maintenance/');
-  await page.getByRole('button', { name: '切换语言' }).click();
   await expect(
-    page.getByRole('menuitem', { name: 'English (英语)' })
+    page.getByRole('link', { name: '切换至 English' })
   ).toHaveAttribute('href', '/en/news/240410_maintenance/');
 
   const author = page.getByRole('link', { name: '@determ1ne' });
@@ -365,6 +383,9 @@ test('shows mirror synchronization state in guides and file listings', async ({
 
   await page.goto('/docs/debian/');
   await expect(page.locator('.guide-updated')).toContainText(/3\s*小时前/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Debian 软件源' })
+  ).toBeVisible();
 
   const shell = await (await request.get('/autoindex/index.html')).text();
   mockDirectoryListing(page, '**/debian/', shell, []);

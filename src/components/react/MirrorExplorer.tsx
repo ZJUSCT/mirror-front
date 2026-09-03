@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import Fuse from 'fuse.js';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import {
   mirrorPresentationState,
@@ -140,18 +141,67 @@ function mirrorPathId(mirror: MirrorzMirror, catalog: MirrorzData): string {
   }
 }
 
+type SearchField = 'cname' | 'path' | 'desc';
+
+interface SearchMatch {
+  score: number;
+  indices: Partial<Record<SearchField, [number, number][]>>;
+}
+
+interface MirrorSearchResult {
+  mirror: MirrorzMirror;
+  searchMatch?: SearchMatch;
+}
+
+function HighlightedText({
+  value,
+  ranges,
+}: {
+  value: string;
+  ranges?: [number, number][];
+}) {
+  if (!ranges?.length) return <>{value}</>;
+  const mergedRanges = ranges
+    .toSorted(([leftStart], [rightStart]) => leftStart - rightStart)
+    .reduce<[number, number][]>((merged, [start, end]) => {
+      const previous = merged.at(-1);
+      if (previous && start <= previous[1] + 1) {
+        previous[1] = Math.max(previous[1], end);
+      } else {
+        merged.push([start, end]);
+      }
+      return merged;
+    }, []);
+
+  const segments: ReactNode[] = [];
+  let cursor = 0;
+  for (const [start, end] of mergedRanges) {
+    if (start > cursor) segments.push(value.slice(cursor, start));
+    segments.push(
+      <mark className="mirror-search-match" key={`${start}-${end}`}>
+        {value.slice(start, end + 1)}
+      </mark>
+    );
+    cursor = end + 1;
+  }
+  if (cursor < value.length) segments.push(value.slice(cursor));
+  return segments;
+}
+
 function MirrorCard({
   mirror,
   catalog,
   docsByMirrorId,
   locale,
   friendlyName,
+  searchMatch,
 }: {
   mirror: MirrorzMirror;
   catalog: MirrorzData;
   docsByMirrorId: Record<string, string | null>;
   locale: 'zh' | 'en';
   friendlyName: boolean;
+  searchMatch?: SearchMatch;
 }) {
   const state = mirrorPresentationState(mirror, catalog.site.disable);
   const dataUrl = resolveMirrorzUrl(catalog.site.url, mirror.url);
@@ -171,8 +221,15 @@ function MirrorCard({
   return (
     <a className="mirror-card" href={destination ?? undefined}>
       <div>
-        <h3>
-          {friendlyName ? mirror.cname : pathId}
+        <h3
+          aria-label={
+            searchMatch ? (friendlyName ? mirror.cname : pathId) : undefined
+          }
+        >
+          <HighlightedText
+            value={friendlyName ? mirror.cname : pathId}
+            ranges={searchMatch?.indices[friendlyName ? 'cname' : 'path']}
+          />
           {certified ? (
             <svg
               className="verified-icon"
@@ -189,8 +246,16 @@ function MirrorCard({
           ) : null}
         </h3>
         <p>
-          {mirror.desc ||
-            (locale === 'zh' ? '暂无镜像说明' : 'No description available')}
+          {mirror.desc ? (
+            <HighlightedText
+              value={mirror.desc}
+              ranges={searchMatch?.indices.desc}
+            />
+          ) : locale === 'zh' ? (
+            '暂无镜像说明'
+          ) : (
+            'No description available'
+          )}
         </p>
       </div>
       <div className="mirror-card-footer">
@@ -319,13 +384,34 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
     [catalog]
   );
   const mirrors = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase();
-    return normalized
-      ? allMirrors.filter((mirror) =>
-          mirror.cname.toLocaleLowerCase().includes(normalized)
-        )
-      : allMirrors;
-  }, [allMirrors, query]);
+    if (!query.trim() || !catalog) {
+      return allMirrors.map((mirror) => ({ mirror, searchMatch: undefined }));
+    }
+    const searchIndex = new Fuse(
+      allMirrors.map((mirror) => ({
+        mirror,
+        cname: mirror.cname,
+        path: mirrorPathId(mirror, catalog),
+        desc: mirror.desc ?? '',
+      })),
+      {
+        keys: ['cname', 'path', 'desc'],
+        includeMatches: true,
+        includeScore: true,
+        ignoreLocation: true,
+        minMatchCharLength: 1,
+      }
+    );
+    return searchIndex.search(query.trim()).map((result) => ({
+      mirror: result.item.mirror,
+      searchMatch: {
+        score: result.score ?? 0,
+        indices: Object.fromEntries(
+          (result.matches ?? []).map((match) => [match.key, match.indices])
+        ) as Partial<Record<SearchField, [number, number][]>>,
+      },
+    }));
+  }, [allMirrors, catalog, query]);
   const searching = query.trim().length > 0;
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>(
@@ -343,13 +429,14 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
   const groups = useMemo(() => {
     if (searching) return [{ letter: null, items: mirrors }];
 
-    const grouped = new Map<string, MirrorzMirror[]>();
-    for (const mirror of mirrors) {
+    const grouped = new Map<string, MirrorSearchResult[]>();
+    for (const result of mirrors) {
+      const { mirror } = result;
       const letter = catalog
         ? mirrorPathId(mirror, catalog).charAt(0).toLocaleUpperCase() || '#'
         : '#';
       const group = grouped.get(letter) ?? [];
-      group.push(mirror);
+      group.push(result);
       grouped.set(letter, group);
     }
 
@@ -413,14 +500,15 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
                 <h3 id={`mirror-group-${group.letter}`}>{group.letter}</h3>
               ) : null}
               <div className="mirror-grid">
-                {group.items.map((mirror) => (
+                {group.items.map((result) => (
                   <MirrorCard
-                    key={mirror.cname}
-                    mirror={mirror}
+                    key={result.mirror.cname}
+                    mirror={result.mirror}
                     catalog={catalog}
                     docsByMirrorId={docsByMirrorId}
                     locale={locale}
                     friendlyName={friendlyName}
+                    searchMatch={result.searchMatch}
                   />
                 ))}
               </div>
