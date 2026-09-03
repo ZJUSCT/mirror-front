@@ -41,34 +41,6 @@ const { Content } = await render(entry);
 
     <article class="article-body prose special-body">
       <Content />
-
-      <nav
-        class="special-page-nav"
-        aria-label={isZh ? '相关页面' : 'Related pages'}
-      >
-        <a href={isZh ? '/' : '/en/'}>{isZh ? '浏览镜像' : 'Browse mirrors'}</a>
-        {
-          kind !== 'about' && (
-            <a href={isZh ? '/about/' : '/en/about/'}>
-              {isZh ? '关于本站' : 'About'}
-            </a>
-          )
-        }
-        {
-          kind !== 'history' && (
-            <a href={isZh ? '/history/' : '/en/history/'}>
-              {isZh ? '历史记录' : 'History'}
-            </a>
-          )
-        }
-        {
-          kind !== 'faq' && (
-            <a href={isZh ? '/faq/' : '/en/faq/'}>
-              {isZh ? '常见问题' : 'FAQ'}
-            </a>
-          )
-        }
-      </nav>
     </article>
   </div>
 </SiteLayout>
@@ -82,7 +54,7 @@ const { Content } = await render(entry);
     line-height: 1.75;
   }
 
-  .special-body > :not(.special-page-nav) {
+  .special-body > * {
     width: min(58rem, 100%);
   }
 
@@ -173,20 +145,6 @@ const { Content } = await render(entry);
   .faq-answer {
     padding: 0.5rem 1.5rem 0;
     color: var(--muted);
-  }
-
-  .special-page-nav {
-    display: flex;
-    width: min(58rem, 100%);
-    flex-wrap: wrap;
-    gap: 0.75rem 1.5rem;
-    margin-top: 3rem;
-    border-top: 1px solid var(--border);
-    padding-top: 1.25rem;
-  }
-
-  .special-page-nav a {
-    font-weight: 700;
   }
 
   @media (max-width: 599px) {
