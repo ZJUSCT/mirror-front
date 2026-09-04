@@ -1,10 +1,6 @@
 ---
 import GuideHero from '../../../components/react/GuideHero';
 import MirrorzDocument from '../../../components/react/MirrorzDocument';
-import {
-  legacyGuideRoutes,
-  type LegacyGuideRoute,
-} from '../../../data/legacy-guide-routes';
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import {
   loadMirrorDocsMapping,
@@ -18,40 +14,31 @@ import { federatedMirrorUrl } from '../../../lib/mirror-endpoint';
 
 export async function getStaticPaths() {
   const mapping = await loadMirrorDocsMapping();
-  const routes = [
-    ...new Set([...Object.keys(mapping), ...Object.keys(legacyGuideRoutes)]),
-  ].sort();
+  const routes = Object.keys(mapping).sort();
   return Promise.all(
     routes.map(async (id) => {
-      const current = mapping[id] ?? null;
+      const current = mapping[id];
       return {
         params: { id },
         props: {
           id,
           current,
           document: current?.docsId ? await loadMirrorzDocument(id) : null,
-          legacy: legacyGuideRoutes[id] ?? null,
         },
       };
     })
   );
 }
 
-const { id, current, document, legacy } = Astro.props as {
+const { id, current, document } = Astro.props as {
   id: string;
   current: MirrorDocsMapping | null;
   document: MirrorzDocumentData | null;
-  legacy: LegacyGuideRoute | null;
 };
-const title = document?.title ?? legacy?.title.en ?? id;
+const title = document?.title ?? id;
 const dataUrl = current?.publicPath ?? null;
 const federatedDataUrl = current
   ? federatedMirrorUrl(current.publicPath)
-  : null;
-const actionHref = legacy?.action
-  ? legacy.action.href.startsWith('/docs/')
-    ? `/en${legacy.action.href}`
-    : legacy.action.href
   : null;
 ---
 
@@ -101,22 +88,6 @@ const actionHref = legacy?.action
                 CC BY-NC-SA 4.0
               </a>
               .
-            </p>
-          </>
-        ) : legacy ? (
-          <>
-            <p class="callout warning">
-              This route preserves an old link; it is not a usable configuration
-              guide.
-            </p>
-            <p>{legacy.description.en}</p>
-            {legacy.action && (
-              <p>
-                <a href={actionHref}>{legacy.action.label.en}</a>
-              </p>
-            )}
-            <p>
-              <a href="/en/">Return to the ZJU Mirror homepage</a>
             </p>
           </>
         ) : (

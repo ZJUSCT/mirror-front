@@ -1,0 +1,32 @@
+{{- if or .Values.nginx.http .Values.nginx.server .Values.statistics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mirror-front.configName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "mirror-front.labels" . | nindent 4 }}
+data:
+  {{- range $name, $content := .Values.nginx.http }}
+  {{ printf "http-%s" $name | quote }}: |
+    {{- $content | nindent 4 }}
+  {{- end }}
+  {{- range $name, $content := .Values.nginx.server }}
+  {{ printf "server-%s" $name | quote }}: |
+    {{- $content | nindent 4 }}
+  {{- end }}
+  {{- if .Values.statistics.enabled }}
+  "server-statistics-proxy.conf": |
+    # Injected by the chart: serve the statistics-exporter's rendered files.
+    # The trailing slash on proxy_pass strips the /statistics-data/ prefix.
+    location /statistics-data/ {
+        proxy_pass http://{{ include "mirror-front.exporterName" $ }}.{{ $.Release.Namespace }}.svc.cluster.local:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+  {{- end }}
+  {{- if .Values.statistics.enabled }}
+  panels.json: |
+    {{- .Values.statistics.config | mustToPrettyJson | nindent 4 }}
+  {{- end }}
+{{- end }}

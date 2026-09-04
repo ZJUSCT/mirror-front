@@ -1,0 +1,20 @@
+{
+  "width": 1200,
+  "height": 500,
+  "lookback": "24h",
+  "timezone": "Asia/Shanghai",
+  "panels": [
+    {
+      "id": "download-traffic",
+      "title": {
+        "zh": "下载流量",
+        "en": "Download traffic"
+      },
+      "dashboardUid": "replace-with-public-dashboard-uid",
+      "panelId": 12,
+      "variables": {
+        "environment": "production"
+      }
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import infoModule from '@iconify/icons-ic/baseline-info';
 import labelModule from '@iconify/icons-ic/baseline-label';
 import personModule from '@iconify/icons-ic/baseline-person';
 import searchModule from '@iconify/icons-ic/baseline-search';
+import showChartModule from '@iconify/icons-ic/baseline-show-chart';
 import translateModule from '@iconify/icons-ic/baseline-translate';
 import verifiedModule from '@iconify/icons-ic/baseline-verified';
 
@@ -43,5 +44,6 @@ export const infoIcon = normalizeIcon(infoModule);
 export const labelIcon = normalizeIcon(labelModule);
 export const personIcon = normalizeIcon(personModule);
 export const searchIcon = normalizeIcon(searchModule);
+export const statisticsIcon = normalizeIcon(showChartModule);
 export const translateIcon = normalizeIcon(translateModule);
 export const verifiedIcon = normalizeIcon(verifiedModule);

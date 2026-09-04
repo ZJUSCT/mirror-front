@@ -2,13 +2,16 @@
 
 ARG NODE_VERSION=22
 ARG PNPM_VERSION=10.15.1
+ARG DEPLOYMENT_ENV=production
 
 FROM node:${NODE_VERSION}-slim AS build
 
 ARG PNPM_VERSION
+ARG DEPLOYMENT_ENV
 ENV ASTRO_TELEMETRY_DISABLED=1 \
     PNPM_HOME=/pnpm \
-    PATH=/pnpm:$PATH
+    PATH=/pnpm:$PATH \
+    DEPLOYMENT_ENV=$DEPLOYMENT_ENV
 
 WORKDIR /app
 
@@ -19,7 +22,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY . .
-RUN pnpm run build && pnpm run verify-build
+RUN pnpm check && pnpm build
 RUN chmod -R a=rX dist
 
 FROM nginxinc/nginx-unprivileged:mainline-alpine-otel AS runtime

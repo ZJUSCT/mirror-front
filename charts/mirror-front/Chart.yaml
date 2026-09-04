@@ -1,0 +1,13 @@
+apiVersion: v2
+name: mirror-front
+description: ZJU Mirror portal with an optional standalone Grafana statistics exporter.
+type: application
+# Bump version for chart releases; both containers track the latest images.
+version: 0.2.0
+appVersion: "latest"
+home: https://github.com/ZJUSCT/mirror-front
+sources:
+  - https://github.com/ZJUSCT/mirror-front
+maintainers:
+  - name: ZJUSCT
+    url: https://github.com/ZJUSCT

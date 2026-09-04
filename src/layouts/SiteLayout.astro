@@ -1,6 +1,5 @@
 ---
 import falconLogo from '../../resource/icons/zju-falcon.svg?url';
-import favicon from '../../resource/icons/favicon.svg?url';
 import zjuLogoDark from '../../resource/icons/zju-dark.svg?url';
 import zjuLogo from '../../resource/icons/zju.svg?url';
 import zjusctLogoDark from '../../resource/icons/zjusct-dark.svg?url';
@@ -18,8 +17,10 @@ import {
   historyIcon,
   infoIcon,
   labelIcon,
+  statisticsIcon,
   translateIcon,
 } from '../lib/ui-icons';
+import { stagingDeployment } from '../lib/deployment';
 import '../styles/global.css';
 
 interface Props {
@@ -57,6 +58,11 @@ const showLanguage = pageKind !== 'autoindex';
 const showPortalActions = pageKind !== 'autoindex';
 const portalLinks = [
   {
+    href: `${lang === 'zh' ? '' : '/en'}/statistics/`,
+    label: lang === 'zh' ? '统计' : 'Statistics',
+    icon: statisticsIcon,
+  },
+  {
     href: `${lang === 'zh' ? '' : '/en'}/about/`,
     label: lang === 'zh' ? '关于' : 'About',
     icon: infoIcon,
@@ -89,7 +95,7 @@ const portalLinks = [
         />
       )
     }
-    <link rel="icon" href={favicon} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {
       (pageKind === 'news' || usesGitHubAvatars) && (
         <link
@@ -127,7 +133,19 @@ const portalLinks = [
       })();
     </script>
   </head>
-  <body class:list={[`page-${pageKind}`, { 'page-home': home }]}>
+  <body
+    class:list={[
+      `page-${pageKind}`,
+      { 'page-home': home, 'has-deployment-strip': stagingDeployment },
+    ]}
+  >
+    {
+      stagingDeployment && (
+        <div class="deployment-strip" data-deployment-environment="staging">
+          {lang === 'zh' ? '测试站点' : 'Staging site'}
+        </div>
+      )
+    }
     <a class="skip-link" href="#main-content">
       {lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}
     </a>
@@ -419,10 +437,10 @@ const portalLinks = [
               root.lang === 'zh'
                 ? friendly
                   ? '显示镜像目录名称'
-                  : '显示镜像名称'
+                  : '显示文档标题'
                 : friendly
                   ? 'Show path names'
-                  : 'Show mirror names';
+                  : 'Show guide titles';
             nameButton.title = actionLabel;
             const label = nameButton.querySelector('[data-name-label]');
             if (label) label.textContent = actionLabel;

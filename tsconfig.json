@@ -1,15 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": [
-    ".cache",
-    "dist",
-    "node_modules",
-    "playwright-report",
-    "public",
-    "test-results",
-    "vendor"
-  ],
+  "exclude": [".cache", "dist", "node_modules", "public", "vendor"],
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": ".",
