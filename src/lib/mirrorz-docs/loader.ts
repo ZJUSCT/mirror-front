@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 import { marked } from 'marked';
@@ -6,7 +6,6 @@ import sanitizeHtml from 'sanitize-html';
 import { parse as parseYaml } from 'yaml';
 
 import docsLock from '../../../mirrorz-docs.lock.json';
-import { legacyGuideRoutes } from '../../data/legacy-guide-routes';
 import { ZJU_MIRROR_ORIGIN } from '../mirror-endpoint';
 import type {
   DocumentInput,
@@ -20,12 +19,6 @@ import { renderTemplateText } from './render';
 
 const repositoryRoot = path.resolve(process.cwd());
 const docsRoot = path.join(repositoryRoot, 'vendor', 'mirrorz-docs');
-const mappingPath = path.join(
-  repositoryRoot,
-  'src',
-  'data',
-  'mirror-docs-map.yaml'
-);
 
 interface RawInput {
   _?: string;
@@ -54,6 +47,7 @@ interface DirectiveOptions {
 }
 
 let mappingPromise: Promise<Record<string, MirrorDocsMapping>> | undefined;
+let titlePromise: Promise<Record<string, string>> | undefined;
 
 function escapeHtml(value: string): string {
   return value
@@ -440,49 +434,67 @@ export function compileDocumentMarkdown(
   return { html, templates };
 }
 
+async function loadAvailableDocIds(): Promise<Set<string>> {
+  const entries = await readdir(docsRoot, { withFileTypes: true });
+  const directories = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+  const available = await Promise.all(
+    directories.map(async (name) => {
+      try {
+        await stat(path.join(docsRoot, name, 'zh.yaml'));
+        return name;
+      } catch {
+        return null;
+      }
+    })
+  );
+  return new Set(available.filter((name): name is string => name !== null));
+}
+
+// Every vendored guide is rendered unconditionally. Route generation never
+// consults the live mirror catalog: a mirror that is temporarily absent from
+// mirrorz.json (for example mid-migration while its publish deployment is not
+// Ready) keeps its guide page, and a guide without a hosted mirror gets one too.
 export async function loadMirrorDocsMapping(): Promise<
   Record<string, MirrorDocsMapping>
 > {
-  mappingPromise ??= readFile(mappingPath, 'utf8').then((source) => {
-    const parsedMapping = parseYaml(source) as unknown;
-    if (
-      !parsedMapping ||
-      typeof parsedMapping !== 'object' ||
-      Array.isArray(parsedMapping)
-    ) {
-      throw new Error('mirror docs mapping must contain an object');
-    }
-    const parsed = parsedMapping as Record<string, MirrorDocsMapping>;
-    for (const [mirrorId, mapping] of Object.entries(parsed)) {
-      if (
-        !mapping ||
-        typeof mapping !== 'object' ||
-        Array.isArray(mapping) ||
-        Object.keys(mapping).some(
-          (key) => key !== 'docsId' && key !== 'publicPath'
-        ) ||
-        (mapping.docsId !== null &&
-          (typeof mapping.docsId !== 'string' || !mapping.docsId)) ||
-        typeof mapping.publicPath !== 'string' ||
-        !/^\/(?!\/)[^\s?#]*$/.test(mapping.publicPath)
-      ) {
-        throw new Error(`invalid docs mapping for ${mirrorId}`);
-      }
-    }
-    return parsed;
-  });
+  mappingPromise ??= loadAvailableDocIds().then((available) =>
+    Object.fromEntries(
+      [...available].map((id) => [
+        id,
+        { docsId: id, publicPath: `/${id}` },
+      ])
+    )
+  );
   return mappingPromise;
 }
 
-export async function getMappedDocumentRoutes(): Promise<string[]> {
-  const mapping = await loadMirrorDocsMapping();
-  return Object.entries(mapping)
-    .filter(
-      (entry): entry is [string, MirrorDocsMapping & { docsId: string }] =>
-        Boolean(entry[1].docsId)
-    )
-    .map(([mirrorId]) => mirrorId)
-    .sort();
+export async function loadMirrorDocsTitles(): Promise<Record<string, string>> {
+  titlePromise ??= loadMirrorDocsMapping().then(async (mapping) => {
+    const docsIds = [
+      ...new Set(
+        Object.values(mapping)
+          .map(({ docsId }) => docsId)
+          .filter((docsId): docsId is string => docsId !== null)
+      ),
+    ];
+    const entries = await Promise.all(
+      docsIds.map(async (docsId) => {
+        const source = await readFile(
+          path.join(docsRoot, docsId, 'zh.yaml'),
+          'utf8'
+        );
+        const config = parseYaml(source) as { _?: unknown } | null;
+        if (typeof config?._ !== 'string' || !config._.trim()) {
+          throw new Error(`${docsId}/zh.yaml has no title`);
+        }
+        return [docsId, config._] as const;
+      })
+    );
+    return Object.fromEntries(entries);
+  });
+  return titlePromise;
 }
 
 export async function loadMirrorzDocument(
@@ -555,9 +567,6 @@ export async function loadMirrorzDocument(
   const routeByDocsId = new Map<string, string>();
   for (const [mirrorId, candidate] of Object.entries(mapping)) {
     if (candidate.docsId) routeByDocsId.set(candidate.docsId, mirrorId);
-  }
-  for (const routeId of Object.keys(legacyGuideRoutes)) {
-    routeByDocsId.set(routeId, routeId);
   }
 
   const htmlParts: string[] = [];

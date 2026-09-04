@@ -14,6 +14,7 @@ import { verifiedIcon } from '../../lib/ui-icons';
 interface Props {
   locale: 'zh' | 'en';
   docsByMirrorId: Record<string, string | null>;
+  docsTitles: Record<string, string>;
 }
 
 const cacheDataKey = 'zju-mirror:mirrorz:v1';
@@ -141,7 +142,7 @@ function mirrorPathId(mirror: MirrorzMirror, catalog: MirrorzData): string {
   }
 }
 
-type SearchField = 'cname' | 'path' | 'desc';
+type SearchField = 'title' | 'cname' | 'path' | 'desc';
 
 interface SearchMatch {
   score: number;
@@ -192,6 +193,7 @@ function MirrorCard({
   mirror,
   catalog,
   docsByMirrorId,
+  docsTitles,
   locale,
   friendlyName,
   searchMatch,
@@ -199,6 +201,7 @@ function MirrorCard({
   mirror: MirrorzMirror;
   catalog: MirrorzData;
   docsByMirrorId: Record<string, string | null>;
+  docsTitles: Record<string, string>;
   locale: 'zh' | 'en';
   friendlyName: boolean;
   searchMatch?: SearchMatch;
@@ -206,6 +209,8 @@ function MirrorCard({
   const state = mirrorPresentationState(mirror, catalog.site.disable);
   const dataUrl = resolveMirrorzUrl(catalog.site.url, mirror.url);
   const docsId = localDocsId(mirror, docsByMirrorId);
+  const documentTitle = docsId ? docsTitles[docsId] : undefined;
+  const friendlyLabel = documentTitle ?? mirror.cname;
   const upstreamHelpUrl = mirror.help
     ? resolveMirrorzUrl(catalog.site.url, mirror.help)
     : null;
@@ -223,12 +228,12 @@ function MirrorCard({
       <div>
         <h3
           aria-label={
-            searchMatch ? (friendlyName ? mirror.cname : pathId) : undefined
+            searchMatch ? (friendlyName ? friendlyLabel : pathId) : undefined
           }
         >
           <HighlightedText
-            value={friendlyName ? mirror.cname : pathId}
-            ranges={searchMatch?.indices[friendlyName ? 'cname' : 'path']}
+            value={friendlyName ? friendlyLabel : pathId}
+            ranges={searchMatch?.indices[friendlyName ? 'title' : 'path']}
           />
           {certified ? (
             <svg
@@ -265,7 +270,11 @@ function MirrorCard({
   );
 }
 
-export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
+export default function MirrorExplorer({
+  locale,
+  docsByMirrorId,
+  docsTitles,
+}: Props) {
   const [catalog, setCatalog] = useState<MirrorzData | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [stale, setStale] = useState(false);
@@ -388,14 +397,18 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
       return allMirrors.map((mirror) => ({ mirror, searchMatch: undefined }));
     }
     const searchIndex = new Fuse(
-      allMirrors.map((mirror) => ({
-        mirror,
-        cname: mirror.cname,
-        path: mirrorPathId(mirror, catalog),
-        desc: mirror.desc ?? '',
-      })),
+      allMirrors.map((mirror) => {
+        const docsId = localDocsId(mirror, docsByMirrorId);
+        return {
+          mirror,
+          title: (docsId ? docsTitles[docsId] : undefined) ?? mirror.cname,
+          cname: mirror.cname,
+          path: mirrorPathId(mirror, catalog),
+          desc: mirror.desc ?? '',
+        };
+      }),
       {
-        keys: ['cname', 'path', 'desc'],
+        keys: ['title', 'cname', 'path', 'desc'],
         includeMatches: true,
         includeScore: true,
         ignoreLocation: true,
@@ -411,7 +424,7 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
         ) as Partial<Record<SearchField, [number, number][]>>,
       },
     }));
-  }, [allMirrors, catalog, query]);
+  }, [allMirrors, catalog, docsByMirrorId, docsTitles, query]);
   const searching = query.trim().length > 0;
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>(
@@ -506,6 +519,7 @@ export default function MirrorExplorer({ locale, docsByMirrorId }: Props) {
                     mirror={result.mirror}
                     catalog={catalog}
                     docsByMirrorId={docsByMirrorId}
+                    docsTitles={docsTitles}
                     locale={locale}
                     friendlyName={friendlyName}
                     searchMatch={result.searchMatch}

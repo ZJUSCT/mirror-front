@@ -1,0 +1,67 @@
+---
+title: Container Images
+lead: A container registry proxy cache for users on the ZJU campus network.
+---
+
+## What is a pull-through cache?
+
+A pull-through cache sits between a container client and an upstream registry. The first time an image is requested, the service pulls it from the upstream registry and caches it. Later requests can use the local cache, reducing repeated Internet transfers and improving pull speeds on campus. If an image is not yet cached, the first pull still depends on the availability and network performance of the upstream registry.
+
+This service is available only from the ZJU campus network and does not require authentication. Do not publish the proxy address to off-campus users or use it as a public-facing service dependency.
+
+This service maintains an allowlist, and only images on the allowlist are served. The allowlist is based on [allows.txt from the DaoCloud public-image-mirror project](https://github.com/DaoCloud/public-image-mirror/blob/main/allows.txt): that file is the public list of the `m.daocloud.io` mirroring service, which has completed ICP filing in China, so the images it allows are guaranteed to be compliant and safe.
+
+If an image you need is not on the allowlist, please open an issue at [DaoCloud/public-image-mirror](https://github.com/DaoCloud/public-image-mirror) to request its addition.
+
+## Usage
+
+Add `registry.mirrors.zjusct.io/` before the original image name and retain the original registry hostname. For example:
+
+```console
+docker pull registry.mirrors.zjusct.io/ghcr.io/owner/image:tag
+docker pull registry.mirrors.zjusct.io/registry.k8s.io/pause:3.10
+docker pull registry.mirrors.zjusct.io/quay.io/prometheus/prometheus:latest
+```
+
+### Docker Hub images
+
+Docker Hub image names often omit the registry hostname, and official images also omit the `library/` namespace. Both parts must be explicit when pulling through this proxy:
+
+| Common notation          | Pull through the proxy                                             |
+| ------------------------ | ------------------------------------------------------------------ |
+| `ubuntu:24.04`           | `registry.mirrors.zjusct.io/hub.docker.com/library/ubuntu:24.04`   |
+| `library/nginx:stable`   | `registry.mirrors.zjusct.io/hub.docker.com/library/nginx:stable`   |
+| `prom/prometheus:latest` | `registry.mirrors.zjusct.io/hub.docker.com/prom/prometheus:latest` |
+
+In other words:
+
+- if an image name has no registry hostname, add `hub.docker.com/`;
+- if it has only one path component, it is a Docker Official Image, so also add `library/`;
+- finally, add `registry.mirrors.zjusct.io/` before the complete name.
+
+The same complete image name works in Pod manifests, Compose files, and other tools compatible with OCI/Docker registries. For example:
+
+```yaml
+image: registry.mirrors.zjusct.io/hub.docker.com/library/redis:7
+```
+
+## Proxied registries
+
+Proxy caches are currently available for these upstream registries:
+
+| Registry                     | Proxy path prefix                                 |
+| ---------------------------- | ------------------------------------------------- |
+| Docker Hub                   | `registry.mirrors.zjusct.io/hub.docker.com/`      |
+| GitHub Container Registry    | `registry.mirrors.zjusct.io/ghcr.io/`             |
+| Quay                         | `registry.mirrors.zjusct.io/quay.io/`             |
+| NVIDIA Container Registry    | `registry.mirrors.zjusct.io/nvcr.io/`             |
+| Kubernetes Registry          | `registry.mirrors.zjusct.io/registry.k8s.io/`     |
+| GitLab Container Registry    | `registry.mirrors.zjusct.io/registry.gitlab.com/` |
+| Amazon ECR Public Gallery    | `registry.mirrors.zjusct.io/public.ecr.aws/`      |
+| Microsoft Artifact Registry  | `registry.mirrors.zjusct.io/mcr.microsoft.com/`   |
+| Elastic Container Registry   | `registry.mirrors.zjusct.io/docker.elastic.co/`   |
+| Google Container Registry    | `registry.mirrors.zjusct.io/gcr.io/`              |
+| Legacy Kubernetes GCR        | `registry.mirrors.zjusct.io/k8s.gcr.io/`          |
+| Google US Container Registry | `registry.mirrors.zjusct.io/us.gcr.io/`           |
+| LinuxServer.io               | `registry.mirrors.zjusct.io/lscr.io/`             |
+| OSGeo Docker Registry        | `registry.mirrors.zjusct.io/docker.osgeo.org/`    |

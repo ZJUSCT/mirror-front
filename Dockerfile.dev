@@ -7,10 +7,8 @@ FROM node:${NODE_VERSION}-bookworm
 ARG DEV_UID=1000
 ARG DEV_GID=1000
 ARG PNPM_VERSION=10.15.1
-ARG PLAYWRIGHT_VERSION=1.62.1
 
 ENV ASTRO_TELEMETRY_DISABLED=1 \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
     PNPM_HOME=/pnpm \
     PATH=/pnpm:$PATH
 
@@ -20,9 +18,7 @@ RUN corepack enable && corepack prepare "pnpm@${PNPM_VERSION}" --activate
 
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=mirror-front-dev-pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile && \
-    test "$(node -p "require('@playwright/test/package.json').version")" = "${PLAYWRIGHT_VERSION}" && \
-    pnpm exec playwright install --with-deps chromium
+    pnpm install --frozen-lockfile
 
 # Corepack otherwise stores its prepared pnpm runtime under root's home,
 # forcing the non-root development user to download it again at startup.
@@ -35,8 +31,6 @@ RUN groupmod --gid "${DEV_GID}" node && \
       /app/.astro \
       /app/.cache \
       /app/dist \
-      /app/playwright-report \
-      /app/test-results \
       /corepack \
       /pnpm/store && \
     chown -R node:node /app /corepack /home/node /pnpm

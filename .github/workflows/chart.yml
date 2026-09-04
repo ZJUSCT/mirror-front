@@ -1,0 +1,44 @@
+name: Helm chart
+
+on:
+  pull_request:
+    paths:
+      - 'charts/mirror-front/**'
+  push:
+    branches: [main]
+    paths:
+      - 'charts/mirror-front/**'
+
+concurrency:
+  group: chart-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chart:
+    name: Package and publish chart
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/setup-helm@v4.3.1
+        with:
+          version: v3.19.0
+      - name: Lint chart
+        run: helm lint charts/mirror-front
+      - name: Package chart
+        run: helm package charts/mirror-front --destination dist
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | helm registry login ghcr.io \
+            --username "$GITHUB_ACTOR" --password-stdin
+
+      - name: Push chart
+        if: github.event_name == 'push'
+        # Helm appends the chart name and uses the version from Chart.yaml.
+        run: helm push dist/mirror-front-*.tgz oci://ghcr.io/zjusct/charts

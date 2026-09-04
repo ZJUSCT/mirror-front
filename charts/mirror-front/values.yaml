@@ -1,0 +1,133 @@
+replicaCount: 2
+nameOverride: ""
+fullnameOverride: ""
+
+# Override only when adopting a Deployment with an existing immutable selector.
+# Empty uses app.kubernetes.io/name and app.kubernetes.io/instance.
+selectorLabels: {}
+
+image:
+  repository: ghcr.io/zjusct/mirror-front
+  # Track the latest published frontend image.
+  tag: latest
+  digest: ""
+  pullPolicy: Always
+imagePullSecrets: []
+
+annotations: {}
+podAnnotations: {}
+podLabels: {}
+
+# Allows rolling updates even when strict anti-affinity occupies all eligible nodes.
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+
+# Applied to both containers.
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: [ALL]
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 128Mi
+  limits:
+    cpu: "1.5"
+    memory: 256Mi
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 2
+  timeoutSeconds: 1
+  failureThreshold: 15
+readinessProbe:
+  httpGet:
+    path: /manifest.webmanifest
+    port: http
+  periodSeconds: 5
+  timeoutSeconds: 2
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 2
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+service:
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  parentRefs: []
+  # - name: gateway
+  #   namespace: envoy-gateway
+  #   sectionName: https
+  hostnames: []
+  # - mirrors.example.org
+
+nginx:
+  # Maps of filenames to literal NGINX snippets. Files should end in .conf.
+  # These extend the image's configuration through its http.d and server.d includes.
+  http: {}
+  server: {}
+  tmpSizeLimit: 32Mi
+
+statistics:
+  enabled: false
+  # The exporter always runs as a single-replica Deployment, whatever the
+  # mirror-front replica count is; there is deliberately no replicas knob.
+  # When enabled, the chart also injects an NGINX snippet into mirror-front
+  # that proxies /statistics-data/ to the exporter Service (uncached).
+  image:
+    repository: ghcr.io/zjusct/mirror-front-statistics-exporter
+    # Track the latest published exporter image.
+    tag: latest
+    digest: ""
+    pullPolicy: Always
+  grafanaURL: ""
+  # Must exist in this release's namespace; the chart never generates credentials.
+  existingSecret: ""
+  auth:
+    # basic or token; only the selected keys are mounted into the exporter.
+    mode: basic
+    usernameKey: admin-user
+    passwordKey: admin-password
+    tokenKey: token
+  config:
+    width: 1200
+    height: 500
+    lookback: 24h
+    timezone: Asia/Shanghai
+    panels: []
+  # Exporter's own emptyDir holding the rendered files it serves over HTTP.
+  outputSizeLimit: 256Mi
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

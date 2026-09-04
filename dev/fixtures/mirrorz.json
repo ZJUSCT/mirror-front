@@ -1,0 +1,83 @@
+{
+  "version": 1.7,
+  "site": {
+    "url": "https://mirrors.zju.edu.cn",
+    "abbr": "ZJU",
+    "name": "浙江大学开源软件镜像站"
+  },
+  "info": [],
+  "mirrors": [
+    {
+      "cname": "CPAN",
+      "desc": "Perl 语言模块仓库",
+      "url": "/CPAN",
+      "status": "S1789028999X1789057799"
+    },
+    {
+      "cname": "alpine",
+      "desc": "基于 musl libc 和 BusyBox 的安全、轻量 Linux 发行版",
+      "url": "/alpine",
+      "status": "S1789031932X1789060732"
+    },
+    {
+      "cname": "anaconda",
+      "desc": "科学计算工具包",
+      "url": "/anaconda",
+      "status": "F1789046329O1789017307X1789075129"
+    },
+    {
+      "cname": "archlinux",
+      "desc": "Arch Linux 软件包",
+      "url": "/archlinux",
+      "status": "S1789037519X1789059119"
+    },
+    {
+      "cname": "debian",
+      "desc": "Debian 发行版软件包",
+      "url": "/debian",
+      "status": "Y1789051541O1789047938X1789051538"
+    },
+    {
+      "cname": "docker-ce",
+      "desc": "Docker 社区版软件包仓库",
+      "url": "/docker-ce",
+      "status": "S1789050011X1789064411"
+    },
+    {
+      "cname": "fedora",
+      "desc": "Fedora Linux 软件包仓库",
+      "url": "/fedora",
+      "status": "S1789026932X1789055732"
+    },
+    {
+      "cname": "kubernetes",
+      "desc": "Kubernetes 软件包仓库",
+      "url": "/kubernetes",
+      "status": "S1789035068X1789063868"
+    },
+    {
+      "cname": "pypi",
+      "desc": "Python 第三方软件包索引",
+      "url": "/pypi",
+      "status": "R"
+    },
+    {
+      "cname": "rocky",
+      "desc": "Rocky Linux 软件包仓库",
+      "url": "/rocky",
+      "status": "D1789040000X1789068800"
+    },
+    {
+      "cname": "ubuntu",
+      "desc": "Ubuntu 发行版软件包",
+      "url": "/ubuntu",
+      "status": "S1789044060X1789072860"
+    },
+    {
+      "cname": "ubuntu-releases",
+      "desc": "Ubuntu 安装镜像",
+      "url": "/ubuntu-releases",
+      "status": "C"
+    }
+  ]
+}

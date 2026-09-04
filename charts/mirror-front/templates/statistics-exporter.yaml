@@ -1,0 +1,150 @@
+{{- if .Values.statistics.enabled }}
+{{- if not (has .Values.statistics.auth.mode (list "basic" "token")) }}
+{{- fail "statistics.auth.mode must be basic or token" }}
+{{- end }}
+{{- $_ := required "statistics.config.panels is required when statistics.enabled=true" .Values.statistics.config.panels }}
+{{- $_ := required "statistics.existingSecret is required when statistics.enabled=true" .Values.statistics.existingSecret }}
+{{- $_ := required "statistics.grafanaURL is required when statistics.enabled=true" .Values.statistics.grafanaURL }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mirror-front.exporterName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "mirror-front.exporterLabels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+      appProtocol: http
+  selector:
+    {{- include "mirror-front.exporterSelectorLabels" . | nindent 4 }}
+---
+# The exporter is always a single instance so exactly one workload performs
+# the periodic export, regardless of the mirror-front replica count.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mirror-front.exporterName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "mirror-front.exporterLabels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mirror-front.exporterSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mirror-front.exporterLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: statistics-exporter
+          image: {{ include "mirror-front.image" (dict "image" .Values.statistics.image "defaultTag" .Chart.AppVersion) | quote }}
+          imagePullPolicy: {{ .Values.statistics.image.pullPolicy }}
+          env:
+            - name: GRAFANA_URL
+              value: {{ .Values.statistics.grafanaURL | quote }}
+            {{- if eq .Values.statistics.auth.mode "token" }}
+            - name: GRAFANA_TOKEN_FILE
+              value: /etc/grafana-credentials/token
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.statistics.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 2
+          volumeMounts:
+            - name: statistics-config
+              mountPath: /etc/statistics-exporter
+              readOnly: true
+            - name: grafana-credentials
+              mountPath: /etc/grafana-credentials
+              readOnly: true
+            - name: statistics-output
+              mountPath: /output
+      volumes:
+        - name: statistics-config
+          configMap:
+            name: {{ include "mirror-front.configName" . }}
+            items:
+              - key: panels.json
+                path: panels.json
+        - name: grafana-credentials
+          secret:
+            secretName: {{ .Values.statistics.existingSecret | quote }}
+            defaultMode: 0440
+            items:
+              {{- if eq .Values.statistics.auth.mode "token" }}
+              - key: {{ .Values.statistics.auth.tokenKey | quote }}
+                path: token
+              {{- else }}
+              - key: {{ .Values.statistics.auth.usernameKey | quote }}
+                path: admin-user
+              - key: {{ .Values.statistics.auth.passwordKey | quote }}
+                path: admin-password
+              {{- end }}
+        - name: statistics-output
+          emptyDir:
+            sizeLimit: {{ .Values.statistics.outputSizeLimit }}
+{{- end }}

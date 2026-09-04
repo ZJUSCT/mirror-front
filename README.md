@@ -7,9 +7,8 @@ islands for live mirror status, search, and interactive MirrorZ guides. Back-end
 
 ## Development
 
-Development runs entirely in Docker with Node.js 22, pnpm 10.15.1, and the
-Chromium version bundled for Playwright 1.62.1. Generated files, dependencies,
-and browser downloads stay in Docker volumes and images.
+Development runs entirely in Docker with Node.js 22 and pnpm 10.15.1.
+Generated files and dependencies stay in Docker volumes and images.
 
 ```sh
 export DEV_UID="$(id -u)" DEV_GID="$(id -g)"
@@ -19,21 +18,40 @@ docker compose run --rm dev pnpm install --frozen-lockfile
 docker compose run --rm --service-ports dev
 ```
 
-The development server listens on `0.0.0.0:4321`. Run formatting or the full
-source and build contract with the same image:
+The development server listens on `0.0.0.0:4321`. Type checking and optional
+formatting can also be run locally with the same image:
 
 ```sh
+docker compose run --rm dev pnpm check
 docker compose run --rm dev pnpm format
-docker compose run --rm dev pnpm run ci
 ```
 
+For local UI review without live back-end endpoints, run:
+
+```sh
+docker compose run --rm --service-ports dev pnpm dev:review
+```
+
+It serves the populated `dev/fixtures/mirrorz.json` catalog and reports an
+on-campus IPv4 connection so campus-only UI can be inspected.
+
+The deployment marker is configured at build time. Production defaults to
+`DEPLOYMENT_ENV=production`; set it to `staging` to add a fixed strip to every
+page:
+
+```sh
+docker compose run --rm -e DEPLOYMENT_ENV=staging dev pnpm build
+```
+
+The production Dockerfile accepts the same name as a build argument, so the
+equivalent image build uses `--build-arg DEPLOYMENT_ENV=staging`.
+
 Build the unprivileged production image, or start its production-style preview
-on `0.0.0.0:8080` and run the browser acceptance suite against it:
+on `0.0.0.0:8080`:
 
 ```sh
 docker build --tag mirror-front .
 docker compose up --detach --build preview
-docker compose run --rm browser
 ```
 
 Cluster-specific NGINX configuration can be mounted under
@@ -41,9 +59,23 @@ Cluster-specific NGINX configuration can be mounted under
 HTTP and server contexts, respectively. Run `docker compose down` when the
 preview is no longer needed; named development caches are retained.
 
-A successful CI run for a push to `main` scans and publishes a GHCR image as
-`latest` and its seven-character commit abbreviation. Registry cleanup retains
-the ten newest commit-tagged images and removes unneeded untagged images.
+CI builds both images. The frontend build runs Astro/TypeScript checks, and
+the exporter build runs its two focused tests. Pushes to `main` also
+publish both GHCR images as `latest` and their seven-character commit
+abbreviation. Registry cleanup retains the ten newest commit-tagged images
+and removes unneeded untagged images.
+
+A separate workflow lints and packages changes under `charts/mirror-front/`,
+and publishes the OCI chart on pushes to `main`. It uses the version in
+`Chart.yaml`; no Git release tags are needed. Chart-only changes skip image
+builds.
+
+## Kubernetes deployment
+
+The [Helm chart](charts/mirror-front/) manages the frontend, optional
+standalone statistics exporter (single-replica Deployment and Service), their
+configuration, Services, and an optional Gateway API HTTPRoute.
+Configuration is in [values.yaml](charts/mirror-front/values.yaml).
 
 ## Content and runtime data
 
@@ -51,17 +83,28 @@ the ten newest commit-tagged images and removes unneeded untagged images.
 - Generic interface glyphs primarily use Google Material Icons' baseline
   family; brand marks use Iconify Logos or Simple Icons, while institutional
   artwork remains in the local `resource/icons/` collection.
-- The About, History, and FAQ pages live in `src/content/special-pages/`, with
+- The About, History, FAQ, Container Images, and Statistics pages live in
+  `src/content/special-pages/`, with
   one MDX file per page and locale. Their frontmatter supplies the page title
   and lead; the shared layout and presentation remain in
   `src/components/static/SpecialPage.astro`. Keep matching `zh/` and `en/`
   files when adding or renaming a page.
+- The Statistics page reads `/statistics-data/manifest.json` and static PNGs
+  generated hourly by the standalone [statistics exporter](statistics-exporter/README.md)
+  and proxied by an NGINX snippet the chart injects when statistics are
+  enabled. Its source, image build, configuration example, and deployment
+  contract live under `statistics-exporter/`. Grafana panel selection is
+  runtime configuration; changing it does not require rebuilding the frontend.
 - Shared mirror guides come from the pinned `vendor/mirrorz-docs` submodule.
   The parent repository's gitlink is the authoritative content pin;
   `mirrorz-docs.lock.json` repeats the commit and license as build-time
   provenance because Docker builds do not receive Git metadata. Update the
-  gitlink and manifest commit together—the test suite rejects drift between
-  them and the checked-out submodule.
+  gitlink and manifest commit together when updating the guides. Every guide
+  in the submodule is rendered unconditionally: route generation never
+  consults the live `mirrorz.json` catalog, so a mirror that is temporarily
+  absent from it (for example mid-migration while its publish deployment is
+  not Ready) keeps its guide page, and a guide without a hosted mirror still
+  gets one. The mirror status island links to a guide only when one exists.
 - The browser consumes the same-origin `/mirrorz.json` endpoint directly as
   [MirrorZ Data Format v1.7](https://github.com/mirrorz-org/mirrorz#data-format-v17).
   MirrorZ governs this public data contract.

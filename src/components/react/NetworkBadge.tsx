@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { parseNetworkMode, type NetworkMode } from '../../lib/network';
+import {
+  campusNetworkEndpoint,
+  parseNetworkMode,
+  type NetworkMode,
+} from '../../lib/network';
 
 const labels: Record<NetworkMode, { zh: string; en: string }> = {
   0: { zh: '校外网络', en: 'Off-Campus' },
@@ -16,7 +20,7 @@ export default function NetworkBadge({ locale }: { locale: 'zh' | 'en' }) {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 5000);
 
-    fetch('/api/is_campus_network', { signal: controller.signal })
+    fetch(campusNetworkEndpoint, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) return 'unknown';
         return parseNetworkMode(await response.json());
