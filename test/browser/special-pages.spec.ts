@@ -3,9 +3,11 @@ import { expect, test } from '@playwright/test';
 test('serves every localized special page', async ({ page }) => {
   for (const path of [
     '/about/',
+    '/container-images/',
     '/history/',
     '/faq/',
     '/en/about/',
+    '/en/container-images/',
     '/en/history/',
     '/en/faq/',
   ]) {
@@ -35,6 +37,41 @@ test('opens an FAQ disclosure from the keyboard', async ({ page }) => {
   await expect
     .poll(() => disclosure.evaluate((element) => element.hasAttribute('open')))
     .toBe(!wasOpen);
+});
+
+test('uses guide-style code blocks on local content pages', async ({
+  browser,
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/container-images/');
+
+  const blocks = page.locator('.code-block-shell');
+  await expect(blocks).toHaveCount(2);
+  await expect(blocks.first().locator('figcaption')).toHaveText('bash');
+  await expect(blocks.nth(1).locator('figcaption')).toHaveText('yaml');
+  await expect(
+    blocks.first().getByRole('button', { name: '复制' })
+  ).toBeVisible();
+  await expect(blocks.first().locator('pre')).not.toHaveAttribute('style');
+
+  await blocks.first().getByRole('button', { name: '复制' }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
+    'docker pull harbor.mirrors.zjusct.io/'
+  );
+
+  const noScriptContext = await browser.newContext({
+    javaScriptEnabled: false,
+    colorScheme: 'light',
+  });
+  const noScriptPage = await noScriptContext.newPage();
+  await noScriptPage.goto('/container-images/');
+  await expect(noScriptPage.locator('pre').first()).not.toHaveCSS(
+    'background-color',
+    'rgb(36, 41, 46)'
+  );
+  await noScriptContext.close();
 });
 
 test('opens and navigates the infrastructure image gallery', async ({

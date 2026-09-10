@@ -54,6 +54,7 @@ interface DirectiveOptions {
 }
 
 let mappingPromise: Promise<Record<string, MirrorDocsMapping>> | undefined;
+let titlePromise: Promise<Record<string, string>> | undefined;
 
 function escapeHtml(value: string): string {
   return value
@@ -472,6 +473,33 @@ export async function loadMirrorDocsMapping(): Promise<
     return parsed;
   });
   return mappingPromise;
+}
+
+export async function loadMirrorDocsTitles(): Promise<Record<string, string>> {
+  titlePromise ??= loadMirrorDocsMapping().then(async (mapping) => {
+    const docsIds = [
+      ...new Set(
+        Object.values(mapping)
+          .map(({ docsId }) => docsId)
+          .filter((docsId): docsId is string => docsId !== null)
+      ),
+    ];
+    const entries = await Promise.all(
+      docsIds.map(async (docsId) => {
+        const source = await readFile(
+          path.join(docsRoot, docsId, 'zh.yaml'),
+          'utf8'
+        );
+        const config = parseYaml(source) as { _?: unknown } | null;
+        if (typeof config?._ !== 'string' || !config._.trim()) {
+          throw new Error(`${docsId}/zh.yaml has no title`);
+        }
+        return [docsId, config._] as const;
+      })
+    );
+    return Object.fromEntries(entries);
+  });
+  return titlePromise;
 }
 
 export async function getMappedDocumentRoutes(): Promise<string[]> {

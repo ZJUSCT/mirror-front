@@ -27,6 +27,10 @@ docker compose run --rm dev pnpm format
 docker compose run --rm dev pnpm run ci
 ```
 
+For local UI review without live back-end endpoints, run `pnpm dev:review`.
+It serves the populated `test/fixtures/review-mirrorz.json` catalog and reports
+an on-campus IPv4 connection so campus-only UI can be inspected.
+
 Build the unprivileged production image, or start its production-style preview
 on `0.0.0.0:8080` and run the browser acceptance suite against it:
 
@@ -51,7 +55,8 @@ the ten newest commit-tagged images and removes unneeded untagged images.
 - Generic interface glyphs primarily use Google Material Icons' baseline
   family; brand marks use Iconify Logos or Simple Icons, while institutional
   artwork remains in the local `resource/icons/` collection.
-- The About, History, and FAQ pages live in `src/content/special-pages/`, with
+- The About, History, FAQ, and Container Images pages live in
+  `src/content/special-pages/`, with
   one MDX file per page and locale. Their frontmatter supplies the page title
   and lead; the shared layout and presentation remain in
   `src/components/static/SpecialPage.astro`. Keep matching `zh/` and `en/`

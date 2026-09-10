@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { parseNetworkMode } from '../src/lib/network';
+import { isCampusNetwork, parseNetworkMode } from '../src/lib/network';
 
 describe('campus-network response', () => {
   test.each([
@@ -12,5 +12,14 @@ describe('campus-network response', () => {
     [null, 'unknown'],
   ])('maps %j to %j', (input, expected) => {
     expect(parseNetworkMode(input)).toBe(expected);
+  });
+
+  test.each([
+    [0, false],
+    [1, true],
+    [2, true],
+    ['unknown', false],
+  ] as const)('identifies campus mode %j as %j', (mode, expected) => {
+    expect(isCampusNetwork(mode)).toBe(expected);
   });
 });

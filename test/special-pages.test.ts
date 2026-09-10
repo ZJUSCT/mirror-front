@@ -13,7 +13,12 @@ async function pageSlugs(locale: 'en' | 'zh'): Promise<string[]> {
 
 describe('special-page content', () => {
   test('keeps matching English and Chinese page files', async () => {
-    expect(await pageSlugs('en')).toEqual(['about', 'faq', 'history']);
+    expect(await pageSlugs('en')).toEqual([
+      'about',
+      'container-images',
+      'faq',
+      'history',
+    ]);
     expect(await pageSlugs('zh')).toEqual(await pageSlugs('en'));
   });
 });

@@ -1,0 +1,63 @@
+---
+title: Container Images
+lead: A container registry proxy cache for users on the ZJU campus network.
+---
+
+## What is a pull-through cache?
+
+A pull-through cache sits between a container client and an upstream registry. The first time an image is requested, the service pulls it from the upstream registry and caches it. Later requests can use the local cache, reducing repeated Internet transfers and improving pull speeds on campus. If an image is not yet cached, the first pull still depends on the availability and network performance of the upstream registry.
+
+This service is available only from the ZJU campus network and does not require authentication. Do not publish the proxy address to off-campus users or use it as a public-facing service dependency.
+
+## Usage
+
+Add `harbor.mirrors.zjusct.io/` before the original image name and retain the original registry hostname. For example:
+
+```console
+docker pull harbor.mirrors.zjusct.io/ghcr.io/owner/image:tag
+docker pull harbor.mirrors.zjusct.io/registry.k8s.io/pause:3.10
+docker pull harbor.mirrors.zjusct.io/quay.io/prometheus/prometheus:latest
+```
+
+### Docker Hub images
+
+Docker Hub image names often omit the registry hostname, and official images also omit the `library/` namespace. Both parts must be explicit when pulling through this proxy:
+
+| Common notation          | Pull through the proxy                                           |
+| ------------------------ | ---------------------------------------------------------------- |
+| `ubuntu:24.04`           | `harbor.mirrors.zjusct.io/hub.docker.com/library/ubuntu:24.04`   |
+| `library/nginx:stable`   | `harbor.mirrors.zjusct.io/hub.docker.com/library/nginx:stable`   |
+| `prom/prometheus:latest` | `harbor.mirrors.zjusct.io/hub.docker.com/prom/prometheus:latest` |
+
+In other words:
+
+- if an image name has no registry hostname, add `hub.docker.com/`;
+- if it has only one path component, it is a Docker Official Image, so also add `library/`;
+- finally, add `harbor.mirrors.zjusct.io/` before the complete name.
+
+The same complete image name works in Pod manifests, Compose files, and other tools compatible with OCI/Docker registries. For example:
+
+```yaml
+image: harbor.mirrors.zjusct.io/hub.docker.com/library/redis:7
+```
+
+## Proxied registries
+
+Proxy caches are currently available for these upstream registries:
+
+| Registry                     | Proxy path prefix                               |
+| ---------------------------- | ----------------------------------------------- |
+| Docker Hub                   | `harbor.mirrors.zjusct.io/hub.docker.com/`      |
+| GitHub Container Registry    | `harbor.mirrors.zjusct.io/ghcr.io/`             |
+| Quay                         | `harbor.mirrors.zjusct.io/quay.io/`             |
+| NVIDIA Container Registry    | `harbor.mirrors.zjusct.io/nvcr.io/`             |
+| Kubernetes Registry          | `harbor.mirrors.zjusct.io/registry.k8s.io/`     |
+| GitLab Container Registry    | `harbor.mirrors.zjusct.io/registry.gitlab.com/` |
+| Amazon ECR Public Gallery    | `harbor.mirrors.zjusct.io/public.ecr.aws/`      |
+| Microsoft Artifact Registry  | `harbor.mirrors.zjusct.io/mcr.microsoft.com/`   |
+| Elastic Container Registry   | `harbor.mirrors.zjusct.io/docker.elastic.co/`   |
+| Google Container Registry    | `harbor.mirrors.zjusct.io/gcr.io/`              |
+| Legacy Kubernetes GCR        | `harbor.mirrors.zjusct.io/k8s.gcr.io/`          |
+| Google US Container Registry | `harbor.mirrors.zjusct.io/us.gcr.io/`           |
+| LinuxServer.io               | `harbor.mirrors.zjusct.io/lscr.io/`             |
+| OSGeo Docker Registry        | `harbor.mirrors.zjusct.io/docker.osgeo.org/`    |

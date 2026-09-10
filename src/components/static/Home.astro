@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import harborIcon from '@iconify-icons/devicon/harbor';
 import archlinuxIcon from '@iconify/icons-logos/archlinux';
 import debianIcon from '@iconify/icons-logos/debian';
 import pythonIcon from '@iconify/icons-logos/python';
@@ -9,7 +10,10 @@ import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
 
 import MirrorExplorer from '../react/MirrorExplorer';
 import { searchIcon } from '../../lib/ui-icons';
-import { loadMirrorDocsMapping } from '../../lib/mirrorz-docs/loader';
+import {
+  loadMirrorDocsMapping,
+  loadMirrorDocsTitles,
+} from '../../lib/mirrorz-docs/loader';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 
 interface Props {
@@ -47,11 +51,15 @@ const announcementItems = announcements.map((entry) => {
 });
 const visibleAnnouncements = announcementItems.slice(0, 2);
 const additionalAnnouncements = announcementItems.slice(2);
-const mapping = await loadMirrorDocsMapping();
+const [mapping, docsTitles] = await Promise.all([
+  loadMirrorDocsMapping(),
+  loadMirrorDocsTitles(),
+]);
 const docsByMirrorId = Object.fromEntries(
   Object.entries(mapping).map(([mirrorId, value]) => [mirrorId, value.docsId])
 );
 const isZh = locale === 'zh';
+const harborQuickLinkIcon = staticIcon(harborIcon);
 const quickLinks = [
   {
     name: 'Ubuntu',
@@ -190,6 +198,26 @@ const quickLinks = [
         {isZh ? '常用镜像' : 'Popular Mirrors'}
       </h2>
       <div class="quick-links">
+        <template id="campus-container-images-link">
+          <a class="quick-link" href={`${isZh ? '' : '/en'}/container-images/`}>
+            <span class="quick-link-icon" aria-hidden="true">
+              <svg
+                viewBox={`0 0 ${harborQuickLinkIcon.width} ${harborQuickLinkIcon.height}`}
+                focusable="false"
+              >
+                <g set:html={harborQuickLinkIcon.body} />
+              </svg>
+            </span>
+            <strong>{isZh ? '容器镜像' : 'Container Images'}</strong>
+            <span>
+              {
+                isZh
+                  ? '容器 Registry 代理缓存'
+                  : 'Container registry proxy cache'
+              }
+            </span>
+          </a>
+        </template>
         {
           quickLinks.map((item) => (
             <a
@@ -229,6 +257,35 @@ const quickLinks = [
       client:load
       locale={locale}
       docsByMirrorId={docsByMirrorId}
+      docsTitles={docsTitles}
     />
   </div>
 </SiteLayout>
+
+<script>
+  import {
+    campusNetworkEndpoint,
+    isCampusNetwork,
+    parseNetworkMode,
+  } from '../../lib/network';
+
+  const template = document.querySelector<HTMLTemplateElement>(
+    '#campus-container-images-link'
+  );
+
+  if (template) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 5000);
+
+    fetch(campusNetworkEndpoint, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) return false;
+        return isCampusNetwork(parseNetworkMode(await response.json()));
+      })
+      .then((onCampus) => {
+        if (onCampus) template.replaceWith(template.content);
+      })
+      .catch(() => {})
+      .finally(() => window.clearTimeout(timeout));
+  }
+</script>

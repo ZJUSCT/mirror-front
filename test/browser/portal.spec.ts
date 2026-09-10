@@ -66,14 +66,38 @@ const mirrorFixture = {
     },
   ],
 };
+const campusNetworkPattern = /\/api\/is_campus_network\/?$/;
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/mirrorz.json', (route) =>
     route.fulfill({ json: mirrorFixture })
   );
-  await page.route('**/api/is_campus_network', (route) =>
+  await page.route(campusNetworkPattern, (route) =>
     route.fulfill({ body: '0', contentType: 'application/json' })
   );
+});
+
+test('shows container images only on the campus network', async ({ page }) => {
+  const containerImages = page.getByRole('link', {
+    name: /容器镜像 容器 Registry 代理缓存/,
+  });
+
+  await page.goto('/');
+  await expect(containerImages).toHaveCount(0);
+
+  await page.unroute(campusNetworkPattern);
+  await page.route(campusNetworkPattern, (route) =>
+    route.fulfill({ body: '1', contentType: 'application/json' })
+  );
+  await page.reload();
+
+  await expect(containerImages).toHaveAttribute('href', '/container-images/');
+  await expect(page.locator('.quick-link').first()).toHaveAttribute(
+    'href',
+    '/container-images/'
+  );
+  await expect(containerImages.locator('svg')).toBeVisible();
+  await expect(containerImages.locator('img')).toHaveCount(0);
 });
 
 test('keeps the static portal useful without JavaScript', async ({
@@ -104,6 +128,10 @@ test('uses production mirror links and persists the name display mode', async ({
 }) => {
   await page.goto('/en/');
 
+  await expect(
+    page.getByRole('heading', { name: 'Ubuntu 软件仓库' })
+  ).toBeVisible();
+
   const card = page.locator('.mirror-card').filter({
     has: page.getByRole('heading', { name: 'Browser fixture mirror' }),
   });
@@ -116,6 +144,9 @@ test('uses production mirror links and persists the name display mode', async ({
   await expect(
     page.getByRole('heading', { name: 'browser-fixture' })
   ).toBeVisible();
+  await expect(page.locator('a[href="/en/docs/ubuntu/"] h3')).toHaveText(
+    /^ubuntu$/
+  );
   await page.reload();
   await expect(
     page.getByRole('heading', { name: 'browser-fixture' })

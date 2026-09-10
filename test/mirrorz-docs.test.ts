@@ -13,6 +13,7 @@ import {
   compileDocumentMarkdown,
   getMappedDocumentRoutes,
   loadMirrorDocsMapping,
+  loadMirrorDocsTitles,
   loadMirrorzDocument,
 } from '../src/lib/mirrorz-docs/loader';
 import {
@@ -85,6 +86,13 @@ describe('pinned MirrorZ Docs input', () => {
     ).toHaveLength(11);
     expect(new Set(routes).size).toBe(routes.length);
     expect(documents.every((document) => document.html.length > 0)).toBe(true);
+  });
+
+  test('loads document titles for the mirror catalog', async () => {
+    const titles = await loadMirrorDocsTitles();
+
+    expect(titles.ubuntu).toBe('Ubuntu 软件仓库');
+    expect(Object.keys(titles)).toHaveLength(52);
   });
 
   test('turns Debian ztmpl blocks into interactive, safe templates', async () => {

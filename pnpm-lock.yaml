@@ -20,6 +20,9 @@ importers:
       '@fontsource/poppins':
         specifier: 5.2.7
         version: 5.2.7
+      '@iconify-icons/devicon':
+        specifier: 2.0.0
+        version: 2.0.0
       '@iconify/icons-ic':
         specifier: 1.2.13
         version: 1.2.13
@@ -620,6 +623,9 @@ packages:
 
   '@fontsource/poppins@5.2.7':
     resolution: {integrity: sha512-6uQyPmseo4FgI97WIhA4yWRlNaoLk4vSDK/PyRwdqqZb5zAEuc+Kunt8JTMcsHYUEGYBtN15SNkMajMdqUSUmg==}
+
+  '@iconify-icons/devicon@2.0.0':
+    resolution: {integrity: sha512-8t60R2IIxtTZhuK/X2bAOW3nxQfq3TLtcJA9sDHEEONXrAIQr9r4Wi+n97a4VuFD1GCE8grv67Dm7UNYmZL61w==}
 
   '@iconify/icons-ic@1.2.13':
     resolution: {integrity: sha512-TphrhwOvgd7CTmUhz6jgXF+SPnMtvTm03bZsAYbny2kwq4zlkhr9e16YEyPGMvKhjtTqNooA3iZ9Wa+pZ8moXQ==}
@@ -3522,6 +3528,10 @@ snapshots:
     optional: true
 
   '@fontsource/poppins@5.2.7': {}
+
+  '@iconify-icons/devicon@2.0.0':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/icons-ic@1.2.13':
     dependencies:

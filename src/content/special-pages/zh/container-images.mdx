@@ -1,0 +1,63 @@
+---
+title: 容器镜像
+lead: 面向校内用户的容器 Registry 代理缓存服务。
+---
+
+## 什么是 Pull Through Cache？
+
+Pull Through Cache（拉取式缓存）位于容器客户端和上游 Registry 之间。首次请求某个镜像时，服务会从上游 Registry 拉取并缓存镜像；后续请求可以直接使用本地缓存，从而减少重复的公网传输并提升校内拉取速度。如果缓存中没有所需镜像，首次拉取的速度仍取决于上游 Registry 的可用性和网络状况。
+
+本服务仅面向浙江大学校内网络提供，无需登录。请勿向校外用户发布代理地址或将其配置为面向公网的服务依赖。
+
+## 如何使用
+
+在原镜像名称前添加 `harbor.mirrors.zjusct.io/`，并保留原 Registry 的域名。例如：
+
+```console
+docker pull harbor.mirrors.zjusct.io/ghcr.io/owner/image:tag
+docker pull harbor.mirrors.zjusct.io/registry.k8s.io/pause:3.10
+docker pull harbor.mirrors.zjusct.io/quay.io/prometheus/prometheus:latest
+```
+
+### Docker Hub 镜像
+
+Docker Hub 镜像经常省略 Registry 域名，官方镜像还会省略 `library/` 命名空间。通过本代理拉取时，这两部分都必须明确写出：
+
+| 通常写法                 | 通过代理拉取                                                     |
+| ------------------------ | ---------------------------------------------------------------- |
+| `ubuntu:24.04`           | `harbor.mirrors.zjusct.io/hub.docker.com/library/ubuntu:24.04`   |
+| `library/nginx:stable`   | `harbor.mirrors.zjusct.io/hub.docker.com/library/nginx:stable`   |
+| `prom/prometheus:latest` | `harbor.mirrors.zjusct.io/hub.docker.com/prom/prometheus:latest` |
+
+也就是说：
+
+- 镜像名中没有 Registry 域名时，补上 `hub.docker.com/`；
+- 镜像名只有一个路径段时，它是 Docker Official Image，还要补上 `library/`；
+- 最后在完整名称前添加 `harbor.mirrors.zjusct.io/`。
+
+同样的完整镜像名称可以用于 Pod 清单、Compose 文件和其他兼容 OCI/Docker Registry 的工具。例如：
+
+```yaml
+image: harbor.mirrors.zjusct.io/hub.docker.com/library/redis:7
+```
+
+## 已代理的 Registry
+
+当前提供以下上游 Registry 的代理缓存：
+
+| Registry                     | 代理路径前缀                                    |
+| ---------------------------- | ----------------------------------------------- |
+| Docker Hub                   | `harbor.mirrors.zjusct.io/hub.docker.com/`      |
+| GitHub Container Registry    | `harbor.mirrors.zjusct.io/ghcr.io/`             |
+| Quay                         | `harbor.mirrors.zjusct.io/quay.io/`             |
+| NVIDIA Container Registry    | `harbor.mirrors.zjusct.io/nvcr.io/`             |
+| Kubernetes Registry          | `harbor.mirrors.zjusct.io/registry.k8s.io/`     |
+| GitLab Container Registry    | `harbor.mirrors.zjusct.io/registry.gitlab.com/` |
+| Amazon ECR Public Gallery    | `harbor.mirrors.zjusct.io/public.ecr.aws/`      |
+| Microsoft Artifact Registry  | `harbor.mirrors.zjusct.io/mcr.microsoft.com/`   |
+| Elastic Container Registry   | `harbor.mirrors.zjusct.io/docker.elastic.co/`   |
+| Google Container Registry    | `harbor.mirrors.zjusct.io/gcr.io/`              |
+| Kubernetes 旧版 GCR          | `harbor.mirrors.zjusct.io/k8s.gcr.io/`          |
+| Google US Container Registry | `harbor.mirrors.zjusct.io/us.gcr.io/`           |
+| LinuxServer.io               | `harbor.mirrors.zjusct.io/lscr.io/`             |
+| OSGeo Docker Registry        | `harbor.mirrors.zjusct.io/docker.osgeo.org/`    |

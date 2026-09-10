@@ -2,9 +2,10 @@
 import { getCollection, render } from 'astro:content';
 
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import StaticCodeBlocks from '../react/StaticCodeBlocks';
 
 interface Props {
-  kind: 'about' | 'history' | 'faq';
+  kind: 'about' | 'history' | 'faq' | 'container-images';
   locale: 'zh' | 'en';
 }
 
@@ -41,6 +42,7 @@ const { Content } = await render(entry);
 
     <article class="article-body prose special-body">
       <Content />
+      <StaticCodeBlocks client:load locale={locale} />
     </article>
   </div>
 </SiteLayout>
