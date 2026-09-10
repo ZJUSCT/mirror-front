@@ -43,6 +43,8 @@ services:
   preview:
     build:
       context: .
+      args:
+        DEPLOYMENT_ENV: ${DEPLOYMENT_ENV:-production}
     image: mirror-front:preview
     read_only: true
     cap_drop:

@@ -31,6 +31,17 @@ For local UI review without live back-end endpoints, run `pnpm dev:review`.
 It serves the populated `test/fixtures/review-mirrorz.json` catalog and reports
 an on-campus IPv4 connection so campus-only UI can be inspected.
 
+The deployment marker is configured at build time. Production defaults to
+`DEPLOYMENT_ENV=production`; set it to `staging` to add a fixed strip to every
+page:
+
+```sh
+DEPLOYMENT_ENV=staging pnpm build
+```
+
+The production Dockerfile accepts the same name as a build argument, so the
+equivalent image build uses `--build-arg DEPLOYMENT_ENV=staging`.
+
 Build the unprivileged production image, or start its production-style preview
 on `0.0.0.0:8080` and run the browser acceptance suite against it:
 

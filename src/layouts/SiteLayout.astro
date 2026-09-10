@@ -20,6 +20,7 @@ import {
   labelIcon,
   translateIcon,
 } from '../lib/ui-icons';
+import { stagingDeployment } from '../lib/deployment';
 import '../styles/global.css';
 
 interface Props {
@@ -127,7 +128,19 @@ const portalLinks = [
       })();
     </script>
   </head>
-  <body class:list={[`page-${pageKind}`, { 'page-home': home }]}>
+  <body
+    class:list={[
+      `page-${pageKind}`,
+      { 'page-home': home, 'has-deployment-strip': stagingDeployment },
+    ]}
+  >
+    {
+      stagingDeployment && (
+        <div class="deployment-strip" data-deployment-environment="staging">
+          {lang === 'zh' ? '测试站点' : 'Staging site'}
+        </div>
+      )
+    }
     <a class="skip-link" href="#main-content">
       {lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}
     </a>
