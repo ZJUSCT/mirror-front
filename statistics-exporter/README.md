@@ -86,7 +86,8 @@ The executable accepts `--config PATH`, `--output PATH`, and `--once`. `--once`
 performs one export and exits with a nonzero status if it fails; it is useful
 for checking a configuration before enabling the sidecar.
 
-CI tests, builds, and scans the exporter image alongside the frontend image.
+CI builds the exporter image alongside the frontend image. Its image build runs
+the two focused exporter tests; they can also be run locally with `pnpm test`.
 Successful pushes to `main` publish
 `ghcr.io/zjusct/mirror-front-statistics-exporter` with `latest` and the same
 seven-character commit tag as `ghcr.io/zjusct/mirror-front`.

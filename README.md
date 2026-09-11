@@ -7,9 +7,8 @@ islands for live mirror status, search, and interactive MirrorZ guides. Back-end
 
 ## Development
 
-Development runs entirely in Docker with Node.js 22, pnpm 10.15.1, and the
-Chromium version bundled for Playwright 1.62.1. Generated files, dependencies,
-and browser downloads stay in Docker volumes and images.
+Development runs entirely in Docker with Node.js 22 and pnpm 10.15.1.
+Generated files and dependencies stay in Docker volumes and images.
 
 ```sh
 export DEV_UID="$(id -u)" DEV_GID="$(id -g)"
@@ -19,36 +18,40 @@ docker compose run --rm dev pnpm install --frozen-lockfile
 docker compose run --rm --service-ports dev
 ```
 
-The development server listens on `0.0.0.0:4321`. Run formatting or the full
-source and build contract with the same image:
+The development server listens on `0.0.0.0:4321`. Type checking and optional
+formatting can also be run locally with the same image:
 
 ```sh
+docker compose run --rm dev pnpm check
 docker compose run --rm dev pnpm format
-docker compose run --rm dev pnpm run ci
 ```
 
-For local UI review without live back-end endpoints, run `pnpm dev:review`.
-It serves the populated `test/fixtures/review-mirrorz.json` catalog and reports
-an on-campus IPv4 connection so campus-only UI can be inspected.
+For local UI review without live back-end endpoints, run:
+
+```sh
+docker compose run --rm --service-ports dev pnpm dev:review
+```
+
+It serves the populated `dev/fixtures/mirrorz.json` catalog and reports an
+on-campus IPv4 connection so campus-only UI can be inspected.
 
 The deployment marker is configured at build time. Production defaults to
 `DEPLOYMENT_ENV=production`; set it to `staging` to add a fixed strip to every
 page:
 
 ```sh
-DEPLOYMENT_ENV=staging pnpm build
+docker compose run --rm -e DEPLOYMENT_ENV=staging dev pnpm build
 ```
 
 The production Dockerfile accepts the same name as a build argument, so the
 equivalent image build uses `--build-arg DEPLOYMENT_ENV=staging`.
 
 Build the unprivileged production image, or start its production-style preview
-on `0.0.0.0:8080` and run the browser acceptance suite against it:
+on `0.0.0.0:8080`:
 
 ```sh
 docker build --tag mirror-front .
 docker compose up --detach --build preview
-docker compose run --rm browser
 ```
 
 Cluster-specific NGINX configuration can be mounted under
@@ -56,10 +59,11 @@ Cluster-specific NGINX configuration can be mounted under
 HTTP and server contexts, respectively. Run `docker compose down` when the
 preview is no longer needed; named development caches are retained.
 
-A successful CI run for a push to `main` scans and publishes the frontend and
-statistics exporter GHCR images as `latest` and their seven-character commit
-abbreviation. Registry cleanup retains
-the ten newest commit-tagged images and removes unneeded untagged images.
+CI builds both images. The frontend build runs Astro/TypeScript checks, and
+the exporter build runs its two focused tests. Pushes to `main` also
+publish both GHCR images as `latest` and their seven-character commit
+abbreviation. Registry cleanup retains the ten newest commit-tagged images
+and removes unneeded untagged images.
 
 ## Content and runtime data
 
@@ -82,8 +86,7 @@ the ten newest commit-tagged images and removes unneeded untagged images.
   The parent repository's gitlink is the authoritative content pin;
   `mirrorz-docs.lock.json` repeats the commit and license as build-time
   provenance because Docker builds do not receive Git metadata. Update the
-  gitlink and manifest commit together—the test suite rejects drift between
-  them and the checked-out submodule.
+  gitlink and manifest commit together when updating the guides.
 - The browser consumes the same-origin `/mirrorz.json` endpoint directly as
   [MirrorZ Data Format v1.7](https://github.com/mirrorz-org/mirrorz#data-format-v17).
   MirrorZ governs this public data contract.

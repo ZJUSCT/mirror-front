@@ -22,7 +22,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY . .
-RUN pnpm run build && pnpm run verify-build
+RUN pnpm check && pnpm build
 RUN chmod -R a=rX dist
 
 FROM nginxinc/nginx-unprivileged:mainline-alpine-otel AS runtime

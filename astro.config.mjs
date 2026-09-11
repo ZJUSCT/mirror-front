@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 import { readFileSync } from 'node:fs';
 
 const reviewMirrorz = readFileSync(
-  new URL('./test/fixtures/review-mirrorz.json', import.meta.url)
+  new URL('./dev/fixtures/mirrorz.json', import.meta.url)
 );
 
 const localReviewFixtures = {

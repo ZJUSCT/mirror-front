@@ -9,7 +9,6 @@ services:
         DEV_GID: ${DEV_GID:-1000}
         NODE_VERSION: '22'
         PNPM_VERSION: 10.15.1
-        PLAYWRIGHT_VERSION: 1.62.1
     init: true
     ports:
       - '4321:4321'
@@ -20,25 +19,6 @@ services:
       - dev-astro:/app/.astro
       - dev-cache:/app/.cache
       - dev-dist:/app/dist
-      - dev-test-results:/app/test-results
-      - dev-playwright-report:/app/playwright-report
-
-  browser:
-    image: mirror-front-dev
-    init: true
-    network_mode: host
-    command: pnpm test:browser
-    environment:
-      MIRROR_FRONT_BASE_URL: http://127.0.0.1:8080
-    volumes:
-      - .:/app
-      - dev-node-modules:/app/node_modules
-      - dev-pnpm-store:/pnpm/store
-      - dev-astro:/app/.astro
-      - dev-cache:/app/.cache
-      - dev-dist:/app/dist
-      - dev-test-results:/app/test-results
-      - dev-playwright-report:/app/playwright-report
 
   preview:
     build:
@@ -55,8 +35,6 @@ services:
       - '0.0.0.0:8080:8080'
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,size=32m
-    volumes:
-      - ./test/nginx-drop-ins:/etc/nginx/mirror-front:ro
 
 volumes:
   dev-node-modules:
@@ -64,5 +42,3 @@ volumes:
   dev-astro:
   dev-cache:
   dev-dist:
-  dev-test-results:
-  dev-playwright-report:

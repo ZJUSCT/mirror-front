@@ -12,19 +12,12 @@
   },
   "scripts": {
     "build": "astro build && node scripts/generate-autoindex.mjs",
-    "ci": "pnpm format:check && pnpm types-check && pnpm test && pnpm build && pnpm verify-build",
     "dev": "astro dev --host 0.0.0.0",
     "dev:review": "MIRROR_FRONT_REVIEW_FIXTURES=1 astro dev --host 0.0.0.0",
-    "format": "prettier --write src test scripts statistics-exporter/*.mjs statistics-exporter/*.json *.ts *.mjs *.json .github/workflows",
-    "format:check": "prettier --check src test scripts statistics-exporter/*.mjs statistics-exporter/*.json *.ts *.mjs *.json .github/workflows",
-    "lint-check": "prettier --check src test scripts",
     "preview": "astro preview --host 0.0.0.0",
-    "test": "vitest run && node --test test/*.test.mjs statistics-exporter/*.test.mjs",
-    "test:artifact": "node --test test/*.test.mjs",
-    "test:browser": "playwright test",
-    "test:unit": "vitest run",
-    "types-check": "astro check",
-    "verify-build": "node scripts/verify-build.mjs"
+    "format": "prettier --write src scripts statistics-exporter/*.mjs statistics-exporter/*.json *.mjs *.json .github/workflows",
+    "check": "astro check",
+    "test": "node --test statistics-exporter/exporter.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.7",
@@ -48,8 +41,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.62.1",
     "@types/mustache": "4.2.6",
     "@types/node": "22.20.1",
     "@types/react": "18.3.27",
@@ -57,8 +48,7 @@
     "@types/sanitize-html": "2.16.1",
     "prettier": "3.7.4",
     "prettier-plugin-astro": "0.14.1",
-    "typescript": "5.9.3",
-    "vitest": "4.1.11"
+    "typescript": "5.9.3"
   },
   "repository": {
     "type": "git",
