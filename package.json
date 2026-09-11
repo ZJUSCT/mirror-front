@@ -28,7 +28,7 @@
     "@iconify/icons-ic": "1.2.13",
     "@iconify/icons-logos": "1.2.36",
     "@iconify/icons-simple-icons": "1.2.74",
-    "astro": "7.2.4",
+    "astro": "7.2.8",
     "fuse.js": "7.1.0",
     "highlight.js": "11.11.1",
     "marked": "18.0.10",
