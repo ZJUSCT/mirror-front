@@ -18,6 +18,7 @@ import {
   historyIcon,
   infoIcon,
   labelIcon,
+  statisticsIcon,
   translateIcon,
 } from '../lib/ui-icons';
 import { stagingDeployment } from '../lib/deployment';
@@ -57,6 +58,11 @@ const alternatePath =
 const showLanguage = pageKind !== 'autoindex';
 const showPortalActions = pageKind !== 'autoindex';
 const portalLinks = [
+  {
+    href: `${lang === 'zh' ? '' : '/en'}/statistics/`,
+    label: lang === 'zh' ? '统计' : 'Statistics',
+    icon: statisticsIcon,
+  },
   {
     href: `${lang === 'zh' ? '' : '/en'}/about/`,
     label: lang === 'zh' ? '关于' : 'About',

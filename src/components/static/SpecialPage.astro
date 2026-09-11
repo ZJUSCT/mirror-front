@@ -3,9 +3,10 @@ import { getCollection, render } from 'astro:content';
 
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import StaticCodeBlocks from '../react/StaticCodeBlocks';
+import Statistics from '../react/Statistics';
 
 interface Props {
-  kind: 'about' | 'history' | 'faq' | 'container-images';
+  kind: 'about' | 'history' | 'faq' | 'container-images' | 'statistics';
   locale: 'zh' | 'en';
 }
 
@@ -42,7 +43,13 @@ const { Content } = await render(entry);
 
     <article class="article-body prose special-body">
       <Content />
-      <StaticCodeBlocks client:load locale={locale} />
+      {
+        kind === 'statistics' ? (
+          <Statistics client:load locale={locale} />
+        ) : (
+          <StaticCodeBlocks client:load locale={locale} />
+        )
+      }
     </article>
   </div>
 </SiteLayout>
@@ -58,6 +65,36 @@ const { Content } = await render(entry);
 
   .special-body > * {
     width: min(58rem, 100%);
+  }
+
+  .special-body > astro-island:has(.statistics) {
+    display: block;
+    width: 100%;
+  }
+
+  .statistics-period {
+    color: var(--muted);
+  }
+
+  .statistics-panels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .statistics-panel {
+    flex: 1 1 32rem;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .statistics-panel h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .statistics-panel img {
+    width: 100%;
   }
 
   .special-body img {

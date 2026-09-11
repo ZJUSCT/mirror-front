@@ -56,8 +56,9 @@ Cluster-specific NGINX configuration can be mounted under
 HTTP and server contexts, respectively. Run `docker compose down` when the
 preview is no longer needed; named development caches are retained.
 
-A successful CI run for a push to `main` scans and publishes a GHCR image as
-`latest` and its seven-character commit abbreviation. Registry cleanup retains
+A successful CI run for a push to `main` scans and publishes the frontend and
+statistics exporter GHCR images as `latest` and their seven-character commit
+abbreviation. Registry cleanup retains
 the ten newest commit-tagged images and removes unneeded untagged images.
 
 ## Content and runtime data
@@ -66,12 +67,17 @@ the ten newest commit-tagged images and removes unneeded untagged images.
 - Generic interface glyphs primarily use Google Material Icons' baseline
   family; brand marks use Iconify Logos or Simple Icons, while institutional
   artwork remains in the local `resource/icons/` collection.
-- The About, History, FAQ, and Container Images pages live in
+- The About, History, FAQ, Container Images, and Statistics pages live in
   `src/content/special-pages/`, with
   one MDX file per page and locale. Their frontmatter supplies the page title
   and lead; the shared layout and presentation remain in
   `src/components/static/SpecialPage.astro`. Keep matching `zh/` and `en/`
   files when adding or renaming a page.
+- The Statistics page reads `/statistics-data/manifest.json` and static PNGs
+  generated hourly by the [statistics exporter sidecar](statistics-exporter/README.md).
+  Its source, image build, configuration example, and deployment contract live
+  under `statistics-exporter/`. Grafana panel selection is runtime configuration;
+  changing it does not require rebuilding the frontend.
 - Shared mirror guides come from the pinned `vendor/mirrorz-docs` submodule.
   The parent repository's gitlink is the authoritative content pin;
   `mirrorz-docs.lock.json` repeats the commit and license as build-time

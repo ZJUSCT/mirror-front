@@ -18,6 +18,7 @@ describe('special-page content', () => {
       'container-images',
       'faq',
       'history',
+      'statistics',
     ]);
     expect(await pageSlugs('zh')).toEqual(await pageSlugs('en'));
   });

@@ -70,6 +70,35 @@ jobs:
           vuln-type: os,library
           severity: CRITICAL
 
+      - name: Build statistics exporter image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./statistics-exporter
+          push: false
+          load: true
+          tags: mirror-front-statistics-exporter:ci
+          cache-from: type=gha,scope=mirror-front-statistics-exporter-${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=mirror-front-statistics-exporter-${{ github.ref_name }}
+
+      - name: Scan statistics exporter image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: mirror-front-statistics-exporter:ci
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL
+
+      - name: Test statistics exporter runtime
+        run: |
+          docker run --rm --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --tmpfs /tmp:rw,noexec,nosuid,nodev,size=32m \
+            --volume "$PWD/statistics-exporter/exporter.test.mjs:/app/exporter.test.mjs:ro" \
+            --entrypoint node mirror-front-statistics-exporter:ci \
+            --test /app/exporter.test.mjs
+
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 
@@ -111,7 +140,14 @@ jobs:
         run: docker rm --force mirror-front-ci || true
 
   publish:
-    name: Publish image
+    name: Publish ${{ matrix.image }}
+    strategy:
+      matrix:
+        include:
+          - image: mirror-front
+            context: .
+          - image: mirror-front-statistics-exporter
+            context: ./statistics-exporter
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: verify
     runs-on: ubuntu-24.04
@@ -119,7 +155,7 @@ jobs:
       contents: read
       packages: write
     env:
-      IMAGE_NAME: ghcr.io/zjusct/mirror-front
+      IMAGE_NAME: ghcr.io/zjusct/${{ matrix.image }}
     steps:
       - name: Check out source
         uses: actions/checkout@v5
@@ -155,17 +191,17 @@ jobs:
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.zjusct.mirror-front.mirrorz-docs-revision=${{ steps.docs.outputs.commit }}
+            ${{ matrix.image == 'mirror-front' && format('org.zjusct.mirror-front.mirrorz-docs-revision={0}', steps.docs.outputs.commit) || '' }}
 
       - name: Build and publish image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ matrix.context }}
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha,scope=mirror-front-${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=mirror-front-${{ github.ref_name }}
+          cache-from: type=gha,scope=${{ matrix.image }}-${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}-${{ github.ref_name }}
           provenance: false
 
       - name: Clean up old images
@@ -173,6 +209,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ZJUSCT
-          package: mirror-front
+          package: ${{ matrix.image }}
           keep-n-tagged: 10
           delete-untagged: true

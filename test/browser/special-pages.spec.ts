@@ -6,10 +6,12 @@ test('serves every localized special page', async ({ page }) => {
     '/container-images/',
     '/history/',
     '/faq/',
+    '/statistics/',
     '/en/about/',
     '/en/container-images/',
     '/en/history/',
     '/en/faq/',
+    '/en/statistics/',
   ]) {
     const response = await page.goto(path);
 
