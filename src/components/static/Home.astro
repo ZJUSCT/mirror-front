@@ -55,9 +55,26 @@ const [mapping, docsTitles] = await Promise.all([
   loadMirrorDocsMapping(),
   loadMirrorDocsTitles(),
 ]);
-const docsByMirrorId = Object.fromEntries(
-  Object.entries(mapping).map(([mirrorId, value]) => [mirrorId, value.docsId])
+// Guide lookups must survive case folding: mirror names from mirrorz.json are
+// Falcon CR names (lowercase-only), while guide directory names keep their
+// upstream casing (CPAN, CRAN). Lowercase alias keys let localDocsId()'s
+// folded candidates resolve to mixed-case guides. Exact keys always win; an
+// alias collision (upstream guides differing only by case) picks the
+// sorted-first guide deterministically.
+const docsEntries = Object.entries(mapping).flatMap(([mirrorId, value]) =>
+  value.docsId ? [[mirrorId, value.docsId] as const] : []
 );
+const docsByMirrorId: Record<string, string> = Object.fromEntries(
+  docsEntries.map(([mirrorId, docsId]) => [mirrorId, docsId])
+);
+for (const [mirrorId, docsId] of [...docsEntries].sort(([left], [right]) =>
+  left.localeCompare(right)
+)) {
+  const folded = mirrorId.toLowerCase();
+  if (folded !== mirrorId && !(folded in docsByMirrorId)) {
+    docsByMirrorId[folded] = docsId;
+  }
+}
 const isZh = locale === 'zh';
 const harborQuickLinkIcon = staticIcon(harborIcon);
 const quickLinks = [

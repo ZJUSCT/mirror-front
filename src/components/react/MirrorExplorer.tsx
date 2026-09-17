@@ -13,6 +13,8 @@ import { verifiedIcon } from '../../lib/ui-icons';
 
 interface Props {
   locale: 'zh' | 'en';
+  // Keys are guide ids plus their lowercase aliases (see Home.astro), so the
+  // folded candidates in localDocsId() resolve against mixed-case guides.
   docsByMirrorId: Record<string, string | null>;
   docsTitles: Record<string, string>;
 }
