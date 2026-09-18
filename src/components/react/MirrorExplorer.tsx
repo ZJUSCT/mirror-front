@@ -233,10 +233,15 @@ function MirrorCard({
             searchMatch ? (friendlyName ? friendlyLabel : pathId) : undefined
           }
         >
-          <HighlightedText
-            value={friendlyName ? friendlyLabel : pathId}
-            ranges={searchMatch?.indices[friendlyName ? 'title' : 'path']}
-          />
+          {/* The h3 is a flex row for the verified icon, so the title must sit
+              in one inline box; as direct children, highlighted fragments
+              would each become a flex item and scatter across lines. */}
+          <span>
+            <HighlightedText
+              value={friendlyName ? friendlyLabel : pathId}
+              ranges={searchMatch?.indices[friendlyName ? 'title' : 'path']}
+            />
+          </span>
           {certified ? (
             <svg
               className="verified-icon"
