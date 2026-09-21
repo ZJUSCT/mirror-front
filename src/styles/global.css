@@ -433,7 +433,7 @@ a {
 
 .section-heading-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
@@ -706,6 +706,37 @@ a {
   border-bottom: 1px solid var(--border);
 }
 
+.mirror-list-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mirror-list-sort:hover {
+  color: var(--primary);
+}
+
+.mirror-list-sort svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: currentColor;
+  opacity: 0.45;
+}
+
+.mirror-list th[aria-sort] {
+  color: var(--primary);
+}
+
+.mirror-list th[aria-sort] .mirror-list-sort svg {
+  opacity: 1;
+}
+
 .mirror-list tbody tr:nth-child(even) {
   background: color-mix(in srgb, var(--text) 3%, transparent);
 }
@@ -721,6 +752,21 @@ a {
 
 .mirror-list .missing {
   color: var(--muted);
+}
+
+.mirror-list-time {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.mirror-list-time:hover {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 .mirror-list-name {

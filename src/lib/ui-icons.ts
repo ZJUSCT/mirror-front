@@ -1,3 +1,5 @@
+import arrowDownwardModule from '@iconify/icons-ic/baseline-arrow-downward';
+import arrowUpwardModule from '@iconify/icons-ic/baseline-arrow-upward';
 import brightness4Module from '@iconify/icons-ic/baseline-brightness-4';
 import brightnessAutoModule from '@iconify/icons-ic/baseline-brightness-auto';
 import brightnessHighModule from '@iconify/icons-ic/baseline-brightness-high';
@@ -17,6 +19,7 @@ import personModule from '@iconify/icons-ic/baseline-person';
 import searchModule from '@iconify/icons-ic/baseline-search';
 import showChartModule from '@iconify/icons-ic/baseline-show-chart';
 import translateModule from '@iconify/icons-ic/baseline-translate';
+import unfoldMoreModule from '@iconify/icons-ic/baseline-unfold-more';
 import verifiedModule from '@iconify/icons-ic/baseline-verified';
 
 export interface UiIcon {
@@ -31,6 +34,8 @@ function normalizeIcon(value: unknown): UiIcon {
 }
 
 /** Generic interface glyphs from Google Material Icons. */
+export const arrowDownwardIcon = normalizeIcon(arrowDownwardModule);
+export const arrowUpwardIcon = normalizeIcon(arrowUpwardModule);
 export const brightnessAutoIcon = normalizeIcon(brightnessAutoModule);
 export const brightnessDarkIcon = normalizeIcon(brightness4Module);
 export const brightnessLightIcon = normalizeIcon(brightnessHighModule);
@@ -50,4 +55,5 @@ export const personIcon = normalizeIcon(personModule);
 export const searchIcon = normalizeIcon(searchModule);
 export const statisticsIcon = normalizeIcon(showChartModule);
 export const translateIcon = normalizeIcon(translateModule);
+export const unfoldMoreIcon = normalizeIcon(unfoldMoreModule);
 export const verifiedIcon = normalizeIcon(verifiedModule);
