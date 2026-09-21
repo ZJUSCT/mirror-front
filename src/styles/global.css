@@ -209,7 +209,7 @@ a {
   color: var(--primary);
   font-family: Metropolis, Arial, sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 2rem;
   text-decoration: none;
 }
@@ -230,7 +230,7 @@ a {
   color: var(--primary);
   font-family: Metropolis, Arial, sans-serif;
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 3.0625rem;
   margin-top: -1rem;
 }
