@@ -1,20 +1,33 @@
 import Fuse from 'fuse.js';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   mirrorPresentationState,
   mirrorzDataSchema,
-  resolveMirrorzUrl,
-  type MirrorPresentationState,
+  stateLabels,
   type MirrorzData,
   type MirrorzMirror,
 } from '../../lib/mirrorz';
-import { verifiedIcon } from '../../lib/ui-icons';
+import {
+  localDocsId,
+  mirrorLinkInfo,
+  mirrorPathId,
+} from '../../lib/mirror-view';
+import {
+  formatListBulletedIcon,
+  gridViewIcon,
+  verifiedIcon,
+} from '../../lib/ui-icons';
+import MirrorList from './MirrorList';
+import {
+  HighlightedText,
+  type MirrorSearchResult,
+  type SearchField,
+  type SearchMatch,
+} from './SearchHighlight';
 
 interface Props {
   locale: 'zh' | 'en';
-  // Keys are guide ids plus their lowercase aliases (see Home.astro), so the
-  // folded candidates in localDocsId() resolve against mixed-case guides.
   docsByMirrorId: Record<string, string | null>;
   docsTitles: Record<string, string>;
 }
@@ -22,45 +35,7 @@ interface Props {
 const cacheDataKey = 'zju-mirror:mirrorz:v1';
 const cacheSavedAtKey = 'zju-mirror:mirrorz:v1:saved-at';
 const cacheMaxAgeMs = 6 * 60 * 60 * 1000;
-
-const stateLabels: Record<MirrorPresentationState, string> = {
-  ready: 'SUCCEEDED',
-  syncing: 'SYNCING',
-  pending: 'PENDING',
-  failed: 'FAILED',
-  paused: 'PAUSED',
-  cached: 'CACHED',
-  proxied: 'PROXIED',
-  disabled: 'DISABLED',
-  unknown: 'UNKNOWN',
-};
-
-const officiallyCertifiedMirrorIds = new Set(
-  [
-    'CRAN',
-    'CTAN',
-    'almalinux',
-    'alpine',
-    'archlinux',
-    'archlinuxcn',
-    'bioconductor',
-    'centos',
-    'cygwin',
-    'debian',
-    'deepin',
-    'deepin-cd',
-    'EPEL',
-    'fedora',
-    'gentoo',
-    'openeuler',
-    'opensuse',
-    'raspbian',
-    'rocky',
-    'ros',
-    'ubuntu',
-    'ubuntu-releases',
-  ].map((value) => value.toLocaleLowerCase())
-);
+const viewModeKey = 'zju-mirror:view';
 
 interface CachedMirrorzData {
   data: MirrorzData;
@@ -105,92 +80,6 @@ async function fetchWithTimeout(
   }
 }
 
-function localDocsId(
-  mirror: MirrorzMirror,
-  docsByMirrorId: Record<string, string | null>
-): string | null {
-  const urlPath = (() => {
-    try {
-      return new URL(mirror.url, 'https://mirrorz.invalid').pathname
-        .split('/')
-        .filter(Boolean)[0];
-    } catch {
-      return undefined;
-    }
-  })();
-  const candidates = [
-    mirror.cname,
-    mirror.cname.toLocaleLowerCase(),
-    urlPath,
-    urlPath?.toLocaleLowerCase(),
-  ];
-  for (const candidate of candidates) {
-    if (candidate && docsByMirrorId[candidate]) {
-      return docsByMirrorId[candidate];
-    }
-  }
-  return null;
-}
-
-function mirrorPathId(mirror: MirrorzMirror, catalog: MirrorzData): string {
-  try {
-    return (
-      new URL(mirror.url, catalog.site.url).pathname
-        .split('/')
-        .filter(Boolean)[0] ?? mirror.cname
-    );
-  } catch {
-    return mirror.cname;
-  }
-}
-
-type SearchField = 'title' | 'cname' | 'path' | 'desc';
-
-interface SearchMatch {
-  score: number;
-  indices: Partial<Record<SearchField, [number, number][]>>;
-}
-
-interface MirrorSearchResult {
-  mirror: MirrorzMirror;
-  searchMatch?: SearchMatch;
-}
-
-function HighlightedText({
-  value,
-  ranges,
-}: {
-  value: string;
-  ranges?: [number, number][];
-}) {
-  if (!ranges?.length) return <>{value}</>;
-  const mergedRanges = ranges
-    .toSorted(([leftStart], [rightStart]) => leftStart - rightStart)
-    .reduce<[number, number][]>((merged, [start, end]) => {
-      const previous = merged.at(-1);
-      if (previous && start <= previous[1] + 1) {
-        previous[1] = Math.max(previous[1], end);
-      } else {
-        merged.push([start, end]);
-      }
-      return merged;
-    }, []);
-
-  const segments: ReactNode[] = [];
-  let cursor = 0;
-  for (const [start, end] of mergedRanges) {
-    if (start > cursor) segments.push(value.slice(cursor, start));
-    segments.push(
-      <mark className="mirror-search-match" key={`${start}-${end}`}>
-        {value.slice(start, end + 1)}
-      </mark>
-    );
-    cursor = end + 1;
-  }
-  if (cursor < value.length) segments.push(value.slice(cursor));
-  return segments;
-}
-
 function MirrorCard({
   mirror,
   catalog,
@@ -209,21 +98,14 @@ function MirrorCard({
   searchMatch?: SearchMatch;
 }) {
   const state = mirrorPresentationState(mirror, catalog.site.disable);
-  const dataUrl = resolveMirrorzUrl(catalog.site.url, mirror.url);
-  const docsId = localDocsId(mirror, docsByMirrorId);
-  const documentTitle = docsId ? docsTitles[docsId] : undefined;
-  const friendlyLabel = documentTitle ?? mirror.cname;
-  const upstreamHelpUrl = mirror.help
-    ? resolveMirrorzUrl(catalog.site.url, mirror.help)
-    : null;
-  const guideUrl = docsId
-    ? `${locale === 'en' ? '/en' : ''}/docs/${docsId}/`
-    : upstreamHelpUrl;
-  const destination = guideUrl ?? dataUrl;
-  const pathId = mirrorPathId(mirror, catalog);
-  const certified = officiallyCertifiedMirrorIds.has(
-    pathId.toLocaleLowerCase()
+  const link = mirrorLinkInfo(
+    mirror,
+    catalog,
+    docsByMirrorId,
+    docsTitles,
+    locale
   );
+  const { pathId, friendlyLabel, destination, certified } = link;
 
   return (
     <a className="mirror-card" href={destination ?? undefined}>
@@ -290,6 +172,7 @@ export default function MirrorExplorer({
   const [refreshAttempt, setRefreshAttempt] = useState(0);
   const [query, setQuery] = useState('');
   const [friendlyName, setFriendlyName] = useState(true);
+  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
   const searchRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -316,6 +199,24 @@ export default function MirrorExplorer({
     return () =>
       window.removeEventListener('zju-mirror:friendly-name-change', update);
   }, []);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(viewModeKey);
+      if (saved === 'list' || saved === 'card') setViewMode(saved);
+    } catch {
+      // The default card view stays when storage is unavailable.
+    }
+  }, []);
+
+  const updateViewMode = (mode: 'card' | 'list') => {
+    setViewMode(mode);
+    try {
+      window.localStorage.setItem(viewModeKey, mode);
+    } catch {
+      // Mode switching still works for the current page.
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -475,6 +376,44 @@ export default function MirrorExplorer({
         <h2 id="all-mirrors-heading">
           {locale === 'zh' ? '所有镜像' : 'All Mirrors'}
         </h2>
+        <div
+          className="view-toggle"
+          role="group"
+          aria-label={locale === 'zh' ? '切换视图' : 'Switch view'}
+        >
+          <button
+            type="button"
+            aria-pressed={viewMode === 'card'}
+            aria-label={locale === 'zh' ? '卡片视图' : 'Card view'}
+            title={locale === 'zh' ? '卡片视图' : 'Card view'}
+            onClick={() => updateViewMode('card')}
+          >
+            <svg
+              viewBox={`0 0 ${gridViewIcon.width} ${gridViewIcon.height}`}
+              aria-hidden="true"
+            >
+              <g dangerouslySetInnerHTML={{ __html: gridViewIcon.body }} />
+            </svg>
+          </button>
+          <button
+            type="button"
+            aria-pressed={viewMode === 'list'}
+            aria-label={locale === 'zh' ? '列表视图' : 'List view'}
+            title={locale === 'zh' ? '列表视图' : 'List view'}
+            onClick={() => updateViewMode('list')}
+          >
+            <svg
+              viewBox={`0 0 ${formatListBulletedIcon.width} ${formatListBulletedIcon.height}`}
+              aria-hidden="true"
+            >
+              <g
+                dangerouslySetInnerHTML={{
+                  __html: formatListBulletedIcon.body,
+                }}
+              />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {error ? (
@@ -507,35 +446,46 @@ export default function MirrorExplorer({
       ) : null}
 
       {catalog ? (
-        <div className="mirror-groups">
-          {groups.map((group) => (
-            <section
-              className="mirror-group"
-              key={group.letter ?? 'search-results'}
-              aria-labelledby={
-                group.letter ? `mirror-group-${group.letter}` : undefined
-              }
-            >
-              {group.letter ? (
-                <h3 id={`mirror-group-${group.letter}`}>{group.letter}</h3>
-              ) : null}
-              <div className="mirror-grid">
-                {group.items.map((result) => (
-                  <MirrorCard
-                    key={result.mirror.cname}
-                    mirror={result.mirror}
-                    catalog={catalog}
-                    docsByMirrorId={docsByMirrorId}
-                    docsTitles={docsTitles}
-                    locale={locale}
-                    friendlyName={friendlyName}
-                    searchMatch={result.searchMatch}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+        viewMode === 'list' ? (
+          <MirrorList
+            mirrors={mirrors}
+            catalog={catalog}
+            docsByMirrorId={docsByMirrorId}
+            docsTitles={docsTitles}
+            locale={locale}
+            friendlyName={friendlyName}
+          />
+        ) : (
+          <div className="mirror-groups">
+            {groups.map((group) => (
+              <section
+                className="mirror-group"
+                key={group.letter ?? 'search-results'}
+                aria-labelledby={
+                  group.letter ? `mirror-group-${group.letter}` : undefined
+                }
+              >
+                {group.letter ? (
+                  <h3 id={`mirror-group-${group.letter}`}>{group.letter}</h3>
+                ) : null}
+                <div className="mirror-grid">
+                  {group.items.map((result) => (
+                    <MirrorCard
+                      key={result.mirror.cname}
+                      mirror={result.mirror}
+                      catalog={catalog}
+                      docsByMirrorId={docsByMirrorId}
+                      docsTitles={docsTitles}
+                      locale={locale}
+                      friendlyName={friendlyName}
+                      searchMatch={result.searchMatch}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )
       ) : loading ? (
         <p className="loading-message">
           {locale === 'zh' ? '正在载入镜像状态…' : 'Loading mirror status…'}
@@ -548,7 +498,7 @@ export default function MirrorExplorer({
             : 'No mirrors match your search.'}
         </p>
       ) : null}
-      {!searching && groups.length > 0 ? (
+      {viewMode === 'card' && !searching && groups.length > 0 ? (
         <nav
           className="alphabet-nav"
           aria-label={locale === 'zh' ? '按首字母跳转' : 'Jump by initial'}

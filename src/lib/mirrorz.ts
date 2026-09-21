@@ -132,6 +132,49 @@ export function mirrorPresentationState(
     : 'unknown';
 }
 
+export const stateLabels: Record<MirrorPresentationState, string> = {
+  ready: 'SUCCEEDED',
+  syncing: 'SYNCING',
+  pending: 'PENDING',
+  failed: 'FAILED',
+  paused: 'PAUSED',
+  cached: 'CACHED',
+  proxied: 'PROXIED',
+  disabled: 'DISABLED',
+  unknown: 'UNKNOWN',
+};
+
+export interface ParsedMirrorStatus {
+  main: { code: string; ts?: number };
+  /** Auxiliary O: timestamp of the successful snapshot currently being served. */
+  servedAt?: number;
+  /** Auxiliary N: timestamp the mirror was added. */
+  createdAt?: number;
+  /** Auxiliary X: next scheduled sync. */
+  nextSyncAt?: number;
+}
+
+export function parseMirrorStatus(status: string): ParsedMirrorStatus {
+  let main: ParsedMirrorStatus['main'] | undefined;
+  let servedAt: number | undefined;
+  let createdAt: number | undefined;
+  let nextSyncAt: number | undefined;
+  for (const token of status.match(/[A-Z](?:\d+)?/g) ?? []) {
+    const code = token.charAt(0);
+    const ts = token.length > 1 ? Number(token.slice(1)) : undefined;
+    if (!main && mainStatusCodes.has(code)) {
+      main = { code, ts };
+    } else if (code === 'O') {
+      servedAt = ts;
+    } else if (code === 'N') {
+      createdAt = ts;
+    } else if (code === 'X') {
+      nextSyncAt = ts;
+    }
+  }
+  return { main: main ?? { code: 'U' }, servedAt, createdAt, nextSyncAt };
+}
+
 export function resolveMirrorzUrl(
   siteUrl: string,
   value: string

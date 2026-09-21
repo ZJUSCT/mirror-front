@@ -644,6 +644,119 @@ a {
   justify-content: space-between;
 }
 
+.view-toggle {
+  display: inline-flex;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.view-toggle button {
+  display: grid;
+  width: 2.25rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.view-toggle button + button {
+  border-left: 1px solid var(--border);
+}
+
+.view-toggle button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.view-toggle svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: currentColor;
+}
+
+.mirror-list-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+}
+
+.mirror-list {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.mirror-list th,
+.mirror-list td {
+  padding: 0.55rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.mirror-list th {
+  color: var(--metadata);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.mirror-list tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+.mirror-list tbody tr:hover {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.mirror-list .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mirror-list .missing {
+  color: var(--muted);
+}
+
+.mirror-list-name {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mirror-list-name a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mirror-list-name a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.mirror-list-verified {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.25rem;
+  vertical-align: -0.125rem;
+}
+
+.mirror-list-upstream a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.mirror-list-upstream a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 .status {
   display: inline-flex;
   width: fit-content;
