@@ -63,14 +63,6 @@ function formatIsoLocal(timestampSec: number): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}${offset}`;
 }
 
-function upstreamHost(url: string): string {
-  try {
-    return new URL(url).host;
-  } catch {
-    return url;
-  }
-}
-
 const binarySizeUnits: Record<string, number> = {
   b: 1,
   k: 1024,
@@ -110,7 +102,7 @@ interface RowItem {
   servedAt?: number;
   syncedAt?: number;
   createdAt?: number;
-  upstream: string;
+  upstream: string | null;
 }
 
 function compareRows(
@@ -134,13 +126,18 @@ function compareRows(
           sensitivity: 'base',
         })
       );
-    case 'upstream':
+    case 'upstream': {
+      // Missing values sink to the bottom regardless of direction.
+      if (!left.upstream && !right.upstream) return 0;
+      if (!left.upstream) return 1;
+      if (!right.upstream) return -1;
       return (
         direction *
         left.upstream.localeCompare(right.upstream, undefined, {
           sensitivity: 'base',
         })
       );
+    }
     default: {
       const numberOf = (row: RowItem): number | null => {
         if (key === 'size') return row.sizeBytes;
@@ -280,7 +277,7 @@ function MirrorListRow({
       </td>
       <td className="mirror-list-upstream">
         {mirror.upstream ? (
-          <a href={mirror.upstream}>{row.upstream}</a>
+          <a href={mirror.upstream}>{mirror.upstream}</a>
         ) : (
           <Missing />
         )}
@@ -358,7 +355,7 @@ export default function MirrorList({
           (parsed.main.code === 'S' ? parsed.main.ts : undefined),
         syncedAt: parsed.main.ts,
         createdAt: parsed.createdAt,
-        upstream: mirror.upstream ? upstreamHost(mirror.upstream) : '',
+        upstream: mirror.upstream ?? null,
       };
     });
     if (sort) {
