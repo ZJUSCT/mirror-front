@@ -110,40 +110,41 @@ Configuration is in [values.yaml](charts/mirror-front/values.yaml).
   MirrorZ governs this public data contract.
 - Mirror file links are resolved from `site.url` and each native `mirrors.url`
   value in that document.
-- `autoindex/index.html` is the single first-class build product: a
-  self-contained directory-listing shell. The bundled NGINX configuration
-  serves normal Astro `index.html` pages first, then internally redirects HTML
-  requests for other directories to that shell (URL unchanged). The shell's
-  same-origin `fetch(location.pathname)` explicitly requests
-  `application/json`, which NGINX answers using `autoindex on;` and
-  `autoindex_format json;` before the page safely renders and sorts the entries.
+- `autoindex/index.html` is a shared directory-listing shell. Hashed styles,
+  fonts, images, and JavaScript remain under `/_astro/`, independently cacheable
+  across mirrors and directories. Script hashes and integrity attributes limit
+  executable code to the build output; mirrored files are not trusted scripts.
 
 ### Directory-listing HTTP contract
 
-- A directory request whose `Accept` header contains `text/html` receives the
-  shell. `Accept: application/json`, curl's default `*/*`, and requests without
-  an `Accept` header receive NGINX's JSON array. Responses include
-  `Vary: Accept` so shared caches keep the representations separate.
-- Scripted consumers can request a listing directly, for example:
+- Directory URLs serve the HTML shell regardless of `Accept`. JSON is available
+  only through `/<mirror>/.mirror-index/<relative-directory>/`, for example:
 
   ```sh
-  curl -H 'Accept: application/json' https://mirrors.zju.edu.cn/debian/
+  curl https://mirrors.zju.edu.cn/debian/.mirror-index/
+  curl https://mirrors.zju.edu.cn/debian/.mirror-index/pool/main/
   ```
 
-- NGINX's built-in autoindex intentionally omits entries whose names start
-  with a dot. This differs from the previous directory-listing behavior and is
-  part of the new public contract.
-- For a local production-style demo, mount a readable sample tree at a path
-  below `/usr/share/nginx/html` that does not contain an `index.html`, for
-  example `/usr/share/nginx/html/sample`. The bundled configuration then serves
-  `/sample/` through the same HTML/JSON negotiation. A fixture
-  `mirrorz.json` can be mounted at `/usr/share/nginx/html/mirrorz.json` so the
-  shell can display status metadata for the sample's first path segment.
-- A standalone publish origin should use the same `map $http_accept` contract
-  and `index` variable, enable `autoindex_format json`, and serve or proxy the
-  shell at the exact internal redirect target `/autoindex/index.html`. Its
-  mirror data root normally has no content pages, so it can omit the leading
-  `index.html` fallback used by the combined portal image.
+- The reserved API namespace returns the full NGINX autoindex JSON array.
+  Directory paths must end with `/`; file requests through this API return 404.
+  NGINX omits entries whose names start with a dot. The old Accept-based API is
+  deliberately removed.
+- The frontend sorts the full array but renders at most 200 entries per page.
+  This bounds DOM work, not network transfer: large directories still download
+  the complete array. There is no search feature or generated catalog.
+- Directory links within a mirror update browser history and fetch only JSON.
+  Back/forward navigation works, superseded requests are canceled, and downloads,
+  portal links, modifier clicks, and new tabs keep ordinary browser behavior.
+  Requests allow up to 180 seconds for a first, uncached directory scan.
+- For a local production-style demo, mount a readable sample tree under
+  `/usr/share/nginx/html/sample` (without its own `index.html`), then open
+  `/sample/` or request `/sample/.mirror-index/`. The bundled demo config uses
+  the same API, without production's snapshot-scoped response cache.
+- A standalone publish origin routes ordinary directories to the shell at
+  `/autoindex/index.html`, proxies the reserved API to cached NGINX autoindex,
+  and leaves `/_astro/` routed to the portal. Deploy backend and frontend together:
+  the API change is breaking. Old shells/assets are not kept across releases;
+  a tab from a previous release may need reloading after an upgrade.
 
 ## Special Thanks
 

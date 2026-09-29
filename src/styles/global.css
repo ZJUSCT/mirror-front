@@ -1911,3 +1911,27 @@ a {
     animation-iteration-count: 1 !important;
   }
 }
+
+.autoindex-pagination:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.autoindex-pagination button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+}
+
+.autoindex-pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
