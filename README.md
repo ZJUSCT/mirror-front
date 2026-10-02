@@ -56,8 +56,14 @@ docker compose up --detach --build preview
 
 Cluster-specific NGINX configuration can be mounted under
 `/etc/nginx/mirror-front/http.d` and `/etc/nginx/mirror-front/server.d` for the
-HTTP and server contexts, respectively. Run `docker compose down` when the
-preview is no longer needed; named development caches are retained.
+HTTP and server contexts, respectively. The portal supports both plain HTTP and
+HTTPS behind the gateway. Keep directory redirects relative and omit HSTS and
+CSP `upgrade-insecure-requests` so HTTP resources and same-site navigation are
+not silently upgraded by the browser. MirrorZ links and generated guides may
+still recommend HTTPS explicitly.
+
+Run `docker compose down` when the preview is no longer needed; named development
+caches are retained.
 
 CI builds both images. The frontend build runs Astro/TypeScript checks, and
 the exporter build runs its two focused tests. Pushes to `main` also
