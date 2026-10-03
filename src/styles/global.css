@@ -1350,7 +1350,12 @@ a {
   border: 0;
   border-bottom: 1px solid var(--muted);
   padding: 0.5rem;
-  background: transparent;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.docs-controls option {
+  background: var(--surface);
   color: var(--text);
 }
 
