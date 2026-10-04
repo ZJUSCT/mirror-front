@@ -13,7 +13,174 @@ Pull Through Cache（拉取式缓存）位于容器客户端和上游 Registry �
 
 如果你需要拉取的镜像不在白名单中，请前往 [DaoCloud/public-image-mirror](https://github.com/DaoCloud/public-image-mirror) 提交 issue 申请添加。
 
-## 如何使用
+## 配置客户端，保留原镜像名
+
+可以在客户端配置代理，继续使用原来的镜像名；也可以按下文「在镜像名中指定代理」的方法逐个修改镜像名。
+
+| 客户端                         | 配置方式                   | 适用范围                  |
+| ------------------------------ | -------------------------- | ------------------------- |
+| Docker Engine / Docker Desktop | `registry-mirrors`         | Docker Hub                |
+| Podman / Buildah / Skopeo      | `registries.conf` 前缀映射 | 本服务代理的全部 Registry |
+| containerd                     | `hosts.toml`               | 下方配置适用于 Docker Hub |
+| 独立 BuildKit / Buildx builder | `buildkitd.toml`           | 下方配置适用于 Docker Hub |
+
+### Docker Engine / Docker Desktop
+
+将下面的字段合并到 `/etc/docker/daemon.json`，保留文件中已有的其他配置。JSON 不支持注释。
+
+```json
+{
+  "registry-mirrors": ["https://docker.mirrors.zjusct.io"]
+}
+```
+
+在使用 systemd 的 Linux 上，执行 `sudo systemctl restart docker` 应用配置。重启可能影响正在运行的容器，请选择合适的时间。Rootless Docker 通常使用 `~/.config/docker/daemon.json`，通过 `systemctl --user restart docker` 重启。Docker Desktop 请在 **Settings → Docker Engine** 中合并同样的配置并应用。
+
+随后可以保持原镜像名：
+
+```console
+docker pull ubuntu:24.04
+docker pull prom/prometheus:latest
+```
+
+Compose 文件中的 Docker Hub 镜像名也无需修改。`registry-mirrors` 只作用于 Docker Hub，不会代理 `ghcr.io`、`quay.io` 等其他 Registry；这些镜像仍需使用下方的显式代理前缀。
+
+镜像服务不可用或拒绝请求时，Docker 可能回退到 Docker Hub 直连，因此拉取成功不一定代表使用了缓存。此配置适用于白名单内的匿名拉取；对代理域名执行 `docker login` 不会让 Docker 自动在原名拉取时使用该域名的凭据。需要使用本服务访问令牌时，应使用 `registry.mirrors.zjusct.io/<项目>/<镜像>` 的显式名称。
+
+### Podman / Buildah / Skopeo：配置所有 Registry
+
+将下面的完整配置保存为 `/etc/containers/registries.conf.d/99-zju-mirrors.conf`。个人配置可放在 `~/.config/containers/registries.conf.d/99-zju-mirrors.conf`；已有用户配置可能覆盖系统配置，请检查当前生效的规则，避免为同一前缀重复定义。
+
+```toml
+[[registry]]
+prefix = "docker.io"
+location = "registry.mirrors.zjusct.io/hub.docker.com"
+
+[[registry]]
+prefix = "ghcr.io"
+location = "registry.mirrors.zjusct.io/ghcr.io"
+
+[[registry]]
+prefix = "quay.io"
+location = "registry.mirrors.zjusct.io/quay.io"
+
+[[registry]]
+prefix = "nvcr.io"
+location = "registry.mirrors.zjusct.io/nvcr.io"
+
+[[registry]]
+prefix = "registry.k8s.io"
+location = "registry.mirrors.zjusct.io/registry.k8s.io"
+
+[[registry]]
+prefix = "registry.gitlab.com"
+location = "registry.mirrors.zjusct.io/registry.gitlab.com"
+
+[[registry]]
+prefix = "public.ecr.aws"
+location = "registry.mirrors.zjusct.io/public.ecr.aws"
+
+[[registry]]
+prefix = "mcr.microsoft.com"
+location = "registry.mirrors.zjusct.io/mcr.microsoft.com"
+
+[[registry]]
+prefix = "docker.elastic.co"
+location = "registry.mirrors.zjusct.io/docker.elastic.co"
+
+[[registry]]
+prefix = "gcr.io"
+location = "registry.mirrors.zjusct.io/gcr.io"
+
+[[registry]]
+prefix = "k8s.gcr.io"
+location = "registry.mirrors.zjusct.io/k8s.gcr.io"
+
+[[registry]]
+prefix = "us.gcr.io"
+location = "registry.mirrors.zjusct.io/us.gcr.io"
+
+[[registry]]
+prefix = "lscr.io"
+location = "registry.mirrors.zjusct.io/lscr.io"
+
+[[registry]]
+prefix = "docker.osgeo.org"
+location = "registry.mirrors.zjusct.io/docker.osgeo.org"
+```
+
+这会将匹配的 Registry 前缀替换为代理地址，无需重启服务。此处使用直接 `location` 映射，不配置上游回退。
+
+```console
+podman pull docker.io/library/ubuntu:24.04
+podman pull quay.io/prometheus/prometheus:latest
+skopeo inspect docker://registry.k8s.io/pause:3.10
+```
+
+建议使用带 Registry 域名的完整原名，避免 Podman 短名称解析交互。Docker Hub 的官方镜像使用 `docker.io/library/<镜像名>`。此配置不会修改 Docker daemon 或 Kubernetes 所使用的 containerd 配置。
+
+### containerd（包括使用 containerd 的 Kubernetes 节点）
+
+为 Docker Hub 创建 `/etc/containerd/certs.d/docker.io/hosts.toml`：
+
+```toml
+server = "https://registry-1.docker.io"
+
+[host."https://docker.mirrors.zjusct.io"]
+  capabilities = ["pull", "resolve"]
+```
+
+让 CRI 插件读取该目录。将对应版本的配置合并到 `/etc/containerd/config.toml`，不要用以下片段替换整个文件。
+
+containerd 2.x、配置版本 3：
+
+```toml
+[plugins."io.containerd.cri.v1.images".registry]
+  config_path = "/etc/containerd/certs.d"
+```
+
+containerd 1.x、配置版本 2：
+
+```toml
+[plugins."io.containerd.grpc.v1.cri".registry]
+  config_path = "/etc/containerd/certs.d"
+```
+
+首次修改 `config_path` 后需重启 containerd；目录已启用时，更新其中的 `hosts.toml` 通常无需重启。K3s、RKE2 等发行版可能自行生成运行时配置，应使用发行版提供的 Registry 配置入口。
+
+CRI 使用示例：
+
+```console
+sudo crictl pull docker.io/library/ubuntu:24.04
+```
+
+`ctr` 不读取 CRI 插件配置，需要显式指定目录：
+
+```console
+sudo ctr images pull --hosts-dir /etc/containerd/certs.d docker.io/library/ubuntu:24.04
+```
+
+上面的 `server` 保留了 Docker Hub 直连回退。其他 Registry 可先使用显式代理镜像名；不要仅给 `hosts.toml` 的 URL 添加 Harbor 项目路径，这不足以正确转换鉴权 scope。
+
+### 独立 BuildKit / Docker Buildx
+
+独立的 BuildKit daemon 不应假定会继承 Docker daemon 的镜像配置。在 `buildkitd.toml` 中合并：
+
+```toml
+[registry."docker.io"]
+  mirrors = ["docker.mirrors.zjusct.io"]
+```
+
+独立 buildkitd 需要加载该文件并重启。使用 Buildx 的 `docker-container` driver 时，可创建加载此配置的 builder：
+
+```console
+docker buildx create --name zju-mirror --driver docker-container --buildkitd-config ./buildkitd.toml --use
+docker buildx inspect --bootstrap
+```
+
+Dockerfile 中仍可写 `FROM ubuntu:24.04`。该配置只覆盖 Docker Hub，且镜像失败时客户端仍可能尝试上游。
+
+## 在镜像名中指定代理
 
 在原镜像名称前添加 `registry.mirrors.zjusct.io/`，并保留原 Registry 的域名。例如：
 

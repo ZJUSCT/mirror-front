@@ -13,7 +13,174 @@ This service maintains an allowlist, and only images on the allowlist are served
 
 If an image you need is not on the allowlist, please open an issue at [DaoCloud/public-image-mirror](https://github.com/DaoCloud/public-image-mirror) to request its addition.
 
-## Usage
+## Configure clients and keep original image names
+
+Configure your client to keep the original image names, or change individual names as described under “Specify the proxy in an image name” below.
+
+| Client                               | Configuration                        | Coverage                                |
+| ------------------------------------ | ------------------------------------ | --------------------------------------- |
+| Docker Engine / Docker Desktop       | `registry-mirrors`                   | Docker Hub                              |
+| Podman / Buildah / Skopeo            | Prefix mappings in `registries.conf` | All registries proxied by this service  |
+| containerd                           | `hosts.toml`                         | Docker Hub with the configuration below |
+| Standalone BuildKit / Buildx builder | `buildkitd.toml`                     | Docker Hub with the configuration below |
+
+### Docker Engine / Docker Desktop
+
+Merge this field into `/etc/docker/daemon.json`, preserving existing settings. JSON does not support comments.
+
+```json
+{
+  "registry-mirrors": ["https://docker.mirrors.zjusct.io"]
+}
+```
+
+On Linux with systemd, apply the change with `sudo systemctl restart docker`. Restarting Docker may affect running containers, so choose a suitable time. Rootless Docker normally uses `~/.config/docker/daemon.json` and `systemctl --user restart docker`. In Docker Desktop, merge the same configuration under **Settings → Docker Engine** and apply it.
+
+Then use the original image names:
+
+```console
+docker pull ubuntu:24.04
+docker pull prom/prometheus:latest
+```
+
+Docker Hub image names in Compose files can also remain unchanged. `registry-mirrors` only applies to Docker Hub; images from `ghcr.io`, `quay.io`, and other registries still require the explicit proxy prefix below.
+
+Docker may fall back to Docker Hub when the mirror is unavailable or denies a request, so a successful pull does not prove the cache was used. This configuration supports anonymous pulls of allowlisted images. Running `docker login` against the proxy does not automatically make those credentials available for pulls using original Docker Hub names. For service access tokens, use explicit names in the form `registry.mirrors.zjusct.io/<project>/<image>`.
+
+### Podman / Buildah / Skopeo: configure all registries
+
+Save the complete configuration below as `/etc/containers/registries.conf.d/99-zju-mirrors.conf`. For personal configuration, use `~/.config/containers/registries.conf.d/99-zju-mirrors.conf`. Existing user configuration may override system settings; check the effective rules and avoid duplicate definitions for the same prefix.
+
+```toml
+[[registry]]
+prefix = "docker.io"
+location = "registry.mirrors.zjusct.io/hub.docker.com"
+
+[[registry]]
+prefix = "ghcr.io"
+location = "registry.mirrors.zjusct.io/ghcr.io"
+
+[[registry]]
+prefix = "quay.io"
+location = "registry.mirrors.zjusct.io/quay.io"
+
+[[registry]]
+prefix = "nvcr.io"
+location = "registry.mirrors.zjusct.io/nvcr.io"
+
+[[registry]]
+prefix = "registry.k8s.io"
+location = "registry.mirrors.zjusct.io/registry.k8s.io"
+
+[[registry]]
+prefix = "registry.gitlab.com"
+location = "registry.mirrors.zjusct.io/registry.gitlab.com"
+
+[[registry]]
+prefix = "public.ecr.aws"
+location = "registry.mirrors.zjusct.io/public.ecr.aws"
+
+[[registry]]
+prefix = "mcr.microsoft.com"
+location = "registry.mirrors.zjusct.io/mcr.microsoft.com"
+
+[[registry]]
+prefix = "docker.elastic.co"
+location = "registry.mirrors.zjusct.io/docker.elastic.co"
+
+[[registry]]
+prefix = "gcr.io"
+location = "registry.mirrors.zjusct.io/gcr.io"
+
+[[registry]]
+prefix = "k8s.gcr.io"
+location = "registry.mirrors.zjusct.io/k8s.gcr.io"
+
+[[registry]]
+prefix = "us.gcr.io"
+location = "registry.mirrors.zjusct.io/us.gcr.io"
+
+[[registry]]
+prefix = "lscr.io"
+location = "registry.mirrors.zjusct.io/lscr.io"
+
+[[registry]]
+prefix = "docker.osgeo.org"
+location = "registry.mirrors.zjusct.io/docker.osgeo.org"
+```
+
+Matching registry prefixes are replaced with proxy locations. No service restart is needed. These direct `location` mappings do not configure upstream fallback.
+
+```console
+podman pull docker.io/library/ubuntu:24.04
+podman pull quay.io/prometheus/prometheus:latest
+skopeo inspect docker://registry.k8s.io/pause:3.10
+```
+
+Use fully qualified original names to avoid Podman short-name resolution prompts. Docker Hub official images use `docker.io/library/<image>`. These settings do not configure Docker daemon or Kubernetes' containerd runtime.
+
+### containerd, including Kubernetes nodes using containerd
+
+Create `/etc/containerd/certs.d/docker.io/hosts.toml`:
+
+```toml
+server = "https://registry-1.docker.io"
+
+[host."https://docker.mirrors.zjusct.io"]
+  capabilities = ["pull", "resolve"]
+```
+
+Enable this directory in the CRI plugin. Merge the appropriate section into `/etc/containerd/config.toml`; do not replace the whole file with these fragments.
+
+For containerd 2.x with configuration version 3:
+
+```toml
+[plugins."io.containerd.cri.v1.images".registry]
+  config_path = "/etc/containerd/certs.d"
+```
+
+For containerd 1.x with configuration version 2:
+
+```toml
+[plugins."io.containerd.grpc.v1.cri".registry]
+  config_path = "/etc/containerd/certs.d"
+```
+
+Restart containerd after initially changing `config_path`. Once the directory is enabled, updates to `hosts.toml` normally require no restart. Distributions such as K3s and RKE2 may generate runtime configuration themselves; use their supported registry configuration mechanism.
+
+For CRI:
+
+```console
+sudo crictl pull docker.io/library/ubuntu:24.04
+```
+
+`ctr` does not read the CRI plugin configuration; pass the directory explicitly:
+
+```console
+sudo ctr images pull --hosts-dir /etc/containerd/certs.d docker.io/library/ubuntu:24.04
+```
+
+The `server` above preserves direct fallback to Docker Hub. Use explicit proxy image names for other registries. Merely adding a Harbor project path to a `hosts.toml` URL does not correctly translate authentication scopes.
+
+### Standalone BuildKit / Docker Buildx
+
+Do not assume a separate BuildKit daemon inherits Docker daemon mirror settings. Merge this into `buildkitd.toml`:
+
+```toml
+[registry."docker.io"]
+  mirrors = ["docker.mirrors.zjusct.io"]
+```
+
+A standalone buildkitd must load that file and restart. For Buildx's `docker-container` driver, create a builder using it:
+
+```console
+docker buildx create --name zju-mirror --driver docker-container --buildkitd-config ./buildkitd.toml --use
+docker buildx inspect --bootstrap
+```
+
+Dockerfiles can retain `FROM ubuntu:24.04`. This configuration only covers Docker Hub, and the client may still try the upstream if the mirror fails.
+
+## Specify the proxy in an image name
 
 Add `registry.mirrors.zjusct.io/` before the original image name and retain the original registry hostname. For example:
 
