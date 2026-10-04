@@ -143,6 +143,24 @@ directory watermarks belong to their title sections, not the viewport.
 Keep long code blocks and tables horizontally scrollable within the content
 area instead of widening the page.
 
+### Mirror timeline
+
+The catalog supports card, table, and timeline views and remembers the selected
+view locally. The timeline shares catalog search and name preferences. It packs
+events onto reusable tracks on a shared time axis, reserving space for labels.
+Use the pan and locate buttons, or drag the chart in both axes to browse time.
+The overview supports wheel zoom and dragging to pan. The canvas grows with
+its tracks; vertical dragging scrolls the page instead of a nested viewport.
+An active sync (`Y`) spans its start to the snapshot retrieval time; completed
+syncs, previous successes (`O`), and scheduled syncs (`X`) are point markers,
+not estimated durations. All available status markers are shown. Labels that do
+not fit to the right of their marker face left, with space reserved in packing.
+Creation times are omitted, and points
+more than 48 hours before or after the snapshot are excluded. Long-running
+active intervals are clipped at the left boundary. These are timestamps in the current MirrorZ snapshot,
+not a retained history. Missing timestamps are never inferred, and elapsed
+scheduled times are not treated as completed syncs.
+
 ### Markdown guide exports
 
 Guide-specific controls follow their authored `ztmpl` positions: block inputs

@@ -16,9 +16,11 @@ import {
 import {
   formatListBulletedIcon,
   gridViewIcon,
+  timelineIcon,
   verifiedIcon,
 } from '../../lib/ui-icons';
 import MirrorList from './MirrorList';
+import MirrorTimeline from './MirrorTimeline';
 import {
   HighlightedText,
   type MirrorSearchResult,
@@ -172,7 +174,9 @@ export default function MirrorExplorer({
   const [refreshAttempt, setRefreshAttempt] = useState(0);
   const [query, setQuery] = useState('');
   const [friendlyName, setFriendlyName] = useState(true);
-  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
+  const [viewMode, setViewMode] = useState<'card' | 'list' | 'timeline'>(
+    'card'
+  );
   const searchRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -203,13 +207,14 @@ export default function MirrorExplorer({
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(viewModeKey);
-      if (saved === 'list' || saved === 'card') setViewMode(saved);
+      if (saved === 'list' || saved === 'card' || saved === 'timeline')
+        setViewMode(saved);
     } catch {
       // The default card view stays when storage is unavailable.
     }
   }, []);
 
-  const updateViewMode = (mode: 'card' | 'list') => {
+  const updateViewMode = (mode: 'card' | 'list' | 'timeline') => {
     setViewMode(mode);
     try {
       window.localStorage.setItem(viewModeKey, mode);
@@ -413,6 +418,20 @@ export default function MirrorExplorer({
               />
             </svg>
           </button>
+          <button
+            type="button"
+            aria-pressed={viewMode === 'timeline'}
+            aria-label={locale === 'zh' ? '时间轴视图' : 'Timeline view'}
+            title={locale === 'zh' ? '时间轴视图' : 'Timeline view'}
+            onClick={() => updateViewMode('timeline')}
+          >
+            <svg
+              viewBox={`0 0 ${timelineIcon.width} ${timelineIcon.height}`}
+              aria-hidden="true"
+            >
+              <g dangerouslySetInnerHTML={{ __html: timelineIcon.body }} />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -446,7 +465,17 @@ export default function MirrorExplorer({
       ) : null}
 
       {catalog ? (
-        viewMode === 'list' ? (
+        viewMode === 'timeline' ? (
+          <MirrorTimeline
+            mirrors={mirrors}
+            catalog={catalog}
+            docsByMirrorId={docsByMirrorId}
+            docsTitles={docsTitles}
+            locale={locale}
+            friendlyName={friendlyName}
+            snapshotAt={savedAt}
+          />
+        ) : viewMode === 'list' ? (
           <MirrorList
             mirrors={mirrors}
             catalog={catalog}
