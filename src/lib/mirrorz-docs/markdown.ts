@@ -12,7 +12,7 @@ import {
   type GuideOptions,
   type InputState,
 } from './render';
-import type { MirrorzDocument } from './types';
+import type { DocumentInput, MirrorzDocument } from './types';
 
 function codeSpan(text: string): string {
   const fence = '`'.repeat(
@@ -71,11 +71,32 @@ export function absoluteMarkdownLinks(
   return marked.lexer(markdown).map(transform).join('');
 }
 
+function describeSelections(
+  inputs: DocumentInput[],
+  state: InputState
+): string[] {
+  return inputs.map((input) => {
+    const selected = state[input.name];
+    const value =
+      input.kind === 'select'
+        ? input.choices[
+            typeof selected === 'number' ? selected : input.defaultIndex
+          ]?.label
+        : input.kind === 'boolean'
+          ? (selected ?? input.defaultValue)
+            ? '开启'
+            : '关闭'
+          : String(selected ?? input.defaultValue) || '（未填写）';
+    return `- ${input.title} (${input.name}): ${codeSpan(String(value))}`;
+  });
+}
+
 export function exportDocumentMarkdown(
   document: MirrorzDocument,
   state: InputState = {},
   options: GuideOptions = {},
-  current = false
+  current = false,
+  blockStates: Record<string, InputState> = {}
 ): string {
   const canonical = `${ZJU_MIRROR_ORIGIN}/docs/${encodeURIComponent(document.routeId)}/`;
   const variables = resolveVariables(document, state, options);
@@ -88,7 +109,7 @@ export function exportDocumentMarkdown(
   for (const template of document.templates) {
     const local = resolveVariables(
       document,
-      state,
+      { ...state, ...blockStates[template.id] },
       options,
       template.inputNames
     );
@@ -106,7 +127,21 @@ export function exportDocumentMarkdown(
       const caption = template.filepath
         ? `${template.append ? '追加到' : '写入'} ${codeSpan(renderTemplateText(template.filepath, local))}：\n\n`
         : '';
-      const rendered = `${caption}${fence}${template.language ?? ''}\n${content}\n${fence}`;
+      const group = document.controlGroups.find(
+        (group) => group.templateId === template.id
+      );
+      const selections = group
+        ? describeSelections(
+            document.inputs.filter((input) =>
+              group.inputNames.includes(input.name)
+            ),
+            { ...state, ...blockStates[template.id] }
+          )
+        : [];
+      const selectionText = selections.length
+        ? `此处选项：\n${selections.join('\n')}\n\n`
+        : '';
+      const rendered = `${selectionText}${caption}${fence}${template.language ?? ''}\n${content}\n${fence}`;
       body = body.replace(
         new RegExp(`^( *)${token}`, 'gm'),
         (_whole, indent: string) =>
@@ -117,20 +152,15 @@ export function exportDocumentMarkdown(
       );
     }
   }
-  const selections = document.inputs.map((input) => {
-    const selected = state[input.name];
-    const value =
-      input.kind === 'select'
-        ? input.choices[
-            typeof selected === 'number' ? selected : input.defaultIndex
-          ]?.label
-        : input.kind === 'boolean'
-          ? (selected ?? input.defaultValue)
-            ? '开启'
-            : '关闭'
-          : String(selected ?? input.defaultValue) || '（未填写）';
-    return `- ${input.title} (${input.name}): ${codeSpan(String(value))}`;
-  });
+  const globalNames = new Set(
+    document.controlGroups
+      .filter((group) => !group.templateId)
+      .flatMap((group) => group.inputNames)
+  );
+  const selections = describeSelections(
+    document.inputs.filter((input) => globalNames.has(input.name)),
+    state
+  );
   return [
     `# ${document.title}`,
     '',

@@ -6,7 +6,9 @@ import {
   type ComponentProps,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import GuideHero from './GuideHero';
+import DocumentOptions from './DocumentOptions';
 
 import { copyText, enhanceCodeBlocks } from '../../lib/code-blocks';
 import { checkIcon, contentCopyIcon, codeIcon } from '../../lib/ui-icons';
@@ -57,6 +59,35 @@ export default function MirrorzDocument({
   const [inputState, setInputState] = useState<InputState>(() =>
     initialInputState(document.inputs)
   );
+  const [blockStates, setBlockStates] = useState<Record<string, InputState>>(
+    () =>
+      Object.fromEntries(
+        document.controlGroups
+          .filter((group) => group.templateId)
+          .map((group) => [
+            group.templateId!,
+            initialInputState(
+              document.inputs.filter((input) =>
+                group.inputNames.includes(input.name)
+              )
+            ),
+          ])
+      )
+  );
+  const [controlTargets, setControlTargets] = useState<
+    Record<string, HTMLElement>
+  >({});
+  useEffect(() => {
+    const article = articleRef.current;
+    if (!article) return;
+    setControlTargets(
+      Object.fromEntries(
+        [...article.querySelectorAll<HTMLElement>('[data-zdoc-controls]')].map(
+          (node) => [node.dataset.zdocControls!, node]
+        )
+      )
+    );
+  }, [document.html]);
   const [httpsEnabled, setHttpsEnabled] = useState(
     document.requiredScheme !== 'http'
   );
@@ -96,7 +127,8 @@ export default function MirrorzDocument({
       document,
       inputState,
       options,
-      true
+      true,
+      blockStates
     );
     try {
       await copyText(markdown);
@@ -132,12 +164,17 @@ export default function MirrorzDocument({
       if (target) {
         target.textContent = renderTemplateText(
           template.source,
-          resolveVariables(document, inputState, options, template.inputNames)
+          resolveVariables(
+            document,
+            { ...inputState, ...blockStates[template.id] },
+            options,
+            template.inputNames
+          )
         );
         highlightCodeElement(target);
       }
     }
-  }, [document, inputState, options]);
+  }, [document, inputState, blockStates, options]);
 
   useEffect(() => {
     const article = articleRef.current;
@@ -306,79 +343,6 @@ export default function MirrorzDocument({
               {locale === 'zh' ? '命令包含 sudo' : 'Include sudo in commands'}
             </label>
           </fieldset>
-          {document.inputs.length ? (
-            <fieldset>
-              <legend>{locale === 'zh' ? '文档选项' : 'Guide options'}</legend>
-              {document.inputs.map((input) => {
-                if (input.kind === 'select') {
-                  return (
-                    <label key={input.name}>
-                      <span>{input.title}</span>
-                      <select
-                        id={`mirrorz-input-${input.name}`}
-                        name={input.name}
-                        value={Number(inputState[input.name])}
-                        onChange={(event) =>
-                          setInputState((current) => ({
-                            ...current,
-                            [input.name]: Number(event.target.value),
-                          }))
-                        }
-                      >
-                        {input.choices.map((choice, index) => (
-                          <option
-                            key={`${input.name}-${choice.label}`}
-                            value={index}
-                          >
-                            {choice.label}
-                          </option>
-                        ))}
-                      </select>
-                      {input.note ? <small>{input.note}</small> : null}
-                    </label>
-                  );
-                }
-                if (input.kind === 'boolean') {
-                  return (
-                    <label key={input.name}>
-                      <input
-                        id={`mirrorz-input-${input.name}`}
-                        name={input.name}
-                        type="checkbox"
-                        checked={Boolean(inputState[input.name])}
-                        onChange={(event) =>
-                          setInputState((current) => ({
-                            ...current,
-                            [input.name]: event.target.checked,
-                          }))
-                        }
-                      />
-                      {input.title}
-                      {input.note ? <small>{input.note}</small> : null}
-                    </label>
-                  );
-                }
-                return (
-                  <label key={input.name}>
-                    <span>{input.title}</span>
-                    <input
-                      id={`mirrorz-input-${input.name}`}
-                      name={input.name}
-                      type="text"
-                      value={String(inputState[input.name] ?? '')}
-                      onChange={(event) =>
-                        setInputState((current) => ({
-                          ...current,
-                          [input.name]: event.target.value,
-                        }))
-                      }
-                    />
-                    {input.note ? <small>{input.note}</small> : null}
-                  </label>
-                );
-              })}
-            </fieldset>
-          ) : null}
         </form>
         <article
           ref={articleRef}
@@ -386,6 +350,37 @@ export default function MirrorzDocument({
           className="prose mirrorz-document"
           dangerouslySetInnerHTML={{ __html: document.html }}
         />
+        {document.controlGroups.map((group) => {
+          const target = controlTargets[group.id];
+          if (!target) return null;
+          return createPortal(
+            <DocumentOptions
+              id={group.id}
+              inputs={group.inputNames.map(
+                (name) => document.inputs.find((input) => input.name === name)!
+              )}
+              state={
+                group.templateId ? blockStates[group.templateId] : inputState
+              }
+              locale={locale}
+              onChange={(name, value) => {
+                if (group.templateId) {
+                  setBlockStates((current) => ({
+                    ...current,
+                    [group.templateId!]: {
+                      ...current[group.templateId!],
+                      [name]: value,
+                    },
+                  }));
+                } else {
+                  setInputState((current) => ({ ...current, [name]: value }));
+                }
+              }}
+            />,
+            target,
+            group.id
+          );
+        })}
         {children}
       </section>
     </>

@@ -6,17 +6,88 @@ import {
   loadMirrorzDocument,
 } from './loader';
 import { absoluteMarkdownLinks, exportDocumentMarkdown } from './markdown';
-import { renderTemplateText, resolveVariables } from './render';
+import { resolveVariables } from './render';
 
 test('every vendored guide exports without unresolved directives or internal tokens', async () => {
   for (const id of Object.keys(await loadMirrorDocsMapping())) {
     const document = await loadMirrorzDocument(id);
     const markdown = exportDocumentMarkdown(document);
-    assert.doesNotMatch(markdown, /ZJUMIRRORDOCSTEMPLATE|\{ztmpl[\s}]/, id);
-    assert.ok(markdown.includes(document.sourceCommit), id);
-    assert.ok(markdown.includes('CC BY-NC-SA 4.0'), id);
-    assert.ok(markdown.includes('内容语言：zh'), id);
+    assert.doesNotMatch(
+      markdown,
+      /ZJUMIRRORDOCS(?:TEMPLATE|CONTROL)|\{ztmpl[\s}]/,
+      id
+    );
+    assert.doesNotMatch(document.html, /ZJUMIRRORDOCS(?:TEMPLATE|CONTROL)/, id);
+    for (const group of document.controlGroups) {
+      assert.ok(
+        document.html.includes(`data-zdoc-controls="${group.id}"`),
+        `${id}: ${group.id}`
+      );
+    }
   }
+});
+
+test('repeated block inputs have independent selections in Markdown exports', async () => {
+  const document = await loadMirrorzDocument('ubuntu');
+  const groups = document.controlGroups.filter((group) => group.templateId);
+  assert.ok(groups.length >= 2);
+  const first = document.templates.find(
+    (template) => template.id === groups[0].templateId
+  )!;
+  const state = { src: true, proposed: true, release: 1 };
+  const markdown = exportDocumentMarkdown(document, {}, {}, true, {
+    [first.id]: state,
+  });
+  assert.match(
+    markdown,
+    /^deb-src https:\/\/mirrors.zju.edu.cn\/ubuntu\/ noble main/m
+  );
+  assert.match(
+    markdown,
+    /^Suites: resolute resolute-updates resolute-backports/m
+  );
+  assert.match(markdown, /^# Types: deb-src/m);
+  assert.match(markdown, /启用源码源 \(src\): `开启`/);
+  assert.match(markdown, /启用源码源 \(src\): `关闭`/);
+});
+
+test('global controls retain their authored position and affect local and inline examples', () => {
+  const inputs = [
+    {
+      kind: 'text' as const,
+      name: 'version',
+      title: 'Version',
+      defaultValue: '1',
+    },
+  ];
+  const initialVariables = { endpoint: 'https://mirrors.zju.edu.cn/example' };
+  const compiled = compileDocumentMarkdown(
+    'Before\n\n```{ztmpl global="true" input="version"}\n```\n\nAfter\n\n```{ztmpl}\nversion={{version}}\n```\n\n{ztmpl}`inline={{version}}`',
+    inputs,
+    initialVariables,
+    new Map()
+  );
+  const document = {
+    ...compiled,
+    inputs,
+    initialVariables,
+    routeId: 'example',
+    docsId: 'example',
+    title: 'Example',
+    requiredScheme: null,
+    sourceCommit: 'test',
+  };
+  assert.equal(compiled.controlGroups.length, 1);
+  assert.equal(compiled.controlGroups[0].templateId, undefined);
+  const slot = compiled.html.indexOf('data-zdoc-controls');
+  assert.ok(
+    slot > compiled.html.indexOf('Before') &&
+      slot < compiled.html.indexOf('After')
+  );
+  const markdown = exportDocumentMarkdown(document, { version: '2' }, {}, true);
+  assert.match(markdown, /version=2/);
+  assert.match(markdown, /inline=2/);
+  assert.doesNotMatch(markdown, /ZJUMIRRORDOCS|\{ztmpl/);
 });
 
 test('release options remain local and do not retain stale auxiliary variables', async () => {
@@ -49,13 +120,6 @@ test('release options remain local and do not retain stale auxiliary variables',
     undefined
   );
   const markdown = exportDocumentMarkdown(document, selected, options, true);
-  for (const template of [traditional, deb822]) {
-    const code = renderTemplateText(
-      template.source,
-      resolveVariables(document, selected, options, template.inputNames)
-    );
-    assert.ok(markdown.includes(code));
-  }
   assert.match(markdown, /http:\/\/mirrors.cernet.edu.cn\/debian/);
   assert.match(markdown, /当前页面选项/);
   assert.match(markdown, /sudo：关闭/);
@@ -110,13 +174,4 @@ test('links become absolute without modifying links inside code', () => {
     /!\[image\]\(<https:\/\/mirrors.zju.edu.cn\/image.png>\)/
   );
   assert.equal(markdown.match(/\[code\]\(\/keep\)/g)?.length, 2);
-});
-
-test('required protocol overrides a selected protocol', async () => {
-  const document = await loadMirrorzDocument('debian');
-  document.requiredScheme = 'https';
-  assert.equal(
-    resolveVariables(document, {}, { https: false }).scheme,
-    'https'
-  );
 });

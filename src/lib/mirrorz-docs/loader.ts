@@ -298,7 +298,12 @@ export function compileDocumentMarkdown(
   inputs: DocumentInput[],
   initialVariables: TemplateVariables,
   routeByDocsId: Map<string, string>
-): { html: string; markdown: string; templates: DocumentTemplate[] } {
+): {
+  html: string;
+  markdown: string;
+  templates: DocumentTemplate[];
+  controlGroups: MirrorzDocument['controlGroups'];
+} {
   // Do not export retired instructions hidden in Markdown HTML comments.
   marked.walkTokens(marked.lexer(markdown), (token) => {
     if (token.type === 'html' && token.raw.trimStart().startsWith('<!--')) {
@@ -309,6 +314,9 @@ export function compileDocumentMarkdown(
     }
   });
   const templates: DocumentTemplate[] = [];
+  const controlGroups: MirrorzDocument['controlGroups'] = [];
+  const controlToken = (id: string) =>
+    `ZJUMIRRORDOCSCONTROL${id.replaceAll('-', '').toUpperCase()}TOKEN`;
   const unknownDirective = markdown.match(/```\{(?!ztmpl\b)([^}\s]+)/);
   if (unknownDirective) {
     throw new Error(`unsupported directive: ${unknownDirective[1]}`);
@@ -355,7 +363,9 @@ export function compileDocumentMarkdown(
         ) {
           throw new Error('global ztmpl blocks may only declare inputs');
         }
-        return '';
+        const group = { id: `controls-${controlGroups.length}`, inputNames };
+        controlGroups.push(group);
+        return `${indent}${controlToken(group.id)}`;
       }
       const template: DocumentTemplate = {
         id: `template-${templates.length}`,
@@ -369,6 +379,13 @@ export function compileDocumentMarkdown(
         append: options.append === 'true',
       };
       templates.push(template);
+      if (inputNames.length) {
+        controlGroups.push({
+          id: `controls-${controlGroups.length}`,
+          inputNames,
+          templateId: template.id,
+        });
+      }
       return `${indent}${templateToken(template)}`;
     }
   );
@@ -411,7 +428,22 @@ export function compileDocumentMarkdown(
     ];
   }
 
-  const renderedMarkdown = marked.parse(transformed, {
+  // HTML block placeholders interrupt paragraphs, including fenced directives
+  // directly after text inside list items. Markdown exports keep plain tokens.
+  let htmlSource = transformed;
+  for (const template of templates.filter((template) => !template.inline)) {
+    htmlSource = htmlSource.replaceAll(
+      templateToken(template),
+      `<div data-zdoc-block="${template.id}"></div>`
+    );
+  }
+  for (const group of controlGroups.filter((group) => !group.templateId)) {
+    htmlSource = htmlSource.replaceAll(
+      controlToken(group.id),
+      `<div data-zdoc-global="${group.id}"></div>`
+    );
+  }
+  const renderedMarkdown = marked.parse(htmlSource, {
     async: false,
     gfm: true,
   }) as string;
@@ -436,6 +468,7 @@ export function compileDocumentMarkdown(
       ...sanitizeHtml.defaults.allowedAttributes,
       a: ['href', 'title'],
       code: ['class', 'data-language', 'data-zdoc-template'],
+      div: ['data-zdoc-block', 'data-zdoc-global'],
       h1: ['id'],
       h2: ['id'],
       h3: ['id'],
@@ -448,17 +481,36 @@ export function compileDocumentMarkdown(
   });
   for (const template of templates) {
     const token = templateToken(template);
-    const replacement = templateBlock(template, {
-      ...defaultInputVariables(
-        inputs.filter((input) => template.inputNames.includes(input.name))
-      ),
-      ...initialVariables,
-    });
+    const group = controlGroups.find(
+      (group) => group.templateId === template.id
+    );
+    const controls = group
+      ? `<div data-zdoc-controls="${group.id}"></div>`
+      : '';
+    const replacement =
+      controls +
+      templateBlock(template, {
+        ...defaultInputVariables(
+          inputs.filter((input) => template.inputNames.includes(input.name))
+        ),
+        ...initialVariables,
+      });
     html = template.inline
-      ? html.replaceAll(token, replacement)
-      : html.replaceAll(`<p>${token}</p>`, replacement);
+      ? html.replaceAll(token, () => replacement)
+      : html.replaceAll(
+          `<div data-zdoc-block="${template.id}"></div>`,
+          () => replacement
+        );
   }
-  return { html, markdown: transformed, templates };
+  for (const group of controlGroups.filter((group) => !group.templateId)) {
+    const token = controlToken(group.id);
+    html = html.replaceAll(
+      `<div data-zdoc-global="${group.id}"></div>`,
+      () => `<div data-zdoc-controls="${group.id}"></div>`
+    );
+    transformed = transformed.replaceAll(token, '');
+  }
+  return { html, markdown: transformed, templates, controlGroups };
 }
 
 async function loadAvailableDocIds(): Promise<Set<string>> {
@@ -612,6 +664,7 @@ export async function loadMirrorzDocument(
     markdown: compiled.markdown,
     inputs,
     templates: compiled.templates,
+    controlGroups: compiled.controlGroups,
     initialVariables,
     requiredScheme,
     sourceCommit: docsLock.commit,

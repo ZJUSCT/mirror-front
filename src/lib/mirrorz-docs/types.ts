@@ -35,6 +35,13 @@ export interface TextInput {
 
 export type DocumentInput = SelectInput | BooleanInput | TextInput;
 
+export interface DocumentControlGroup {
+  id: string;
+  inputNames: string[];
+  // An absent templateId denotes a document-wide control at its authored position.
+  templateId?: string;
+}
+
 export interface DocumentTemplate {
   id: string;
   source: string;
@@ -53,6 +60,7 @@ export interface MirrorzDocument {
   markdown: string;
   inputs: DocumentInput[];
   templates: DocumentTemplate[];
+  controlGroups: DocumentControlGroup[];
   initialVariables: TemplateVariables;
   requiredScheme: 'http' | 'https' | null;
   sourceCommit: string;

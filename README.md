@@ -5,6 +5,15 @@
 The ZJU Mirror portal is a statically generated Astro site with small React
 islands for live mirror status, search, and interactive MirrorZ guides. Back-end JSON format: [mirrorz-json](https://github.com/mirrorz-org/mirrorz#data-format-v15-draft)
 
+## Design conventions
+
+The front end follows [Material Design 2](https://m2.material.io/design/guidelines-overview)
+guidelines for visual hierarchy, typography, spacing, controls, and interaction
+states. Use Material 2 as the reference for future UI changes while preserving
+the site's existing colors, flat surfaces, and responsive layouts. Components
+are implemented in the project's own CSS and React/Astro code; this does not
+require a Material component library.
+
 ## Development
 
 Development runs entirely in Docker with Node.js 22 and pnpm 10.15.1.
@@ -133,6 +142,11 @@ Keep long code blocks and tables horizontally scrollable within the content
 area instead of widening the page.
 
 ### Markdown guide exports
+
+Guide-specific controls follow their authored `ztmpl` positions: block inputs
+appear immediately above their code example and keep independent selections.
+`global="true"` controls remain at their position in the prose and apply across
+the document. Only general mirror, protocol, and sudo settings stay at the top.
 
 Every shared guide at `/docs/<id>/` also has a static Markdown export at
 `/docs/<id>.md`. Both language interfaces link to that same Chinese document;
