@@ -7,12 +7,13 @@ islands for live mirror status, search, and interactive MirrorZ guides. Back-end
 
 ## Design conventions
 
-The front end follows [Material Design 2](https://m2.material.io/design/guidelines-overview)
+The default appearance follows [Material Design 2](https://m2.material.io/design/guidelines-overview)
 guidelines for visual hierarchy, typography, spacing, controls, and interaction
 states. Use Material 2 as the reference for future UI changes while preserving
 the site's existing colors, flat surfaces, and responsive layouts. Components
 are implemented in the project's own CSS and React/Astro code; this does not
-require a Material component library.
+require a Material component library. Optional game themes use their own visual
+language while retaining the shared interactions and page structure.
 
 ## Development
 
@@ -140,6 +141,35 @@ content widths, with responsive gutters on smaller viewports. Guide and
 directory watermarks belong to their title sections, not the viewport.
 Keep long code blocks and tables horizontally scrollable within the content
 area instead of widening the page.
+
+### Visual themes
+
+The palette button offers Default, Terraria, and Stardew Valley. Visual style
+(`zju-mirror:siteTheme`) is independent of light/dark/system mode
+(`zju-mirror:theme`). Both preferences persist across navigation and synchronize
+between tabs. New visitors receive the default Material 2 appearance. Game
+skins deliberately use their own pixel typography, panels, and scenery;
+interaction behavior and responsive content widths remain shared.
+
+`src/themes/registry.ts` declares theme names, palettes, stylesheet URLs, and
+optional scenery. Add a registry entry, palette in `palettes.json`, scoped
+stylesheet, and assets to add a theme. `shared.css` contains the selector and
+shared game presentation; `artwork.ts` supplies optional deterministic mirror
+illustrations. Theme code changes presentation, not guide content, exported
+Markdown, or mirror data. Timeline packing measures the active label font and
+updates after theme changes and font loading.
+
+Small palettes are emitted before first paint. A theme's stylesheet and artwork
+load only on selection; unused game fonts are not requested by the default
+appearance. The loader handles failed loads and rapid switching. Background
+scenery is decorative and avoids the reading area; reduced-motion mode replaces
+animated GIFs with still images. All fonts are self-hosted. Asset provenance and
+font licenses are recorded in `static/themes/ATTRIBUTION.md`.
+
+The controller is inlined and hashed by the existing directory-listing CSP
+build step. Keep it free of runtime script imports. Directory artwork is
+resolved from a build-time map so that the listing's strict script policy stays
+intact. Statistics images continue using their existing light/dark variants.
 
 ### Mirror timeline
 

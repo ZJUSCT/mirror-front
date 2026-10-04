@@ -37,6 +37,7 @@ import {
   type MirrorzData,
   type MirrorzMirror,
 } from '../../lib/mirrorz';
+import { themeArtwork } from '../../themes/artwork';
 import { folderIcon } from '../../lib/ui-icons';
 
 interface Props {
@@ -262,6 +263,11 @@ export default function GuideHero({
         ) : null}
         {actions}
       </div>
+      <span
+        className="theme-mirror-artwork guide-theme-artwork"
+        aria-hidden="true"
+        style={themeArtwork(mirrorId)}
+      />
       {icon ? (
         <svg
           className="guide-watermark"

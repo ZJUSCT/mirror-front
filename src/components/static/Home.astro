@@ -14,6 +14,7 @@ import {
   loadMirrorDocsMapping,
   loadMirrorDocsTitles,
 } from '../../lib/mirrorz-docs/loader';
+import { themeArtwork } from '../../themes/artwork';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 
 interface Props {
@@ -218,6 +219,9 @@ const quickLinks = [
         <template id="campus-container-images-link">
           <a class="quick-link" href={`${isZh ? '' : '/en'}/container-images/`}>
             <span class="quick-link-icon" aria-hidden="true">
+              <span
+                class="theme-mirror-artwork"
+                style={themeArtwork('docker-ce')}></span>
               <svg
                 viewBox={`0 0 ${harborQuickLinkIcon.width} ${harborQuickLinkIcon.height}`}
                 focusable="false"
@@ -246,6 +250,10 @@ const quickLinks = [
                 aria-hidden="true"
                 style={item.color ? `color: ${item.color}` : undefined}
               >
+                <span
+                  class="theme-mirror-artwork"
+                  style={themeArtwork(item.id)}
+                />
                 <svg
                   viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
                   focusable="false"

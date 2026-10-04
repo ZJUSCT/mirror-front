@@ -22,6 +22,10 @@ import {
 } from '../lib/ui-icons';
 import { stagingDeployment } from '../lib/deployment';
 import '../styles/global.css';
+import '../themes/shared.css';
+import SiteThemePicker from '../components/static/SiteThemePicker.astro';
+import { siteThemes, siteThemePalettes } from '../themes/registry';
+import themeController from '../themes/controller.js?raw';
 
 interface Props {
   title?: string;
@@ -138,7 +142,9 @@ const portalLinks = [
         try {
           saved = localStorage.getItem('zju-mirror:theme');
         } catch {}
-        const preference = saved || 'auto';
+        const preference = ['auto', 'light', 'dark'].includes(saved)
+          ? saved
+          : 'auto';
         const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
         const effective =
           preference === 'dark' || (preference === 'auto' && prefersDark)
@@ -148,6 +154,16 @@ const portalLinks = [
         document.documentElement.dataset['themePref'] = preference;
       })();
     </script>
+    <style is:inline set:html={siteThemePalettes}></style>
+    <script
+      is:inline
+      set:html={themeController.replace(
+        '__SITE_THEMES__',
+        JSON.stringify(
+          siteThemes.map(({ palettes, scenery, ...theme }) => theme)
+        ).replaceAll('<', '\\u003c')
+      )}
+    />
   </head>
   <body
     class:list={[
@@ -163,12 +179,43 @@ const portalLinks = [
         </div>
       )
     }
+    <div id="theme-scenery" aria-hidden="true" inert></div>
+    {
+      siteThemes
+        .filter((theme) => theme.scenery.length)
+        .map((theme) => (
+          <template id={`theme-scene-${theme.id}`}>
+            <div class={`${theme.id}-scenery`}>
+              {theme.scenery.map((parts) => (
+                <span
+                  class={parts
+                    .split(' ')
+                    .map((part) => `${theme.id}-scenery__${part}`)
+                    .join(' ')}
+                />
+              ))}
+            </div>
+          </template>
+        ))
+    }
     <a class="skip-link" href="#main-content">
       {lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}
     </a>
     <header class:list={['site-header', { 'site-header-home': home }]}>
       <a class="brand" href={lang === 'zh' ? '/' : '/en/'}>
-        {home && <img src={falconLogo} alt="" width="72" height="93" />}
+        {
+          home && (
+            <>
+              <>
+                <img src={falconLogo} alt="" width="72" height="93" />
+                <span
+                  class="theme-mirror-artwork brand-theme-artwork"
+                  aria-hidden="true"
+                />
+              </>
+            </>
+          )
+        }
         <span class="brand-copy">
           {
             home ? (
@@ -268,6 +315,7 @@ const portalLinks = [
             </a>
           )
         }
+        <SiteThemePicker lang={lang} />
         <button
           id="theme-toggle"
           class="site-action"
@@ -389,6 +437,8 @@ const portalLinks = [
       (() => {
         const root = document.documentElement;
         const applyTheme = (preference) => {
+          if (!['auto', 'light', 'dark'].includes(preference))
+            preference = 'auto';
           const prefersDark = matchMedia(
             '(prefers-color-scheme: dark)'
           ).matches;
@@ -433,6 +483,11 @@ const portalLinks = [
               localStorage.setItem('zju-mirror:theme', next);
             } catch {}
           });
+
+        window.addEventListener('storage', (event) => {
+          if (event.key === 'zju-mirror:theme' || event.key === null)
+            applyTheme(event.newValue || 'auto');
+        });
 
         const nameButton = document.querySelector('#name-toggle');
         if (nameButton) {

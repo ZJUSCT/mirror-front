@@ -1,0 +1,375 @@
+:root[data-site-theme='stardew'] {
+  --terraria-sky-top: #95d8ff;
+  --terraria-sky-mid: #def5ff;
+  --terraria-page-fill: #bfe4ff;
+  --terraria-horizon: #f0dfa7;
+  --terraria-ground: #6fae53;
+  --terraria-ground-dark: #4c7f38;
+  --terraria-sun-glow: rgba(255, 241, 181, 0.9);
+  --terraria-star-opacity: 0;
+  --terraria-grid-opacity: 0.1;
+  --terraria-tree-opacity: 0.9;
+  --terraria-panel-highlight: #f6e2b2;
+  --terraria-panel-shadow: rgba(86, 48, 16, 0.42);
+}
+:root[data-site-theme='stardew'][data-theme='dark'] {
+  --terraria-sky-top: #0b1931;
+  --terraria-sky-mid: #214a77;
+  --terraria-page-fill: #285381;
+  --terraria-horizon: #5d82ac;
+  --terraria-ground: #2d5f37;
+  --terraria-ground-dark: #1d3e22;
+  --terraria-sun-glow: transparent;
+  --terraria-star-opacity: 1;
+  --terraria-grid-opacity: 0.16;
+  --terraria-tree-opacity: 0.72;
+  --terraria-panel-highlight: #93b7e2;
+  --terraria-panel-shadow: rgba(8, 14, 29, 0.58);
+}
+.stardew-scenery {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.stardew-scenery__ground,
+.stardew-scenery__sprite {
+  position: absolute;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  image-rendering: pixelated;
+}
+
+.stardew-scenery__ground {
+  left: -8%;
+  width: 116%;
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.14),
+    0 -3px 0 rgba(255, 255, 255, 0.1),
+    0 16px 26px rgba(36, 23, 12, 0.18);
+}
+
+.stardew-scenery__ground--back {
+  bottom: 5.8rem;
+  z-index: 2;
+  height: 8.5rem;
+  opacity: 0.5;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, white 18%, var(--terraria-ground)) 0%,
+    color-mix(in srgb, var(--terraria-ground) 72%, var(--terraria-page-fill))
+      44%,
+    color-mix(in srgb, var(--terraria-ground-dark) 84%, #3a2412) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    0 84%,
+    10% 84%,
+    10% 74%,
+    20% 74%,
+    20% 66%,
+    34% 66%,
+    34% 58%,
+    48% 58%,
+    48% 64%,
+    64% 64%,
+    64% 72%,
+    82% 72%,
+    82% 82%,
+    100% 82%,
+    100% 100%
+  );
+}
+
+.stardew-scenery__ground--front {
+  bottom: -0.15rem;
+  z-index: 5;
+  height: 12rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, white 16%, var(--terraria-ground)) 0%,
+    var(--terraria-ground) 18%,
+    color-mix(in srgb, var(--terraria-ground-dark) 82%, #2f1b0d) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    0 76%,
+    8% 76%,
+    8% 66%,
+    18% 66%,
+    18% 56%,
+    30% 56%,
+    30% 44%,
+    42% 44%,
+    42% 52%,
+    58% 52%,
+    58% 62%,
+    74% 62%,
+    74% 74%,
+    88% 74%,
+    88% 84%,
+    100% 84%,
+    100% 100%
+  );
+}
+
+.stardew-scenery__sprite {
+  z-index: 6;
+  opacity: 0.96;
+  filter: drop-shadow(0 10px 0 rgba(60, 36, 16, 0.16));
+}
+
+.stardew-scenery__sprite--banner {
+  top: clamp(1rem, 6vh, 3rem);
+  right: max(-1rem, -2vw);
+  z-index: 3;
+  width: clamp(220px, 28vw, 340px);
+  height: clamp(175px, 22vw, 270px);
+  background-image: url('/themes/stardew/banner-right-winter.png');
+  opacity: 0.88;
+  transform-origin: top right;
+  animation: stardew-banner 10s ease-in-out infinite;
+}
+
+.stardew-scenery__sprite--house {
+  left: clamp(1rem, 7vw, 6rem);
+  bottom: clamp(4.3rem, 9vh, 5.6rem);
+  width: clamp(128px, 14vw, 176px);
+  height: clamp(128px, 14vw, 176px);
+  background-image: url('/themes/stardew/house-tier-1.png');
+}
+
+.stardew-scenery__sprite--rider {
+  left: clamp(44%, 52vw, 58%);
+  bottom: clamp(4.5rem, 8.4vh, 5.8rem);
+  width: clamp(92px, 9.5vw, 130px);
+  height: clamp(116px, 11.5vw, 164px);
+  background-image: url('/themes/stardew/horse-rider.png');
+  animation: stardew-rider 9s ease-in-out infinite;
+}
+
+.stardew-scenery__sprite--junimo {
+  left: clamp(18%, 24vw, 28%);
+  bottom: clamp(8.5rem, 15vh, 10rem);
+  width: clamp(40px, 4vw, 56px);
+  height: clamp(40px, 4vw, 56px);
+  background-image: url('/themes/stardew/junimo-icon.png');
+  animation: stardew-bob 4.2s ease-in-out infinite;
+}
+
+.stardew-scenery__sprite--walnut {
+  right: clamp(11rem, 18vw, 15rem);
+  bottom: clamp(4.8rem, 8vh, 6rem);
+  width: clamp(42px, 4vw, 56px);
+  height: clamp(42px, 4vw, 56px);
+  background-image: url('/themes/stardew/icons/golden-walnut.png');
+  animation: stardew-glint 3.4s ease-in-out infinite;
+}
+
+.stardew-scenery__sprite--fruit {
+  right: clamp(5.5rem, 11vw, 9rem);
+  bottom: clamp(7.2rem, 14vh, 9rem);
+  width: clamp(40px, 4vw, 54px);
+  height: clamp(40px, 4vw, 54px);
+  background-image: url('/themes/stardew/icons/ancient-fruit.png');
+  animation: stardew-bob 5.3s ease-in-out infinite reverse;
+}
+
+.stardew-scenery__sprite--coral {
+  right: clamp(2rem, 5vw, 4.5rem);
+  bottom: clamp(4.4rem, 7vh, 5.4rem);
+  width: clamp(42px, 4vw, 56px);
+  height: clamp(42px, 4vw, 56px);
+  background-image: url('/themes/stardew/icons/coral.png');
+  animation: stardew-bob 4.8s ease-in-out infinite;
+}
+
+html[data-theme='dark'] .stardew-scenery__ground {
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.08),
+    0 -3px 0 rgba(255, 255, 255, 0.06),
+    0 16px 26px rgba(8, 14, 29, 0.32);
+}
+
+html[data-theme='dark'] .stardew-scenery__sprite {
+  filter: drop-shadow(0 10px 0 rgba(8, 14, 29, 0.34));
+}
+
+html[data-theme='dark'] .stardew-scenery__sprite--banner {
+  opacity: 0.76;
+}
+
+@keyframes stardew-banner {
+  0%,
+  100% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: rotate(-1.2deg) translate3d(-0.35rem, 0.15rem, 0);
+  }
+}
+
+@keyframes stardew-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -0.45rem, 0);
+  }
+}
+
+@keyframes stardew-rider {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0.7rem, -0.15rem, 0);
+  }
+}
+
+@keyframes stardew-glint {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.92;
+  }
+
+  50% {
+    transform: translate3d(0, -0.24rem, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .stardew-scenery__sprite--banner {
+    width: 272px;
+    height: 216px;
+  }
+
+  .stardew-scenery__sprite--house {
+    left: 0;
+    width: 152px;
+    height: 152px;
+  }
+
+  .stardew-scenery__sprite--rider {
+    left: 50%;
+  }
+
+  .stardew-scenery__sprite--walnut {
+    right: 8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    width: 100%;
+  }
+
+  .stardew-scenery__ground--back {
+    bottom: 5.2rem;
+    height: 7.2rem;
+  }
+
+  .stardew-scenery__ground--front {
+    height: 10.5rem;
+  }
+
+  .stardew-scenery__sprite--banner {
+    top: 2.5rem;
+    right: -1.5rem;
+    width: 184px;
+    height: 146px;
+    opacity: 0.78;
+  }
+
+  .stardew-scenery__sprite--house {
+    left: -0.5rem;
+    bottom: 4.8rem;
+    width: 120px;
+    height: 120px;
+  }
+
+  .stardew-scenery__sprite--rider {
+    left: auto;
+    right: 3.5rem;
+    bottom: 5rem;
+    width: 92px;
+    height: 116px;
+  }
+
+  .stardew-scenery__sprite--junimo {
+    left: 6.5rem;
+    bottom: 8.8rem;
+  }
+
+  .stardew-scenery__sprite--walnut {
+    right: 5.3rem;
+    bottom: 6.8rem;
+  }
+
+  .stardew-scenery__sprite--fruit {
+    right: 1rem;
+    bottom: 8.6rem;
+  }
+
+  .stardew-scenery__sprite--coral {
+    display: none;
+  }
+}
+
+:root[data-site-theme='stardew'] .theme-mirror-artwork {
+  background-image: var(--theme-artwork-stardew);
+}
+:root[data-site-theme='stardew'] .brand-theme-artwork {
+  background-image: url('/themes/stardew/junimo-icon.png');
+}
+:root[data-site-theme='stardew'] {
+  --radius: 5px;
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--banner {
+  width: min(15vw, 240px);
+  height: min(14vw, 240px);
+  opacity: 0.7;
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--house {
+  left: 1vw;
+  width: clamp(100px, 10vw, 176px);
+  height: clamp(100px, 10vw, 176px);
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--rider {
+  left: auto;
+  right: 1vw;
+}
+:root[data-site-theme='stardew'][data-theme='dark'] .stardew-scenery__sprite {
+  filter: brightness(0.8) drop-shadow(0 4px 0 #102440);
+}
+:root[data-site-theme='stardew'] .stardew-scenery {
+  --edge-sprite-width: clamp(52px, calc(var(--page-inset) - 0.75rem), 176px);
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--house {
+  width: var(--edge-sprite-width);
+  height: auto;
+  aspect-ratio: 1;
+  left: calc((var(--page-inset) - var(--edge-sprite-width)) / 2);
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--rider {
+  width: var(--edge-sprite-width);
+  height: auto;
+  aspect-ratio: 5 / 6;
+  right: calc((var(--page-inset) - var(--edge-sprite-width)) / 2);
+}
+:root[data-site-theme='stardew'] .stardew-scenery__sprite--banner {
+  width: var(--edge-sprite-width);
+  height: auto;
+  aspect-ratio: 1;
+  right: calc((var(--page-inset) - var(--edge-sprite-width)) / 2);
+}

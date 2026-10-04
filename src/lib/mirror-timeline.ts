@@ -19,7 +19,8 @@ export function packMirrorTimeline(
   events: TimelineEntry[],
   start: number,
   end: number,
-  width: number
+  width: number,
+  measureLabel?: (label: string) => number
 ) {
   const trackEnds: number[] = [];
   return (
@@ -35,10 +36,13 @@ export function packMirrorTimeline(
         const labelWidth = Math.min(
           width - 24,
           16 +
-            Array.from(event.label).reduce(
-              (sum, char) => sum + (char.charCodeAt(0) > 255 ? 13 : 8),
-              0
-            )
+            (measureLabel?.(
+              `${event.start < start ? '‹ ' : ''}${event.label}`
+            ) ??
+              Array.from(event.label).reduce(
+                (sum, char) => sum + (char.charCodeAt(0) > 255 ? 13 : 8),
+                0
+              ))
         );
         const labelBefore = x + 10 + labelWidth > width;
         const labelLeft = labelBefore ? x - 10 - labelWidth : x + 10;

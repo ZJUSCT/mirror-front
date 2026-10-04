@@ -1,0 +1,59 @@
+---
+import { siteThemes } from '../../themes/registry';
+import { paletteIcon } from '../../lib/ui-icons';
+const { lang = 'zh' } = Astro.props as { lang: 'zh' | 'en' };
+---
+
+<button
+  id="site-theme-toggle"
+  class="site-action"
+  type="button"
+  aria-label={lang === 'zh' ? '主题' : 'Theme'}
+  aria-expanded="false"
+  aria-controls="site-theme-panel"
+>
+  <span class="site-action-label" data-site-theme-hint
+    >{lang === 'zh' ? '主题' : 'Theme'}</span
+  >
+  <svg
+    viewBox={`0 0 ${paletteIcon.width} ${paletteIcon.height}`}
+    aria-hidden="true"><g set:html={paletteIcon.body} /></svg
+  >
+</button>
+<div id="site-theme-panel" class="site-theme-panel" hidden>
+  <fieldset>
+    <legend>{lang === 'zh' ? '外观主题' : 'Appearance'}</legend>
+    {
+      siteThemes.map((theme) => (
+        <label class="site-theme-choice">
+          <input
+            type="radio"
+            name="site-theme"
+            value={theme.id}
+            data-site-theme-choice
+            checked={theme.id === 'default'}
+          />
+          <span class="site-theme-choice-copy">
+            <>
+              <strong>{theme.name[lang]}</strong>
+              <small>{theme.description[lang]}</small>
+            </>
+          </span>
+          <span class="site-theme-swatches" aria-hidden="true">
+            {theme.swatches.map((color) => (
+              <i style={`--swatch: ${color}`} />
+            ))}
+          </span>
+        </label>
+      ))
+    }
+  </fieldset>
+  <p>
+    {
+      lang === 'zh'
+        ? '浅色、深色及跟随系统由配色按钮独立控制。'
+        : 'Light, dark, and system mode are controlled separately by the color button.'
+    }
+  </p>
+  <p id="site-theme-status" role="status" aria-live="polite"></p>
+</div>
