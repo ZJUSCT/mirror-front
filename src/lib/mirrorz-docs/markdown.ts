@@ -179,7 +179,7 @@ export function exportDocumentMarkdown(
     '',
     '---',
     '',
-    `来源：[mirrorz-org/mirrorz-docs](https://github.com/mirrorz-org/mirrorz-docs/tree/${document.sourceCommit}/${encodeURIComponent(document.docsId)})`,
+    `来源：[ZJUSCT/mirrorz-docs](https://github.com/ZJUSCT/mirrorz-docs/tree/${document.sourceCommit}/${encodeURIComponent(document.docsId)})`,
     `源提交：${document.sourceCommit}`,
     '许可：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)',
     '文档索引：https://mirrors.zju.edu.cn/llms.txt',

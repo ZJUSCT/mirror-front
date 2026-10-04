@@ -1,4 +1,3 @@
 [submodule "vendor/mirrorz-docs"]
 	path = vendor/mirrorz-docs
 	url = https://github.com/mirrorz-org/mirrorz-docs.git
-	branch = main
