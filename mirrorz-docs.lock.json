@@ -1,5 +1,5 @@
 {
-  "repository": "https://github.com/mirrorz-org/mirrorz-docs.git",
+  "repository": "git@github.com:ZJUSCT/mirrorz-docs.git",
   "commit": "de87bf043f31d45ef3a951cc6dc11ddb8c85b4f6",
   "contentLicense": "CC BY-NC-SA 4.0",
   "referenceImplementation": {

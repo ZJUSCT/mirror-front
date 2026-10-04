@@ -110,7 +110,9 @@ Configuration is in [values.yaml](charts/mirror-front/values.yaml).
   enabled. Its source, image build, configuration example, and deployment
   contract live under `statistics-exporter/`. Grafana panel selection is
   runtime configuration; changing it does not require rebuilding the frontend.
-- Shared mirror guides come from the pinned `vendor/mirrorz-docs` submodule.
+- Shared mirror guides come from the pinned `vendor/mirrorz-docs` submodule,
+  tracking `main` at `git@github.com:ZJUSCT/mirrorz-docs.git`
+  ([ZJUSCT fork](https://github.com/ZJUSCT/mirrorz-docs) of MirrorZ Docs).
   The parent repository's gitlink is the authoritative content pin;
   `mirrorz-docs.lock.json` repeats the commit and license as build-time
   provenance because Docker builds do not receive Git metadata. Update the
