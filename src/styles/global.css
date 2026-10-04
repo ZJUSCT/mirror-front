@@ -347,7 +347,9 @@ body {
 
 .site-action:hover .site-action-label,
 .site-action:focus-visible .site-action-label,
-.site-action[data-touch-expanded='true'] .site-action-label {
+.site-action[data-touch-expanded='true'] .site-action-label,
+.guide-export-icon:hover .site-action-label,
+.guide-export-icon:focus-visible .site-action-label {
   visibility: visible;
   opacity: 1;
   transform: translate(0, -50%);
@@ -1854,7 +1856,9 @@ body {
 
   .site-action:hover .site-action-label,
   .site-action:focus-visible .site-action-label,
-  .site-action[data-touch-expanded='true'] .site-action-label {
+  .site-action[data-touch-expanded='true'] .site-action-label,
+  .guide-export-icon:hover .site-action-label,
+  .guide-export-icon:focus-visible .site-action-label {
     transform: none;
   }
 
@@ -2000,34 +2004,6 @@ body {
   outline-offset: 2px;
 }
 
-.guide-export-tooltip {
-  position: absolute;
-  z-index: 10;
-  top: calc(100% + 0.35rem);
-  right: 0;
-  width: max-content;
-  max-width: min(17rem, 75vw);
-  padding: 0.45rem 0.65rem;
-  border: 1px solid var(--border);
-  border-radius: 0.3rem;
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--card-shadow);
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 1.5;
-  text-align: left;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.guide-export-icon:hover .guide-export-tooltip,
-.guide-export-icon:focus-visible .guide-export-tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
 .guide-copy-status {
   position: absolute;
   top: 100%;
@@ -2064,4 +2040,17 @@ body {
   background: var(--surface);
   font: inherit;
   cursor: pointer;
+}
+
+/* Keep guide hints left of the action group, like the header hints. */
+.guide-export-icon:nth-child(2) {
+  --action-label-offset: 3.125rem;
+}
+
+.guide-export-icon .site-action-label {
+  color: var(--primary-strong);
+  font-family: Metropolis, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
 }

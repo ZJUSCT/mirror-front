@@ -9,7 +9,7 @@ import {
 import GuideHero from './GuideHero';
 
 import { copyText, enhanceCodeBlocks } from '../../lib/code-blocks';
-import { contentCopyIcon, codeIcon } from '../../lib/ui-icons';
+import { checkIcon, contentCopyIcon, codeIcon } from '../../lib/ui-icons';
 import { highlightCodeElement } from '../../lib/code-highlighting';
 import {
   CERNET_MIRROR_ORIGIN,
@@ -64,7 +64,24 @@ export default function MirrorzDocument({
   const [federatedEnabled, setFederatedEnabled] = useState(false);
 
   const [copyStatus, setCopyStatus] = useState('');
+  const [copied, setCopied] = useState(false);
+  const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyIcon = copied ? checkIcon : contentCopyIcon;
+  const copyLabel = copied
+    ? locale === 'zh'
+      ? '已复制'
+      : 'Copied'
+    : locale === 'zh'
+      ? '复制全文'
+      : 'Copy page';
   const [copyFallback, setCopyFallback] = useState<string | null>(null);
+
+  useEffect(
+    () => () => {
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+    },
+    []
+  );
   const options = useMemo(
     () => ({
       https: httpsEnabled,
@@ -83,9 +100,19 @@ export default function MirrorzDocument({
     );
     try {
       await copyText(markdown);
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+      setCopied(true);
+      copyResetTimer.current = setTimeout(() => {
+        setCopied(false);
+        setCopyStatus('');
+        copyResetTimer.current = null;
+      }, 2000);
       setCopyFallback(null);
       setCopyStatus(locale === 'zh' ? '已复制' : 'Copied');
     } catch {
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+      copyResetTimer.current = null;
+      setCopied(false);
       setCopyFallback(markdown);
       setCopyStatus(
         locale === 'zh'
@@ -161,20 +188,20 @@ export default function MirrorzDocument({
                 type="button"
                 className="guide-export-icon"
                 onClick={copyPage}
-                aria-label={locale === 'zh' ? '复制全文' : 'Copy page'}
-                aria-describedby="guide-copy-tooltip"
+                aria-label={copyLabel}
+                aria-describedby="guide-copy-hint"
               >
                 <svg
-                  viewBox={`0 0 ${contentCopyIcon.width} ${contentCopyIcon.height}`}
+                  viewBox={`0 0 ${copyIcon.width} ${copyIcon.height}`}
                   aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: contentCopyIcon.body }}
+                  dangerouslySetInnerHTML={{ __html: copyIcon.body }}
                 />
                 <span
-                  className="guide-export-tooltip"
-                  id="guide-copy-tooltip"
+                  className="site-action-label"
+                  id="guide-copy-hint"
                   role="tooltip"
                 >
-                  {locale === 'zh' ? '复制全文' : 'Copy page'}
+                  {copyLabel}
                 </span>
               </button>
               <a
@@ -183,7 +210,7 @@ export default function MirrorzDocument({
                 aria-label={
                   locale === 'zh' ? '查看 Markdown' : 'View as Markdown'
                 }
-                aria-describedby="guide-markdown-tooltip"
+                aria-describedby="guide-markdown-hint"
               >
                 <svg
                   viewBox={`0 0 ${codeIcon.width} ${codeIcon.height}`}
@@ -191,15 +218,20 @@ export default function MirrorzDocument({
                   dangerouslySetInnerHTML={{ __html: codeIcon.body }}
                 />
                 <span
-                  className="guide-export-tooltip"
-                  id="guide-markdown-tooltip"
+                  className="site-action-label"
+                  id="guide-markdown-hint"
                   role="tooltip"
                 >
                   {locale === 'zh' ? '查看 Markdown' : 'View as Markdown'}
                 </span>
               </a>
             </div>
-            <span className="guide-copy-status" role="status">
+            <span
+              className={
+                copyFallback === null ? 'visually-hidden' : 'guide-copy-status'
+              }
+              role="status"
+            >
               {copyStatus}
             </span>
           </div>
