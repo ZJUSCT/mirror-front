@@ -157,10 +157,28 @@ a {
   transform: none;
 }
 
+/* Shared content edges; section backgrounds still span the viewport. */
+body {
+  --page-content-width: 58rem;
+  --page-gutter: 4rem;
+  --page-inset: max(
+    var(--page-gutter),
+    calc((100% - var(--page-content-width)) / 2)
+  );
+}
+
+.layout-wide {
+  --page-content-width: 96rem;
+}
+
+.layout-statistics {
+  --page-content-width: 88rem;
+}
+
 .site-header,
 .page-shell,
 .site-footer {
-  margin-inline: 4rem;
+  margin-inline: var(--page-inset);
 }
 
 .site-header {
@@ -329,7 +347,9 @@ a {
 
 .site-action:hover .site-action-label,
 .site-action:focus-visible .site-action-label,
-.site-action[data-touch-expanded='true'] .site-action-label {
+.site-action[data-touch-expanded='true'] .site-action-label,
+.guide-export-icon:hover .site-action-label,
+.guide-export-icon:focus-visible .site-action-label {
   visibility: visible;
   opacity: 1;
   transform: translate(0, -50%);
@@ -855,7 +875,7 @@ a {
 .alphabet-nav {
   position: fixed;
   z-index: 10;
-  right: 1rem;
+  right: max(1rem, calc(var(--page-inset) - 3rem));
   bottom: 1rem;
   display: grid;
   gap: 0.5rem;
@@ -902,7 +922,7 @@ a {
 .article-hero {
   position: relative;
   overflow: hidden;
-  padding: 2rem 4rem;
+  padding: 2rem var(--page-inset);
 }
 
 .article-title {
@@ -948,13 +968,28 @@ a {
 .article-body {
   position: relative;
   z-index: 1;
-  padding: 2rem 4rem;
+  padding: 2rem var(--page-inset);
   background: var(--surface);
   letter-spacing: 0.01em;
 }
 
 .guide-hero {
   padding-bottom: 2rem;
+}
+
+.guide-header-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.guide-header-actions .file-list-button {
+  margin-top: 0;
 }
 
 .guide-status-row {
@@ -1006,10 +1041,11 @@ a {
 }
 
 .guide-watermark {
-  position: fixed;
+  position: absolute;
+  pointer-events: none;
   z-index: 0;
-  top: 6rem;
-  right: 5rem;
+  top: 0;
+  right: var(--page-inset);
   width: 20rem;
   height: 20rem;
   color: rgb(71 123 210);
@@ -1023,6 +1059,7 @@ a {
 }
 
 .prose {
+  overflow-wrap: anywhere;
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -1286,6 +1323,7 @@ a {
 }
 
 .docs-controls fieldset {
+  min-width: 0;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -1364,6 +1402,97 @@ a {
   color: var(--muted);
 }
 
+/* Contextual controls follow the authored document flow above each example. */
+.docs-local-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem 1.5rem;
+  margin: 1rem 0 0.75rem;
+  font-size: 0.875rem;
+}
+
+.docs-local-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.docs-local-controls label,
+.docs-local-controls label:has(select),
+.docs-local-controls label:has(input[type='text']) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-height: 2.5rem;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.docs-local-controls :is(select, input[type='text']) {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.5rem;
+  font: inherit;
+}
+
+.docs-option-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.docs-option-help svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.docs-option-help:hover,
+.docs-option-help:focus-visible {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.docs-option-note {
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: auto;
+  max-width: min(22rem, 100%);
+  border-radius: 0.5rem;
+  color: var(--text);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: left;
+  white-space: normal;
+  transform: none;
+  transition: opacity 120ms ease;
+}
+
+.docs-option-note[data-open='true'] {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.docs-local-controls :is(input, select, button):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
 .source-attribution {
   margin-top: 3rem;
   color: var(--muted);
@@ -1396,7 +1525,7 @@ a {
 .autoindex-hero {
   position: relative;
   overflow: hidden;
-  padding: 2rem 4rem;
+  padding: 2rem var(--page-inset);
 }
 
 .autoindex-title {
@@ -1433,10 +1562,11 @@ a {
 }
 
 .autoindex-watermark {
-  position: fixed;
+  position: absolute;
+  pointer-events: none;
   z-index: 0;
-  top: 6rem;
-  right: 5rem;
+  top: 0;
+  right: var(--page-inset);
   width: 20rem;
   height: 20rem;
   color: rgb(71 123 210);
@@ -1458,7 +1588,7 @@ a {
   position: relative;
   z-index: 1;
   border-radius: var(--radius);
-  padding: 2rem 4rem;
+  padding: 2rem var(--page-inset);
   background: var(--surface);
 }
 
@@ -1711,7 +1841,7 @@ a {
   position: relative;
   min-height: clamp(20rem, 52vh, 34rem);
   overflow: hidden;
-  padding: clamp(3rem, 8vw, 7rem) 4rem 4rem;
+  padding: clamp(3rem, 8vw, 7rem) var(--page-inset) 4rem;
 }
 
 .not-found-copy {
@@ -1779,10 +1909,8 @@ a {
 }
 
 @media (max-width: 599px) {
-  .site-header,
-  .page-shell,
-  .site-footer {
-    margin-inline: 2rem;
+  body {
+    --page-gutter: 2rem;
   }
 
   .site-header {
@@ -1819,7 +1947,9 @@ a {
 
   .site-action:hover .site-action-label,
   .site-action:focus-visible .site-action-label,
-  .site-action[data-touch-expanded='true'] .site-action-label {
+  .site-action[data-touch-expanded='true'] .site-action-label,
+  .guide-export-icon:hover .site-action-label,
+  .guide-export-icon:focus-visible .site-action-label {
     transform: none;
   }
 
@@ -1865,24 +1995,6 @@ a {
   .quick-link {
     min-height: 12.188rem;
     padding-bottom: 1.5rem;
-  }
-
-  .article-hero,
-  .article-body {
-    padding-inline: 2rem;
-  }
-
-  .guide-watermark {
-    right: -4rem;
-  }
-
-  .autoindex-hero,
-  .autoindex-panel {
-    padding-inline: 2rem;
-  }
-
-  .autoindex-watermark {
-    right: -4rem;
   }
 
   .not-found-page {
@@ -1939,4 +2051,97 @@ a {
 .autoindex-pagination button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.guide-export {
+  position: relative;
+  margin-left: auto;
+}
+
+.guide-export-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.guide-export-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.guide-export-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.guide-export-icon:hover,
+.guide-export-icon:focus-visible {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.guide-export-icon:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.guide-copy-status {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: max-content;
+  max-width: 75vw;
+  display: block;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.guide-copy-status:empty {
+  display: none;
+}
+
+.guide-export-fallback textarea {
+  width: 100%;
+  min-height: 18rem;
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: monospace;
+}
+
+.guide-export-fallback button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Keep guide hints left of the action group, like the header hints. */
+.guide-export-icon:nth-child(2) {
+  --action-label-offset: 3.125rem;
+}
+
+.guide-export-icon .site-action-label {
+  color: var(--primary-strong);
+  font-family: Metropolis, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
 }

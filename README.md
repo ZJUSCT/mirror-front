@@ -5,6 +5,15 @@
 The ZJU Mirror portal is a statically generated Astro site with small React
 islands for live mirror status, search, and interactive MirrorZ guides. Back-end JSON format: [mirrorz-json](https://github.com/mirrorz-org/mirrorz#data-format-v15-draft)
 
+## Design conventions
+
+The front end follows [Material Design 2](https://m2.material.io/design/guidelines-overview)
+guidelines for visual hierarchy, typography, spacing, controls, and interaction
+states. Use Material 2 as the reference for future UI changes while preserving
+the site's existing colors, flat surfaces, and responsive layouts. Components
+are implemented in the project's own CSS and React/Astro code; this does not
+require a Material component library.
+
 ## Development
 
 Development runs entirely in Docker with Node.js 22 and pnpm 10.15.1.
@@ -120,6 +129,46 @@ Configuration is in [values.yaml](charts/mirror-front/values.yaml).
   fonts, images, and JavaScript remain under `/_astro/`, independently cacheable
   across mirrors and directories. Script hashes and integrity attributes limit
   executable code to the build output; mirrored files are not trusted scripts.
+
+### Responsive page widths
+
+`SiteLayout` uses a centered 58rem reading area by default. The header,
+article title, body, actions, and footer share the same content edges while
+section backgrounds remain full-width. Home and directory listings use the
+`wide` layout (96rem); Statistics uses `statistics` (88rem). These are maximum
+content widths, with responsive gutters on smaller viewports. Guide and
+directory watermarks belong to their title sections, not the viewport.
+Keep long code blocks and tables horizontally scrollable within the content
+area instead of widening the page.
+
+### Markdown guide exports
+
+Guide-specific controls follow their authored `ztmpl` positions: block inputs
+appear immediately above their code example and keep independent selections.
+`global="true"` controls remain at their position in the prose and apply across
+the document. Only general mirror, protocol, and sudo settings stay at the top.
+
+Every shared guide at `/docs/<id>/` also has a static Markdown export at
+`/docs/<id>.md`. Both language interfaces link to that same Chinese document;
+the English interface does not imply an English translation. `/llms.txt`
+indexes all exported guides with absolute URLs and identifies `/mirrorz.json`
+as the source for the current mirror catalog and status. Guide publication is
+independent of that runtime catalog.
+
+“Copy page” exports the current release, endpoint, protocol, and command
+selections. “View as Markdown” uses the documented defaults. Both include
+source provenance, license, file paths, and append instructions. Clipboard
+failures fall back to selectable text, including on plain HTTP. Exported links
+use the canonical production origin even when reviewing the site locally.
+
+The compiler retains Markdown with template placeholders alongside HTML.
+Both renderers resolve block-local and global inputs with the same semantics;
+hidden HTML comments are excluded. Do not generate exports from the browser
+DOM or maintain a separate copy of the guide content.
+
+Run `docker compose run --rm dev pnpm test:docs` to check all vendored guides
+and exercise template scoping, link conversion, and file instructions. The
+production image build runs these tests before generating static pages.
 
 ### Directory-listing HTTP contract
 

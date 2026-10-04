@@ -34,6 +34,7 @@ const { Content } = await render(entry);
   canonicalPath={canonicalPath}
   alternatePath={alternatePath}
   usesGitHubAvatars={kind === 'history'}
+  layoutWidth={kind === 'statistics' ? 'statistics' : 'reading'}
 >
   <div class="article-page special-page">
     <section class="article-hero special-hero">
@@ -64,7 +65,7 @@ const { Content } = await render(entry);
   }
 
   .special-body > * {
-    width: min(58rem, 100%);
+    max-width: 100%;
   }
 
   .special-body > astro-island:has(.statistics) {

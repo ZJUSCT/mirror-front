@@ -15,7 +15,7 @@ import type {
   TemplateValue,
   TemplateVariables,
 } from './types';
-import { renderTemplateText } from './render';
+import { renderTemplateText, templateToken } from './render';
 
 const repositoryRoot = path.resolve(process.cwd());
 const docsRoot = path.join(repositoryRoot, 'vendor', 'mirrorz-docs');
@@ -277,10 +277,6 @@ function templateBlock(
   return `<figure class="zdoc-template">${caption}<pre tabindex="0"><code data-zdoc-template="${template.id}"${language}>${rendered}</code></pre></figure>`;
 }
 
-function templateToken(template: DocumentTemplate): string {
-  return `ZJUMIRRORDOCSTEMPLATE${template.id.replaceAll('-', '').toUpperCase()}TOKEN`;
-}
-
 function rewriteRelativeDocLinks(
   markdown: string,
   routeByDocsId: Map<string, string>
@@ -302,8 +298,25 @@ export function compileDocumentMarkdown(
   inputs: DocumentInput[],
   initialVariables: TemplateVariables,
   routeByDocsId: Map<string, string>
-): { html: string; templates: DocumentTemplate[] } {
+): {
+  html: string;
+  markdown: string;
+  templates: DocumentTemplate[];
+  controlGroups: MirrorzDocument['controlGroups'];
+} {
+  // Do not export retired instructions hidden in Markdown HTML comments.
+  marked.walkTokens(marked.lexer(markdown), (token) => {
+    if (token.type === 'html' && token.raw.trimStart().startsWith('<!--')) {
+      markdown = markdown.replace(
+        token.raw,
+        token.raw.replace(/<!--[\s\S]*?-->/g, '')
+      );
+    }
+  });
   const templates: DocumentTemplate[] = [];
+  const controlGroups: MirrorzDocument['controlGroups'] = [];
+  const controlToken = (id: string) =>
+    `ZJUMIRRORDOCSCONTROL${id.replaceAll('-', '').toUpperCase()}TOKEN`;
   const unknownDirective = markdown.match(/```\{(?!ztmpl\b)([^}\s]+)/);
   if (unknownDirective) {
     throw new Error(`unsupported directive: ${unknownDirective[1]}`);
@@ -322,8 +335,8 @@ export function compileDocumentMarkdown(
 
   let transformed = rewriteRelativeDocLinks(markdown, routeByDocsId);
   transformed = transformed.replaceAll(
-    /^```\{ztmpl([^}]*)\}\s*\n([\s\S]*?)^```\s*$/gm,
-    (_whole, rawOptions: string, source: string) => {
+    /^( *)```\{ztmpl([^}]*)\}[^\S\n]*\n([\s\S]*?)^\1```[^\S\n]*$/gm,
+    (_whole, indent: string, rawOptions: string, source: string) => {
       const options = parseDirectiveOptions(rawOptions);
       const inputNames = options.input?.split(/\s+/).filter(Boolean) ?? [];
       for (const name of inputNames) {
@@ -350,11 +363,15 @@ export function compileDocumentMarkdown(
         ) {
           throw new Error('global ztmpl blocks may only declare inputs');
         }
-        return '';
+        const group = { id: `controls-${controlGroups.length}`, inputNames };
+        controlGroups.push(group);
+        return `${indent}${controlToken(group.id)}`;
       }
       const template: DocumentTemplate = {
         id: `template-${templates.length}`,
-        source: source.replace(/\n$/, ''),
+        source: source
+          .replace(new RegExp(`^${indent}`, 'gm'), '')
+          .replace(/\n$/, ''),
         inline: false,
         inputNames,
         ...(options.lang ? { language: options.lang } : {}),
@@ -362,7 +379,14 @@ export function compileDocumentMarkdown(
         append: options.append === 'true',
       };
       templates.push(template);
-      return `\n${templateToken(template)}\n`;
+      if (inputNames.length) {
+        controlGroups.push({
+          id: `controls-${controlGroups.length}`,
+          inputNames,
+          templateId: template.id,
+        });
+      }
+      return `${indent}${templateToken(template)}`;
     }
   );
   transformed = transformed.replaceAll(
@@ -389,7 +413,37 @@ export function compileDocumentMarkdown(
     }
   );
 
-  const renderedMarkdown = marked.parse(transformed, {
+  // Global inputs apply throughout the document; block inputs stay local.
+  const globalNames = [...markdown.matchAll(/```\{ztmpl([^}]*)\}/g)].flatMap(
+    (match) => {
+      const options = parseDirectiveOptions(match[1]);
+      return options.global === 'true'
+        ? (options.input?.split(/\s+/).filter(Boolean) ?? [])
+        : [];
+    }
+  );
+  for (const template of templates) {
+    template.inputNames = [
+      ...new Set([...globalNames, ...template.inputNames]),
+    ];
+  }
+
+  // HTML block placeholders interrupt paragraphs, including fenced directives
+  // directly after text inside list items. Markdown exports keep plain tokens.
+  let htmlSource = transformed;
+  for (const template of templates.filter((template) => !template.inline)) {
+    htmlSource = htmlSource.replaceAll(
+      templateToken(template),
+      `<div data-zdoc-block="${template.id}"></div>`
+    );
+  }
+  for (const group of controlGroups.filter((group) => !group.templateId)) {
+    htmlSource = htmlSource.replaceAll(
+      controlToken(group.id),
+      `<div data-zdoc-global="${group.id}"></div>`
+    );
+  }
+  const renderedMarkdown = marked.parse(htmlSource, {
     async: false,
     gfm: true,
   }) as string;
@@ -414,6 +468,7 @@ export function compileDocumentMarkdown(
       ...sanitizeHtml.defaults.allowedAttributes,
       a: ['href', 'title'],
       code: ['class', 'data-language', 'data-zdoc-template'],
+      div: ['data-zdoc-block', 'data-zdoc-global'],
       h1: ['id'],
       h2: ['id'],
       h3: ['id'],
@@ -426,12 +481,36 @@ export function compileDocumentMarkdown(
   });
   for (const template of templates) {
     const token = templateToken(template);
-    const replacement = templateBlock(template, initialVariables);
+    const group = controlGroups.find(
+      (group) => group.templateId === template.id
+    );
+    const controls = group
+      ? `<div data-zdoc-controls="${group.id}"></div>`
+      : '';
+    const replacement =
+      controls +
+      templateBlock(template, {
+        ...defaultInputVariables(
+          inputs.filter((input) => template.inputNames.includes(input.name))
+        ),
+        ...initialVariables,
+      });
     html = template.inline
-      ? html.replaceAll(token, replacement)
-      : html.replaceAll(`<p>${token}</p>`, replacement);
+      ? html.replaceAll(token, () => replacement)
+      : html.replaceAll(
+          `<div data-zdoc-block="${template.id}"></div>`,
+          () => replacement
+        );
   }
-  return { html, templates };
+  for (const group of controlGroups.filter((group) => !group.templateId)) {
+    const token = controlToken(group.id);
+    html = html.replaceAll(
+      `<div data-zdoc-global="${group.id}"></div>`,
+      () => `<div data-zdoc-controls="${group.id}"></div>`
+    );
+    transformed = transformed.replaceAll(token, '');
+  }
+  return { html, markdown: transformed, templates, controlGroups };
 }
 
 async function loadAvailableDocIds(): Promise<Set<string>> {
@@ -461,10 +540,7 @@ export async function loadMirrorDocsMapping(): Promise<
 > {
   mappingPromise ??= loadAvailableDocIds().then((available) =>
     Object.fromEntries(
-      [...available].map((id) => [
-        id,
-        { docsId: id, publicPath: `/${id}` },
-      ])
+      [...available].map((id) => [id, { docsId: id, publicPath: `/${id}` }])
     )
   );
   return mappingPromise;
@@ -561,7 +637,6 @@ export async function loadMirrorzDocument(
 
   const inputs = normalizeInputs(config.input);
   const initialVariables = {
-    ...defaultInputVariables(inputs),
     ...baseVariables(selected.publicPath, requiredScheme ?? 'https'),
   };
   const routeByDocsId = new Map<string, string>();
@@ -569,39 +644,27 @@ export async function loadMirrorzDocument(
     if (candidate.docsId) routeByDocsId.set(candidate.docsId, mirrorId);
   }
 
-  const htmlParts: string[] = [];
-  const templates: DocumentTemplate[] = [];
-  for (const block of config.block ?? ['index']) {
-    const blockPath = path.join(docsRoot, selected.docsId, `${block}.zh.md`);
-    const source = await readFile(blockPath, 'utf8');
-    const compiled = compileDocumentMarkdown(
-      source,
-      inputs,
-      initialVariables,
-      routeByDocsId
-    );
-    const offset = templates.length;
-    htmlParts.push(
-      compiled.html.replaceAll(
-        /template-(\d+)/g,
-        (_whole, value: string) => `template-${Number(value) + offset}`
-      )
-    );
-    templates.push(
-      ...compiled.templates.map((template, index) => ({
-        ...template,
-        id: `template-${offset + index}`,
-      }))
-    );
-  }
+  const blocks = await Promise.all(
+    (config.block ?? ['index']).map((block) =>
+      readFile(path.join(docsRoot, selected.docsId!, `${block}.zh.md`), 'utf8')
+    )
+  );
+  const compiled = compileDocumentMarkdown(
+    blocks.join('\n\n'),
+    inputs,
+    initialVariables,
+    routeByDocsId
+  );
 
   return {
     routeId,
     docsId: selected.docsId,
     title: config._,
-    html: htmlParts.join('\n'),
+    html: compiled.html,
+    markdown: compiled.markdown,
     inputs,
-    templates,
+    templates: compiled.templates,
+    controlGroups: compiled.controlGroups,
     initialVariables,
     requiredScheme,
     sourceCommit: docsLock.commit,

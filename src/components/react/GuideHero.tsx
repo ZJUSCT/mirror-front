@@ -23,7 +23,7 @@ import rockyIcon from '@iconify/icons-simple-icons/rockylinux';
 import rosIcon from '@iconify/icons-simple-icons/ros';
 import rustIcon from '@iconify/icons-simple-icons/rust';
 import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import {
   MIRROR_SERVICE_CHANGE_EVENT,
@@ -45,6 +45,7 @@ interface Props {
   fallbackDataUrl?: string | null;
   federatedDataUrl?: string | null;
   locale: 'zh' | 'en';
+  actions?: ReactNode;
 }
 
 interface StaticIcon {
@@ -176,6 +177,7 @@ export default function GuideHero({
   fallbackDataUrl = null,
   federatedDataUrl = null,
   locale,
+  actions,
 }: Props) {
   const [catalog, setCatalog] = useState<MirrorzData | null>(null);
   const [federatedEnabled, setFederatedEnabled] = useState(false);
@@ -246,17 +248,20 @@ export default function GuideHero({
           </span>
         ) : null}
       </div>
-      {selectedDataUrl ? (
-        <a className="file-list-button" href={selectedDataUrl}>
-          <svg
-            viewBox={`0 0 ${folderIcon.width} ${folderIcon.height}`}
-            aria-hidden="true"
-          >
-            <g dangerouslySetInnerHTML={{ __html: folderIcon.body }} />
-          </svg>
-          {locale === 'zh' ? '文件列表' : 'File List'}
-        </a>
-      ) : null}
+      <div className="guide-header-actions">
+        {selectedDataUrl ? (
+          <a className="file-list-button" href={selectedDataUrl}>
+            <svg
+              viewBox={`0 0 ${folderIcon.width} ${folderIcon.height}`}
+              aria-hidden="true"
+            >
+              <g dangerouslySetInnerHTML={{ __html: folderIcon.body }} />
+            </svg>
+            {locale === 'zh' ? '文件列表' : 'File List'}
+          </a>
+        ) : null}
+        {actions}
+      </div>
       {icon ? (
         <svg
           className="guide-watermark"

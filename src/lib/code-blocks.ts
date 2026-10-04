@@ -16,10 +16,14 @@ const copyLabels: Record<'zh' | 'en', CopyLabels> = {
   en: { copy: 'Copy', copied: 'Copied', failed: 'Copy failed', code: 'Code' },
 };
 
-async function copyText(value: string): Promise<void> {
+export async function copyText(value: string): Promise<void> {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(value);
-    return;
+    try {
+      await navigator.clipboard.writeText(value);
+      return;
+    } catch {
+      // Try the selection-based fallback if clipboard permission is denied.
+    }
   }
 
   const textarea = document.createElement('textarea');

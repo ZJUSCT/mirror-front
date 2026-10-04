@@ -1,6 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from 'react';
+import { createPortal } from 'react-dom';
+import GuideHero from './GuideHero';
+import DocumentOptions from './DocumentOptions';
 
-import { enhanceCodeBlocks } from '../../lib/code-blocks';
+import { copyText, enhanceCodeBlocks } from '../../lib/code-blocks';
+import { checkIcon, contentCopyIcon, codeIcon } from '../../lib/ui-icons';
 import { highlightCodeElement } from '../../lib/code-highlighting';
 import {
   CERNET_MIRROR_ORIGIN,
@@ -8,18 +19,22 @@ import {
   MIRROR_SERVICE_CHANGE_EVENT,
   type MirrorServiceChangeDetail,
   replaceMirrorOrigin,
-  ZJU_MIRROR_ORIGIN,
 } from '../../lib/mirror-endpoint';
-import { renderTemplateText } from '../../lib/mirrorz-docs/render';
+import {
+  renderTemplateText,
+  resolveVariables,
+} from '../../lib/mirrorz-docs/render';
+import { exportDocumentMarkdown } from '../../lib/mirrorz-docs/markdown';
 import type {
   DocumentInput,
   MirrorzDocument as MirrorzDocumentData,
-  TemplateVariables,
 } from '../../lib/mirrorz-docs/types';
 
 interface Props {
   document: MirrorzDocumentData;
   locale?: 'zh' | 'en';
+  hero: Omit<ComponentProps<typeof GuideHero>, 'actions' | 'locale'>;
+  children?: ReactNode;
 }
 
 type InputState = Record<string, boolean | number | string>;
@@ -34,48 +49,110 @@ function initialInputState(inputs: DocumentInput[]): InputState {
   );
 }
 
-export default function MirrorzDocument({ document, locale = 'zh' }: Props) {
+export default function MirrorzDocument({
+  document,
+  locale = 'zh',
+  hero,
+  children,
+}: Props) {
   const articleRef = useRef<HTMLElement>(null);
   const [inputState, setInputState] = useState<InputState>(() =>
     initialInputState(document.inputs)
   );
+  const [blockStates, setBlockStates] = useState<Record<string, InputState>>(
+    () =>
+      Object.fromEntries(
+        document.controlGroups
+          .filter((group) => group.templateId)
+          .map((group) => [
+            group.templateId!,
+            initialInputState(
+              document.inputs.filter((input) =>
+                group.inputNames.includes(input.name)
+              )
+            ),
+          ])
+      )
+  );
+  const [controlTargets, setControlTargets] = useState<
+    Record<string, HTMLElement>
+  >({});
+  useEffect(() => {
+    const article = articleRef.current;
+    if (!article) return;
+    setControlTargets(
+      Object.fromEntries(
+        [...article.querySelectorAll<HTMLElement>('[data-zdoc-controls]')].map(
+          (node) => [node.dataset.zdocControls!, node]
+        )
+      )
+    );
+  }, [document.html]);
   const [httpsEnabled, setHttpsEnabled] = useState(
     document.requiredScheme !== 'http'
   );
   const [sudoEnabled, setSudoEnabled] = useState(true);
   const [federatedEnabled, setFederatedEnabled] = useState(false);
 
-  const variables = useMemo(() => {
-    const result: TemplateVariables = { ...document.initialVariables };
-    for (const input of document.inputs) {
-      const value = inputState[input.name];
-      if (input.kind === 'select') {
-        Object.assign(
-          result,
-          input.choices[typeof value === 'number' ? value : 0]?.values ?? {}
-        );
-      } else if (input.kind === 'boolean') {
-        result[input.name] = value ? input.trueValue : input.falseValue;
-      } else {
-        result[input.name] = typeof value === 'string' ? value : '';
-      }
-    }
+  const [copyStatus, setCopyStatus] = useState('');
+  const [copied, setCopied] = useState(false);
+  const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyIcon = copied ? checkIcon : contentCopyIcon;
+  const copyLabel = copied
+    ? locale === 'zh'
+      ? '已复制'
+      : 'Copied'
+    : locale === 'zh'
+      ? '复制全文'
+      : 'Copy page';
+  const [copyFallback, setCopyFallback] = useState<string | null>(null);
 
-    const endpoint = new URL(String(result.endpoint));
-    endpoint.protocol = httpsEnabled ? 'https:' : 'http:';
-    endpoint.host = new URL(
-      federatedEnabled ? CERNET_MIRROR_ORIGIN : ZJU_MIRROR_ORIGIN
-    ).host;
-    result.endpoint = endpoint.toString().replace(/\/$/, '');
-    result.host = endpoint.host;
-    result.mirror = `${endpoint.host}${endpoint.pathname}`;
-    result.path = endpoint.pathname;
-    result.scheme = httpsEnabled ? 'https' : 'http';
-    result.http_protocol = httpsEnabled ? 'https://' : 'http://';
-    result.sudo = sudoEnabled ? 'sudo ' : '';
-    result.sudoE = sudoEnabled ? 'sudo -E ' : '';
-    return result;
-  }, [document, federatedEnabled, httpsEnabled, inputState, sudoEnabled]);
+  useEffect(
+    () => () => {
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+    },
+    []
+  );
+  const options = useMemo(
+    () => ({
+      https: httpsEnabled,
+      sudo: sudoEnabled,
+      federated: federatedEnabled,
+    }),
+    [httpsEnabled, sudoEnabled, federatedEnabled]
+  );
+
+  async function copyPage() {
+    const markdown = exportDocumentMarkdown(
+      document,
+      inputState,
+      options,
+      true,
+      blockStates
+    );
+    try {
+      await copyText(markdown);
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+      setCopied(true);
+      copyResetTimer.current = setTimeout(() => {
+        setCopied(false);
+        setCopyStatus('');
+        copyResetTimer.current = null;
+      }, 2000);
+      setCopyFallback(null);
+      setCopyStatus(locale === 'zh' ? '已复制' : 'Copied');
+    } catch {
+      if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
+      copyResetTimer.current = null;
+      setCopied(false);
+      setCopyFallback(markdown);
+      setCopyStatus(
+        locale === 'zh'
+          ? '请选择下方文本并复制'
+          : 'Select and copy the text below'
+      );
+    }
+  }
 
   useEffect(() => {
     const article = articleRef.current;
@@ -85,11 +162,19 @@ export default function MirrorzDocument({ document, locale = 'zh' }: Props) {
         `[data-zdoc-template="${template.id}"]`
       );
       if (target) {
-        target.textContent = renderTemplateText(template.source, variables);
+        target.textContent = renderTemplateText(
+          template.source,
+          resolveVariables(
+            document,
+            { ...inputState, ...blockStates[template.id] },
+            options,
+            template.inputNames
+          )
+        );
         highlightCodeElement(target);
       }
     }
-  }, [document.templates, variables]);
+  }, [document, inputState, blockStates, options]);
 
   useEffect(() => {
     const article = articleRef.current;
@@ -130,132 +215,174 @@ export default function MirrorzDocument({ document, locale = 'zh' }: Props) {
 
   return (
     <>
-      <form
-        className="docs-controls"
-        onSubmit={(event) => event.preventDefault()}
-      >
-        <fieldset>
-          <legend>{locale === 'zh' ? '通用选项' : 'General options'}</legend>
-          <label>
-            <input
-              id="mirrorz-use-federated"
-              name="use-federated"
-              type="checkbox"
-              checked={federatedEnabled}
-              onChange={(event) => setFederatedEnabled(event.target.checked)}
-            />
-            {locale === 'zh'
-              ? '使用教育网联合镜像站'
-              : 'Use the CERNET federated mirror'}
-          </label>
-          <label>
-            <input
-              id="mirrorz-use-https"
-              name="use-https"
-              type="checkbox"
-              checked={httpsEnabled}
-              disabled={document.requiredScheme !== null}
-              onChange={(event) => setHttpsEnabled(event.target.checked)}
-            />
-            {document.requiredScheme
-              ? locale === 'zh'
-                ? `本文档要求使用 ${document.requiredScheme.toUpperCase()}`
-                : `This guide requires ${document.requiredScheme.toUpperCase()}`
-              : locale === 'zh'
-                ? '使用 HTTPS'
-                : 'Use HTTPS'}
-          </label>
-          <label>
-            <input
-              id="mirrorz-include-sudo"
-              name="include-sudo"
-              type="checkbox"
-              checked={sudoEnabled}
-              onChange={(event) => setSudoEnabled(event.target.checked)}
-            />
-            {locale === 'zh' ? '命令包含 sudo' : 'Include sudo in commands'}
-          </label>
-        </fieldset>
-        {document.inputs.length ? (
-          <fieldset>
-            <legend>{locale === 'zh' ? '文档选项' : 'Guide options'}</legend>
-            {document.inputs.map((input) => {
-              if (input.kind === 'select') {
-                return (
-                  <label key={input.name}>
-                    <span>{input.title}</span>
-                    <select
-                      id={`mirrorz-input-${input.name}`}
-                      name={input.name}
-                      value={Number(inputState[input.name])}
-                      onChange={(event) =>
-                        setInputState((current) => ({
-                          ...current,
-                          [input.name]: Number(event.target.value),
-                        }))
-                      }
-                    >
-                      {input.choices.map((choice, index) => (
-                        <option
-                          key={`${input.name}-${choice.label}`}
-                          value={index}
-                        >
-                          {choice.label}
-                        </option>
-                      ))}
-                    </select>
-                    {input.note ? <small>{input.note}</small> : null}
-                  </label>
-                );
+      <GuideHero
+        {...hero}
+        locale={locale}
+        actions={
+          <div className="guide-export">
+            <div className="guide-export-actions">
+              <button
+                type="button"
+                className="guide-export-icon"
+                onClick={copyPage}
+                aria-label={copyLabel}
+                aria-describedby="guide-copy-hint"
+              >
+                <svg
+                  viewBox={`0 0 ${copyIcon.width} ${copyIcon.height}`}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: copyIcon.body }}
+                />
+                <span
+                  className="site-action-label"
+                  id="guide-copy-hint"
+                  role="tooltip"
+                >
+                  {copyLabel}
+                </span>
+              </button>
+              <a
+                className="guide-export-icon"
+                href={`/docs/${encodeURIComponent(document.routeId)}.md`}
+                aria-label={
+                  locale === 'zh' ? '查看 Markdown' : 'View as Markdown'
+                }
+                aria-describedby="guide-markdown-hint"
+              >
+                <svg
+                  viewBox={`0 0 ${codeIcon.width} ${codeIcon.height}`}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: codeIcon.body }}
+                />
+                <span
+                  className="site-action-label"
+                  id="guide-markdown-hint"
+                  role="tooltip"
+                >
+                  {locale === 'zh' ? '查看 Markdown' : 'View as Markdown'}
+                </span>
+              </a>
+            </div>
+            <span
+              className={
+                copyFallback === null ? 'visually-hidden' : 'guide-copy-status'
               }
-              if (input.kind === 'boolean') {
-                return (
-                  <label key={input.name}>
-                    <input
-                      id={`mirrorz-input-${input.name}`}
-                      name={input.name}
-                      type="checkbox"
-                      checked={Boolean(inputState[input.name])}
-                      onChange={(event) =>
-                        setInputState((current) => ({
-                          ...current,
-                          [input.name]: event.target.checked,
-                        }))
-                      }
-                    />
-                    {input.title}
-                    {input.note ? <small>{input.note}</small> : null}
-                  </label>
-                );
-              }
-              return (
-                <label key={input.name}>
-                  <span>{input.title}</span>
-                  <input
-                    id={`mirrorz-input-${input.name}`}
-                    name={input.name}
-                    type="text"
-                    value={String(inputState[input.name] ?? '')}
-                    onChange={(event) =>
-                      setInputState((current) => ({
-                        ...current,
-                        [input.name]: event.target.value,
-                      }))
-                    }
-                  />
-                  {input.note ? <small>{input.note}</small> : null}
-                </label>
-              );
-            })}
-          </fieldset>
-        ) : null}
-      </form>
-      <article
-        ref={articleRef}
-        lang={locale}
-        className="prose mirrorz-document"
-        dangerouslySetInnerHTML={{ __html: document.html }}
+              role="status"
+            >
+              {copyStatus}
+            </span>
+          </div>
+        }
       />
+      <section className="article-body guide-body">
+        {locale === 'en' && (
+          <p className="guide-note">
+            This shared guide is currently available only in Chinese. Use the
+            controls below to select the mirror endpoint and command options.
+          </p>
+        )}
+        {copyFallback !== null && (
+          <div className="guide-export-fallback">
+            <textarea
+              autoFocus
+              readOnly
+              value={copyFallback}
+              onFocus={(event) => event.currentTarget.select()}
+              aria-label={
+                locale === 'zh' ? '待复制的 Markdown 全文' : 'Markdown to copy'
+              }
+            />
+            <button type="button" onClick={() => setCopyFallback(null)}>
+              {locale === 'zh' ? '关闭' : 'Close'}
+            </button>
+          </div>
+        )}
+        <form
+          className="docs-controls"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <fieldset>
+            <legend>{locale === 'zh' ? '通用选项' : 'General options'}</legend>
+            <label>
+              <input
+                id="mirrorz-use-federated"
+                name="use-federated"
+                type="checkbox"
+                checked={federatedEnabled}
+                onChange={(event) => setFederatedEnabled(event.target.checked)}
+              />
+              {locale === 'zh'
+                ? '使用教育网联合镜像站'
+                : 'Use the CERNET federated mirror'}
+            </label>
+            <label>
+              <input
+                id="mirrorz-use-https"
+                name="use-https"
+                type="checkbox"
+                checked={httpsEnabled}
+                disabled={document.requiredScheme !== null}
+                onChange={(event) => setHttpsEnabled(event.target.checked)}
+              />
+              {document.requiredScheme
+                ? locale === 'zh'
+                  ? `本文档要求使用 ${document.requiredScheme.toUpperCase()}`
+                  : `This guide requires ${document.requiredScheme.toUpperCase()}`
+                : locale === 'zh'
+                  ? '使用 HTTPS'
+                  : 'Use HTTPS'}
+            </label>
+            <label>
+              <input
+                id="mirrorz-include-sudo"
+                name="include-sudo"
+                type="checkbox"
+                checked={sudoEnabled}
+                onChange={(event) => setSudoEnabled(event.target.checked)}
+              />
+              {locale === 'zh' ? '命令包含 sudo' : 'Include sudo in commands'}
+            </label>
+          </fieldset>
+        </form>
+        <article
+          ref={articleRef}
+          lang="zh"
+          className="prose mirrorz-document"
+          dangerouslySetInnerHTML={{ __html: document.html }}
+        />
+        {document.controlGroups.map((group) => {
+          const target = controlTargets[group.id];
+          if (!target) return null;
+          return createPortal(
+            <DocumentOptions
+              id={group.id}
+              inputs={group.inputNames.map(
+                (name) => document.inputs.find((input) => input.name === name)!
+              )}
+              state={
+                group.templateId ? blockStates[group.templateId] : inputState
+              }
+              locale={locale}
+              onChange={(name, value) => {
+                if (group.templateId) {
+                  setBlockStates((current) => ({
+                    ...current,
+                    [group.templateId!]: {
+                      ...current[group.templateId!],
+                      [name]: value,
+                    },
+                  }));
+                } else {
+                  setInputState((current) => ({ ...current, [name]: value }));
+                }
+              }}
+            />,
+            target,
+            group.id
+          );
+        })}
+        {children}
+      </section>
     </>
   );
 }

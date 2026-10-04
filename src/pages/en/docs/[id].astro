@@ -49,23 +49,20 @@ const federatedDataUrl = current
   pageKind="docs"
 >
   <div class="article-page guide-page">
-    <GuideHero
-      client:load
-      mirrorId={id}
-      title={title}
-      fallbackDataUrl={dataUrl}
-      federatedDataUrl={federatedDataUrl}
-      locale="en"
-    />
-    <section class="article-body guide-body">
-      {
-        document ? (
-          <>
-            <p class="guide-note">
-              This shared guide is currently available only in Chinese. Use the
-              controls below to select the mirror endpoint and command options.
-            </p>
-            <MirrorzDocument client:load document={document} locale="en" />
+    {
+      document ? (
+        <>
+          <MirrorzDocument
+            client:load
+            document={document}
+            locale="en"
+            hero={{
+              mirrorId: id,
+              title,
+              fallbackDataUrl: dataUrl,
+              federatedDataUrl,
+            }}
+          >
             <p class="source-attribution">
               Guide content comes from{' '}
               <a
@@ -89,9 +86,19 @@ const federatedDataUrl = current
               </a>
               .
             </p>
-          </>
-        ) : (
-          <>
+          </MirrorzDocument>
+        </>
+      ) : (
+        <>
+          <GuideHero
+            client:load
+            mirrorId={id}
+            title={title}
+            fallbackDataUrl={dataUrl}
+            federatedDataUrl={federatedDataUrl}
+            locale="en"
+          />
+          <section class="article-body guide-body">
             <p class="callout">No reviewed shared guide is available.</p>
             <p>
               This mirror remains in the current catalog. To avoid publishing
@@ -103,9 +110,9 @@ const federatedDataUrl = current
                 <a href={dataUrl}>Browse the {id} mirror files</a>
               </p>
             )}
-          </>
-        )
-      }
-    </section>
+          </section>
+        </>
+      )
+    }
   </div>
 </SiteLayout>

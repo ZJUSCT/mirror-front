@@ -49,19 +49,20 @@ const federatedDataUrl = current
   pageKind="docs"
 >
   <div class="article-page guide-page">
-    <GuideHero
-      client:load
-      mirrorId={id}
-      title={title}
-      fallbackDataUrl={dataUrl}
-      federatedDataUrl={federatedDataUrl}
-      locale="zh"
-    />
-    <section class="article-body guide-body">
-      {
-        document ? (
-          <>
-            <MirrorzDocument client:load document={document} locale="zh" />
+    {
+      document ? (
+        <>
+          <MirrorzDocument
+            client:load
+            document={document}
+            locale="zh"
+            hero={{
+              mirrorId: id,
+              title,
+              fallbackDataUrl: dataUrl,
+              federatedDataUrl,
+            }}
+          >
             <p class="source-attribution">
               文档内容来自{' '}
               <a
@@ -85,9 +86,19 @@ const federatedDataUrl = current
               </a>{' '}
               提供。
             </p>
-          </>
-        ) : (
-          <>
+          </MirrorzDocument>
+        </>
+      ) : (
+        <>
+          <GuideHero
+            client:load
+            mirrorId={id}
+            title={title}
+            fallbackDataUrl={dataUrl}
+            federatedDataUrl={federatedDataUrl}
+            locale="zh"
+          />
+          <section class="article-body guide-body">
             <p class="callout">暂无经审核的共享使用帮助。</p>
             <p>
               该镜像仍在当前目录中。为避免发布过时命令，新前端不会从旧页面复制未经审核的说明。
@@ -97,9 +108,9 @@ const federatedDataUrl = current
                 <a href={dataUrl}>浏览 {id} 镜像文件</a>
               </p>
             )}
-          </>
-        )
-      }
-    </section>
+          </section>
+        </>
+      )
+    }
   </div>
 </SiteLayout>
