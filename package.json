@@ -17,7 +17,8 @@
     "preview": "astro preview --host 0.0.0.0",
     "format": "prettier --write src scripts statistics-exporter/*.mjs statistics-exporter/*.json *.mjs *.json .github/workflows",
     "check": "astro check",
-    "test": "node --test statistics-exporter/exporter.test.mjs"
+    "test": "node --test statistics-exporter/exporter.test.mjs",
+    "test:docs": "tsx --test src/lib/mirrorz-docs/*.test.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.7",
@@ -48,6 +49,7 @@
     "@types/sanitize-html": "2.16.1",
     "prettier": "3.7.4",
     "prettier-plugin-astro": "0.14.1",
+    "tsx": "4.23.15",
     "typescript": "5.9.3"
   },
   "repository": {

@@ -121,6 +121,41 @@ Configuration is in [values.yaml](charts/mirror-front/values.yaml).
   across mirrors and directories. Script hashes and integrity attributes limit
   executable code to the build output; mirrored files are not trusted scripts.
 
+### Responsive page widths
+
+`SiteLayout` uses a centered 58rem reading area by default. The header,
+article title, body, actions, and footer share the same content edges while
+section backgrounds remain full-width. Home and directory listings use the
+`wide` layout (96rem); Statistics uses `statistics` (88rem). These are maximum
+content widths, with responsive gutters on smaller viewports. Guide and
+directory watermarks belong to their title sections, not the viewport.
+Keep long code blocks and tables horizontally scrollable within the content
+area instead of widening the page.
+
+### Markdown guide exports
+
+Every shared guide at `/docs/<id>/` also has a static Markdown export at
+`/docs/<id>.md`. Both language interfaces link to that same Chinese document;
+the English interface does not imply an English translation. `/llms.txt`
+indexes all exported guides with absolute URLs and identifies `/mirrorz.json`
+as the source for the current mirror catalog and status. Guide publication is
+independent of that runtime catalog.
+
+“Copy page” exports the current release, endpoint, protocol, and command
+selections. “View as Markdown” uses the documented defaults. Both include
+source provenance, license, file paths, and append instructions. Clipboard
+failures fall back to selectable text, including on plain HTTP. Exported links
+use the canonical production origin even when reviewing the site locally.
+
+The compiler retains Markdown with template placeholders alongside HTML.
+Both renderers resolve block-local and global inputs with the same semantics;
+hidden HTML comments are excluded. Do not generate exports from the browser
+DOM or maintain a separate copy of the guide content.
+
+Run `docker compose run --rm dev pnpm test:docs` to check all vendored guides
+and exercise template scoping, link conversion, and file instructions. The
+production image build runs these tests before generating static pages.
+
 ### Directory-listing HTTP contract
 
 - Directory URLs serve the HTML shell regardless of `Accept`. JSON is available

@@ -54,7 +54,9 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) =>
-        !page.endsWith('/404/') && !page.endsWith('/autoindex/'),
+        !page.endsWith('/404/') &&
+        !page.endsWith('/autoindex/') &&
+        !/\.(md|txt)\/?$/.test(page),
     }),
   ],
 });

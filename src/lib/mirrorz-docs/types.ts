@@ -50,6 +50,7 @@ export interface MirrorzDocument {
   docsId: string;
   title: string;
   html: string;
+  markdown: string;
   inputs: DocumentInput[];
   templates: DocumentTemplate[];
   initialVariables: TemplateVariables;
