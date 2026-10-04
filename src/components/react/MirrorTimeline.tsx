@@ -55,6 +55,9 @@ export default function MirrorTimeline({
       ? Date.parse(snapshotAt)
       : mountedAt;
   const [selection, setSelection] = useState<TimeWindow | null>(null);
+  const [measureLabel, setMeasureLabel] = useState<
+    ((label: string) => number) | undefined
+  >();
   const [plotWidth, setPlotWidth] = useState(1000);
   const mapRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -159,8 +162,51 @@ export default function MirrorTimeline({
       label: friendlyName ? row.link.friendlyLabel : row.link.pathId,
     }))
   );
-  const packed = packMirrorTimeline(entries, view.start, view.end, plotWidth);
+  const packed = packMirrorTimeline(
+    entries,
+    view.start,
+    view.end,
+    plotWidth,
+    measureLabel
+  );
   const trackCount = Math.max(0, ...packed.map((event) => event.track + 1));
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (!chart) return;
+    let disposed = false;
+    const measureFont = () => {
+      if (disposed) return;
+      const probe = document.createElement('span');
+      probe.className = 'timeline-event-name';
+      probe.style.visibility = 'hidden';
+      chart.append(probe);
+      const style = getComputedStyle(probe);
+      const context = document.createElement('canvas').getContext('2d');
+      if (context)
+        context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      probe.remove();
+      if (!context) return;
+      const widths = new Map<string, number>();
+      setMeasureLabel(() => (label: string) => {
+        if (!widths.has(label))
+          widths.set(label, Math.ceil(context.measureText(label).width));
+        return widths.get(label)!;
+      });
+    };
+    measureFont();
+    void document.fonts.ready.then(measureFont);
+    document.fonts.addEventListener('loadingdone', measureFont);
+    const observer = new MutationObserver(measureFont);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-site-theme'],
+    });
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      document.fonts.removeEventListener('loadingdone', measureFont);
+    };
+  }, []);
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;

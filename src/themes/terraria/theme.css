@@ -1,0 +1,432 @@
+:root[data-site-theme='terraria'] {
+  --terraria-sky-top: #8fe4ff;
+  --terraria-sky-mid: #dff8ff;
+  --terraria-page-fill: #9ed5ff;
+  --terraria-horizon: #fff0d7;
+  --terraria-ground: #aa7ad3;
+  --terraria-ground-dark: #69478f;
+  --terraria-sun-glow: rgba(255, 248, 194, 0.96);
+  --terraria-star-opacity: 0;
+  --terraria-grid-opacity: 0.12;
+  --terraria-tree-opacity: 0.92;
+  --terraria-panel-highlight: #fff1bd;
+  --terraria-panel-shadow: rgba(61, 33, 13, 0.5);
+  --terraria-hallow-grass-highlight: #fffafe;
+  --terraria-hallow-grass-top: #f6a8f5;
+  --terraria-hallow-grass-shadow: #d173d6;
+  --terraria-hallow-stone-top: #d3b7ff;
+  --terraria-hallow-stone-mid: #b88dde;
+  --terraria-hallow-stone-shadow: #7c589f;
+  --terraria-rainbow-hill-glow: rgba(255, 255, 255, 0.28);
+  --terraria-crystal-top: #fefeff;
+  --terraria-crystal-mid: #ffd0fb;
+  --terraria-crystal-shadow: #c37bf0;
+  --terraria-scenery-shadow: rgba(57, 27, 86, 0.26);
+}
+:root[data-site-theme='terraria'][data-theme='dark'] {
+  --terraria-sky-top: #070d24;
+  --terraria-sky-mid: #20346d;
+  --terraria-page-fill: #1a2f64;
+  --terraria-horizon: #6a58c8;
+  --terraria-ground: #50387f;
+  --terraria-ground-dark: #261b44;
+  --terraria-sun-glow: transparent;
+  --terraria-star-opacity: 1;
+  --terraria-grid-opacity: 0.18;
+  --terraria-tree-opacity: 0.7;
+  --terraria-panel-highlight: #7f95dd;
+  --terraria-panel-shadow: rgba(7, 10, 28, 0.62);
+  --terraria-hallow-grass-highlight: #fff2ff;
+  --terraria-hallow-grass-top: #ea84ff;
+  --terraria-hallow-grass-shadow: #9c55d2;
+  --terraria-hallow-stone-top: #8468c8;
+  --terraria-hallow-stone-mid: #503b86;
+  --terraria-hallow-stone-shadow: #2a1e4b;
+  --terraria-rainbow-hill-glow: rgba(255, 165, 248, 0.34);
+  --terraria-crystal-top: #fefbff;
+  --terraria-crystal-mid: #ff9cf4;
+  --terraria-crystal-shadow: #8d5bd9;
+  --terraria-scenery-shadow: rgba(6, 7, 20, 0.5);
+}
+.terraria-scenery {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+html[data-theme='dark'] body::after {
+  background: none;
+  opacity: 0;
+}
+
+.terraria-scenery__only-dark {
+  display: none;
+}
+
+html[data-theme='dark'] .terraria-scenery__only-dark {
+  display: block;
+}
+
+html[data-theme='dark'] .terraria-scenery__only-light {
+  display: none;
+}
+
+.terraria-scenery__terrain {
+  position: absolute;
+}
+
+.terraria-scenery__sprite {
+  position: absolute;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 10px 0 rgba(18, 12, 8, 0.18));
+  opacity: 0.98;
+  z-index: 7;
+}
+
+.terraria-scenery__terrain {
+  bottom: 0;
+  image-rendering: pixelated;
+  background: linear-gradient(
+    180deg,
+    var(--terraria-hallow-grass-top) 0%,
+    var(--terraria-hallow-stone-top) 34%,
+    var(--terraria-hallow-stone-shadow) 100%
+  );
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.18),
+    0 -3px 0 rgba(255, 255, 255, 0.14),
+    0 14px 24px var(--terraria-scenery-shadow);
+  opacity: 0.96;
+}
+
+.terraria-scenery__terrain--back {
+  left: -8%;
+  bottom: 8.6rem;
+  z-index: 1;
+  width: 116%;
+  height: 10rem;
+  opacity: 0.42;
+  clip-path: polygon(
+    0 100%,
+    0 82%,
+    8% 82%,
+    8% 72%,
+    16% 72%,
+    16% 64%,
+    26% 64%,
+    26% 56%,
+    38% 56%,
+    38% 62%,
+    49% 62%,
+    49% 54%,
+    60% 54%,
+    60% 60%,
+    72% 60%,
+    72% 68%,
+    84% 68%,
+    84% 78%,
+    92% 78%,
+    92% 84%,
+    100% 84%,
+    100% 100%
+  );
+}
+
+.terraria-scenery__terrain--mid {
+  left: 16%;
+  bottom: 4.2rem;
+  z-index: 3;
+  width: 68%;
+  height: 10.5rem;
+  opacity: 0.66;
+  clip-path: polygon(
+    0 100%,
+    0 84%,
+    10% 84%,
+    10% 72%,
+    20% 72%,
+    20% 60%,
+    34% 60%,
+    34% 48%,
+    48% 48%,
+    48% 56%,
+    62% 56%,
+    62% 66%,
+    76% 66%,
+    76% 78%,
+    90% 78%,
+    90% 86%,
+    100% 86%,
+    100% 100%
+  );
+}
+
+.terraria-scenery__terrain--front-left,
+.terraria-scenery__terrain--front-right {
+  bottom: -0.15rem;
+  z-index: 6;
+  height: 14rem;
+}
+
+.terraria-scenery__terrain--front-left {
+  left: -3%;
+  width: 48%;
+  clip-path: polygon(
+    0 100%,
+    0 72%,
+    8% 72%,
+    8% 62%,
+    18% 62%,
+    18% 52%,
+    30% 52%,
+    30% 40%,
+    44% 40%,
+    44% 50%,
+    58% 50%,
+    58% 62%,
+    74% 62%,
+    74% 74%,
+    88% 74%,
+    88% 84%,
+    100% 84%,
+    100% 100%
+  );
+}
+
+.terraria-scenery__terrain--front-right {
+  right: -3%;
+  width: 46%;
+  clip-path: polygon(
+    0 100%,
+    0 84%,
+    14% 84%,
+    14% 72%,
+    28% 72%,
+    28% 58%,
+    42% 58%,
+    42% 46%,
+    56% 46%,
+    56% 54%,
+    70% 54%,
+    70% 66%,
+    84% 66%,
+    84% 78%,
+    100% 78%,
+    100% 100%
+  );
+}
+
+.terraria-scenery__sprite--tree-left,
+.terraria-scenery__sprite--tree-right {
+  bottom: clamp(5.7rem, 10vh, 7.7rem);
+  z-index: 5;
+  width: clamp(82px, 7vw, 112px);
+  height: clamp(278px, 23vw, 380px);
+  background-image: url('/themes/terraria/hallow-tree.png');
+  filter: drop-shadow(0 12px 0 rgba(30, 16, 44, 0.2));
+}
+
+.terraria-scenery__sprite--tree-left {
+  left: max(0.5rem, 3vw);
+}
+
+.terraria-scenery__sprite--tree-right {
+  right: max(0.75rem, 4vw);
+  transform: scaleX(-1);
+}
+
+.terraria-scenery__sprite--pixie {
+  right: clamp(10rem, 20vw, 18rem);
+  bottom: clamp(14rem, 35vh, 18rem);
+  width: 72px;
+  height: 52px;
+  background-image: url('/themes/terraria/pixie.gif');
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.86))
+    drop-shadow(0 0 18px rgba(255, 163, 243, 0.72));
+  animation: terraria-float 6.2s steps(4, end) infinite;
+}
+
+.terraria-scenery__sprite--unicorn {
+  left: clamp(8rem, 16vw, 18rem);
+  bottom: clamp(5.1rem, 10vh, 6.1rem);
+  width: clamp(122px, 12vw, 156px);
+  height: clamp(76px, 7.6vw, 98px);
+  background-image: url('/themes/terraria/unicorn.gif');
+  animation: terraria-trot 7s ease-in-out infinite;
+}
+
+.terraria-scenery__sprite--gastropod {
+  right: clamp(5rem, 12vw, 11rem);
+  bottom: clamp(10rem, 24vh, 14rem);
+  width: clamp(54px, 5vw, 72px);
+  height: clamp(57px, 5.4vw, 76px);
+  background-image: url('/themes/terraria/gastropod2.gif');
+  filter: drop-shadow(0 0 10px rgba(255, 139, 236, 0.86))
+    drop-shadow(0 0 24px rgba(255, 114, 222, 0.58));
+  animation: terraria-hover 4.2s steps(4, end) infinite;
+}
+
+.terraria-scenery__sprite--moon {
+  top: clamp(2.5rem, 8vh, 4.5rem);
+  right: clamp(8rem, 16vw, 14rem);
+  z-index: 2;
+  width: clamp(46px, 4.8vw, 64px);
+  height: clamp(46px, 4.8vw, 64px);
+  background-image: url('/themes/terraria/moon-full-soft.png');
+  opacity: 0.78;
+  filter: drop-shadow(0 0 12px rgba(208, 225, 255, 0.42))
+    drop-shadow(0 0 22px rgba(138, 172, 255, 0.24));
+}
+
+@keyframes terraria-hover {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -0.7rem, 0);
+  }
+}
+
+@keyframes terraria-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  33% {
+    transform: translate3d(0.45rem, -0.5rem, 0);
+  }
+
+  66% {
+    transform: translate3d(-0.35rem, -0.25rem, 0);
+  }
+}
+
+@keyframes terraria-trot {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0.5rem, -0.24rem, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .terraria-scenery__sprite--tree-left,
+  .terraria-scenery__sprite--tree-right {
+    width: 92px;
+    height: 312px;
+  }
+
+  .terraria-scenery__terrain--front-left {
+    width: 56%;
+  }
+
+  .terraria-scenery__terrain--front-right {
+    width: 50%;
+  }
+
+  .terraria-scenery__sprite--unicorn {
+    left: 9vw;
+    width: 132px;
+    height: 84px;
+  }
+
+  .terraria-scenery__sprite--gastropod {
+    right: 8vw;
+  }
+
+  .terraria-scenery__sprite--moon {
+    right: 10vw;
+  }
+}
+
+@media (max-width: 640px) {
+  .terraria-scenery__sprite--tree-left {
+    left: -0.75rem;
+  }
+
+  .terraria-scenery__sprite--tree-right {
+    display: none;
+  }
+
+  .terraria-scenery__terrain--mid {
+    left: 8%;
+    width: 84%;
+  }
+
+  .terraria-scenery__terrain--front-left {
+    width: 62%;
+  }
+
+  .terraria-scenery__terrain--front-right {
+    width: 52%;
+  }
+
+  .terraria-scenery__sprite--pixie {
+    right: 4rem;
+    bottom: 12rem;
+  }
+
+  .terraria-scenery__sprite--unicorn {
+    left: 1rem;
+    bottom: 4.9rem;
+    width: 116px;
+    height: 74px;
+  }
+
+  .terraria-scenery__sprite--gastropod {
+    right: 1rem;
+    bottom: 12rem;
+  }
+
+  .terraria-scenery__sprite--moon {
+    top: 3rem;
+    right: 4.25rem;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+:root[data-site-theme='terraria'] .theme-mirror-artwork {
+  background-image: var(--theme-artwork-terraria);
+}
+:root[data-site-theme='terraria'] .brand-theme-artwork {
+  background-image: url('/themes/terraria/magic-mirror.png');
+}
+@media (prefers-reduced-motion: reduce) {
+  .terraria-scenery__sprite--pixie {
+    background-image: url('/themes/terraria/pixie-still.png');
+  }
+  .terraria-scenery__sprite--unicorn {
+    background-image: url('/themes/terraria/unicorn-still.png');
+  }
+  .terraria-scenery__sprite--gastropod {
+    background-image: url('/themes/terraria/gastropod2-still.png');
+  }
+}
+/* Fit side scenery into the actual reading gutters, including wide catalogs. */
+:root[data-site-theme='terraria'] .terraria-scenery {
+  --edge-tree-width: clamp(52px, calc(var(--page-inset) - 0.5rem), 120px);
+}
+.terraria-scenery__sprite--tree-left,
+.terraria-scenery__sprite--tree-right {
+  width: var(--edge-tree-width);
+  height: auto;
+  aspect-ratio: 100 / 328;
+}
+.terraria-scenery__sprite--tree-left {
+  left: calc((var(--page-inset) - var(--edge-tree-width)) / 2);
+}
+.terraria-scenery__sprite--tree-right {
+  right: calc((var(--page-inset) - var(--edge-tree-width)) / 2);
+}

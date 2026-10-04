@@ -274,15 +274,15 @@ body {
   align-self: flex-start;
 }
 
-.site-actions > :nth-child(3n + 1) {
+.site-actions > :nth-child(3n + 1 of .site-action) {
   --action-label-offset: 0.375rem;
 }
 
-.site-actions > :nth-child(3n + 2) {
+.site-actions > :nth-child(3n + 2 of .site-action) {
   --action-label-offset: 2.875rem;
 }
 
-.site-actions > :nth-child(3n) {
+.site-actions > :nth-child(3n of .site-action) {
   --action-label-offset: 5.375rem;
 }
 

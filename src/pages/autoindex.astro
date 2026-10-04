@@ -31,6 +31,7 @@ import rosIcon from '@iconify/icons-simple-icons/ros';
 import rustIcon from '@iconify/icons-simple-icons/rust';
 import ubuntuIcon from '@iconify/icons-simple-icons/ubuntu';
 
+import { themeArtwork } from '../themes/artwork';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { folderIcon } from '../lib/ui-icons';
 
@@ -108,6 +109,7 @@ const contentSecurityPolicy =
         class="autoindex-watermark"
         aria-hidden="true"
       >
+        <span id="autoindex-theme-artwork" class="theme-mirror-artwork"></span>
         {
           iconGroups.flatMap(({ ids, icon }) =>
             ids.map((id) => (
@@ -186,6 +188,25 @@ const contentSecurityPolicy =
     </section>
   </article>
 
+  <script
+    is:inline
+    define:vars={{
+      artworkByMirror: Object.fromEntries(
+        iconGroups.flatMap(({ ids }) => ids.map((id) => [id, themeArtwork(id)]))
+      ),
+      fallbackArtwork: themeArtwork('mirror'),
+    }}
+  >
+    (() => {
+      const icon = document.querySelector('#autoindex-theme-artwork');
+      const id = location.pathname.split('/').filter(Boolean)[0]?.toLowerCase();
+      if (icon)
+        for (const [key, value] of Object.entries(
+          artworkByMirror[id] || fallbackArtwork
+        ))
+          icon.style.setProperty(key, value);
+    })();
+  </script>
   <script>
     import '../scripts/autoindex.js';
   </script>
