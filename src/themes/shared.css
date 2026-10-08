@@ -244,7 +244,8 @@
   background-color: var(--theme-control);
   border-color: var(--border);
 }
-:root[data-theme-family='game'] :is(.code-block-shell, .prose > pre) {
+:root[data-theme-family='game']
+  :is(.code-block-shell, .prose > pre, .prose > astro-slot > pre) {
   background: var(--surface);
   color: var(--theme-panel-text);
   border: 2px solid var(--border);

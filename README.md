@@ -121,6 +121,12 @@ Configuration is in [values.yaml](charts/mirror-front/values.yaml).
   absent from it (for example mid-migration while its publish deployment is
   not Ready) keeps its guide page, and a guide without a hosted mirror still
   gets one. The mirror status island links to a guide only when one exists.
+- A guide can provide a local interactive HTML page at
+  `src/content/docs-overrides/<docs-id>/index.mdx`. When present, that MDX page
+  replaces the vendored HTML presentation. The title, inputs, Markdown export,
+  and `/docs/<id>.md` route always come from the pinned `mirrorz-docs` YAML and
+  Markdown, so the interactive page cannot silently change the portable guide.
+  See the README in that directory for the authoring contract.
 - The browser consumes the same-origin `/mirrorz.json` endpoint directly as
   [MirrorZ Data Format v1.7](https://github.com/mirrorz-org/mirrorz#data-format-v17).
   MirrorZ governs this public data contract.

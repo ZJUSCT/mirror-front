@@ -18,11 +18,13 @@ test('every vendored guide exports without unresolved directives or internal tok
       id
     );
     assert.doesNotMatch(document.html, /ZJUMIRRORDOCS(?:TEMPLATE|CONTROL)/, id);
-    for (const group of document.controlGroups) {
-      assert.ok(
-        document.html.includes(`data-zdoc-controls="${group.id}"`),
-        `${id}: ${group.id}`
-      );
+    if (!document.interactiveOverride) {
+      for (const group of document.controlGroups) {
+        assert.ok(
+          document.html.includes(`data-zdoc-controls="${group.id}"`),
+          `${id}: ${group.id}`
+        );
+      }
     }
   }
 });
@@ -76,6 +78,7 @@ test('global controls retain their authored position and affect local and inline
     title: 'Example',
     requiredScheme: null,
     sourceCommit: 'test',
+    interactiveOverride: false,
   };
   assert.equal(compiled.controlGroups.length, 1);
   assert.equal(compiled.controlGroups[0].templateId, undefined);
@@ -147,6 +150,7 @@ test('indented templates preserve append instructions and inline code delimiters
     initialVariables,
     requiredScheme: null,
     sourceCommit: 'test',
+    interactiveOverride: false,
   };
   const markdown = exportDocumentMarkdown(document);
   assert.match(markdown, /    追加到/);

@@ -1,6 +1,7 @@
 ---
 import GuideHero from '../../../components/react/GuideHero';
 import MirrorzDocument from '../../../components/react/MirrorzDocument';
+import MirrorzDocumentContent from '../../../components/static/MirrorzDocumentContent.astro';
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import {
   loadMirrorDocsMapping,
@@ -56,6 +57,9 @@ const federatedDataUrl = current
             client:load
             document={document}
             locale="en"
+            defaultHttps={
+              id === 'ubuntu' || id === 'ubuntu-ports' ? false : undefined
+            }
             hero={{
               mirrorId: id,
               title,
@@ -63,6 +67,7 @@ const federatedDataUrl = current
               federatedDataUrl,
             }}
           >
+            <MirrorzDocumentContent slot="content" document={document} />
             <p class="source-attribution">
               Guide content comes from{' '}
               <a
@@ -85,6 +90,9 @@ const federatedDataUrl = current
                 CC BY-NC-SA 4.0
               </a>
               .
+              {document.interactiveOverride && (
+                <> This site provides an interactive page.</>
+              )}
             </p>
           </MirrorzDocument>
         </>

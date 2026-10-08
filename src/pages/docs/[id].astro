@@ -1,6 +1,7 @@
 ---
 import GuideHero from '../../components/react/GuideHero';
 import MirrorzDocument from '../../components/react/MirrorzDocument';
+import MirrorzDocumentContent from '../../components/static/MirrorzDocumentContent.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import {
   loadMirrorDocsMapping,
@@ -56,6 +57,9 @@ const federatedDataUrl = current
             client:load
             document={document}
             locale="zh"
+            defaultHttps={
+              id === 'ubuntu' || id === 'ubuntu-ports' ? false : undefined
+            }
             hero={{
               mirrorId: id,
               title,
@@ -63,6 +67,7 @@ const federatedDataUrl = current
               federatedDataUrl,
             }}
           >
+            <MirrorzDocumentContent slot="content" document={document} />
             <p class="source-attribution">
               文档内容来自{' '}
               <a
@@ -85,6 +90,7 @@ const federatedDataUrl = current
                 CC BY-NC-SA 4.0
               </a>{' '}
               提供。
+              {document.interactiveOverride && <>本站提供交互版页面。</>}
             </p>
           </MirrorzDocument>
         </>

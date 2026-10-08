@@ -1,0 +1,35 @@
+import DocumentAccordion from '~/components/react/DocumentAccordion';
+import UbuntuConfig from '~/components/react/UbuntuConfig';
+
+本镜像仅包含 32/64 位 x86 架构处理器的软件包，在 ARM（arm64、armhf）、PowerPC（ppc64el）、RISC-V（riscv64）和 S390x 等架构的设备上，请使用 [ubuntu-ports 镜像](/docs/ubuntu-ports/)。
+
+对于 Ubuntu 不再支持的版本，请参考 [Ubuntu 旧版本帮助](https://help.mirrorz.org/ubuntu-old-releases/)。
+
+<DocumentAccordion title="我正在使用什么版本的 Ubuntu？" client:load>
+
+可以通过以下命令查看当前系统版本：
+
+```bash
+cat /etc/os-release
+```
+
+例如在 Ubuntu 24.04 下，文件内容如下：
+
+```conf
+...
+VERSION_ID="24.04"
+VERSION_CODENAME=Noble
+...
+```
+
+`VERSION_ID` 后面的是版本号，`VERSION_CODENAME` 后面的是代号。代号会用于软件源配置。**请在下面选择符合机器实际情况的版本，并在替换配置前确认代号一致，否则后续更新可能导致系统出现问题。**
+
+</DocumentAccordion>
+
+## 配置内容
+
+将系统自带的软件源配置文件做个备份，再根据 Ubuntu 版本和所需选项生成配置并替换文件内容。Ubuntu 24.04 之前默认使用传统格式；从 Ubuntu 24.04 开始默认使用 DEB822 格式。
+
+<UbuntuConfig defaultHttps={false} client:load />
+
+镜像站同步可能存在延迟，因此默认仍从 Ubuntu 官方源获取安全更新。不建议在生产环境强制安全更新使用镜像。

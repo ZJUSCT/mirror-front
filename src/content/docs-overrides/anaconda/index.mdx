@@ -1,0 +1,58 @@
+import Alert from '@mui/material/Alert';
+import {
+  CondaConfigGen,
+  MinicondaInstaller,
+} from '~/components/react/AnacondaConfig';
+
+## 项目简介
+
+Anaconda 是一个用于科学计算的 Python 发行版，支持 Linux、macOS 和 Windows，包含众多常用的科学计算和数据分析软件包。浙大镜像站提供 Miniconda 安装包、Anaconda 官方仓库以及多个社区频道的镜像。
+
+<Alert
+  severity="warning"
+  variant="outlined"
+  sx={{
+    my: 2,
+    color: 'var(--text)',
+    borderColor: 'var(--border)',
+    backgroundColor:
+      'color-mix(in srgb, var(--status-syncing) 14%, var(--surface))',
+    '& a': { color: 'var(--primary)' },
+  }}
+>
+  <span>
+    {'Anaconda 官方仓库（即 '}
+    <code>{'defaults'}</code>
+    {'）受 '}
+    <a href="https://www.anaconda.com/legal/terms/terms-of-service">
+      {'Anaconda 服务条款'}
+    </a>
+    {'约束。组织使用前请核对当前条款及订阅要求；本文不构成法律意见。'}
+  </span>
+</Alert>
+
+## 安装包下载
+
+推荐下载并使用轻量的 Miniconda。选择操作系统和安装包类型后即可从当前选择的镜像服务下载：
+
+<MinicondaInstaller client:load />
+
+## 设置软件包镜像
+
+修改用户目录下的 `.condarc` 文件以使用浙大镜像源：
+
+- Linux：`${HOME}/.condarc`
+- macOS：`${HOME}/.condarc`
+- Windows：`C:\Users\<YourUserName>\.condarc`
+
+Windows 用户无法直接创建名为 `.condarc` 的文件时，可先执行 `conda config --set show_channel_urls yes` 生成该文件，再进行修改。
+
+1. 选择是否包含 Anaconda 官方仓库，再按需选择第三方频道并复制生成的配置。“仅使用社区频道”模式会加入 `nodefaults`，阻止 conda 回落到官方仓库：
+
+<CondaConfigGen client:load />
+
+2. 运行 `conda clean -i` 清除索引缓存，确保使用镜像站提供的索引。
+
+3. 运行 `conda create -n myenv numpy` 创建测试环境。
+
+切换镜像站前，请确认目标镜像同步了所需频道，并支持你的系统平台。选择“包含 Anaconda 官方仓库”时请遵守其服务条款；如果只需要社区软件包，可以选择仅社区模式，或优先考虑 conda-forge/Miniforge。
