@@ -61,6 +61,7 @@ export interface MirrorzDocument {
   inputs: DocumentInput[];
   templates: DocumentTemplate[];
   controlGroups: DocumentControlGroup[];
+  interactiveOverride: boolean;
   initialVariables: TemplateVariables;
   requiredScheme: 'http' | 'https' | null;
   sourceCommit: string;

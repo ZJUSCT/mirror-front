@@ -7,8 +7,10 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import GuideHero from './GuideHero';
 import DocumentOptions from './DocumentOptions';
+import MuiThemeProvider from './MuiThemeProvider';
 
 import { copyText, enhanceCodeBlocks } from '../../lib/code-blocks';
 import { checkIcon, contentCopyIcon, codeIcon } from '../../lib/ui-icons';
@@ -16,7 +18,11 @@ import { highlightCodeElement } from '../../lib/code-highlighting';
 import {
   CERNET_MIRROR_ORIGIN,
   isZjuMirrorUrl,
+  MIRROR_GUIDE_OPTIONS_CHANGE_EVENT,
+  MIRROR_GUIDE_OPTIONS_UPDATE_EVENT,
   MIRROR_SERVICE_CHANGE_EVENT,
+  type MirrorGuideOptionsChangeDetail,
+  type MirrorGuideOptionsUpdateDetail,
   type MirrorServiceChangeDetail,
   replaceMirrorOrigin,
 } from '../../lib/mirror-endpoint';
@@ -34,6 +40,8 @@ interface Props {
   document: MirrorzDocumentData;
   locale?: 'zh' | 'en';
   hero: Omit<ComponentProps<typeof GuideHero>, 'actions' | 'locale'>;
+  defaultHttps?: boolean;
+  content?: ReactNode;
   children?: ReactNode;
 }
 
@@ -53,6 +61,8 @@ export default function MirrorzDocument({
   document,
   locale = 'zh',
   hero,
+  defaultHttps,
+  content,
   children,
 }: Props) {
   const articleRef = useRef<HTMLElement>(null);
@@ -89,10 +99,35 @@ export default function MirrorzDocument({
     );
   }, [document.html]);
   const [httpsEnabled, setHttpsEnabled] = useState(
-    document.requiredScheme !== 'http'
+    document.requiredScheme === null
+      ? (defaultHttps ?? true)
+      : document.requiredScheme === 'https'
   );
   const [sudoEnabled, setSudoEnabled] = useState(true);
   const [federatedEnabled, setFederatedEnabled] = useState(false);
+
+  useEffect(() => {
+    const handleUpdate = (event: Event) => {
+      const detail = (event as CustomEvent<MirrorGuideOptionsUpdateDetail>)
+        .detail;
+      if (
+        document.requiredScheme === null &&
+        typeof detail.https === 'boolean'
+      ) {
+        setHttpsEnabled(detail.https);
+      }
+      if (typeof detail.sudo === 'boolean') setSudoEnabled(detail.sudo);
+      if (typeof detail.federated === 'boolean') {
+        setFederatedEnabled(detail.federated);
+      }
+    };
+    window.addEventListener(MIRROR_GUIDE_OPTIONS_UPDATE_EVENT, handleUpdate);
+    return () =>
+      window.removeEventListener(
+        MIRROR_GUIDE_OPTIONS_UPDATE_EVENT,
+        handleUpdate
+      );
+  }, [document.requiredScheme]);
 
   const [copyStatus, setCopyStatus] = useState('');
   const [copied, setCopied] = useState(false);
@@ -197,21 +232,42 @@ export default function MirrorzDocument({
         }
         if (!isZjuMirrorUrl(originalUrl.toString())) continue;
         link.dataset.zjuMirrorHref = originalUrl.toString();
-        link.href = federatedEnabled
+        const selectedHref = federatedEnabled
           ? replaceMirrorOrigin(originalUrl.toString(), CERNET_MIRROR_ORIGIN)
           : originalUrl.toString();
+        const selectedUrl = new URL(selectedHref);
+        selectedUrl.protocol = httpsEnabled ? 'https:' : 'http:';
+        link.href = selectedUrl.toString();
       }
     }
 
     globalThis.document.documentElement.dataset.mirrorService = federatedEnabled
       ? 'cernet'
       : 'zju';
+    globalThis.document.documentElement.dataset.mirrorScheme = httpsEnabled
+      ? 'https'
+      : 'http';
+    globalThis.document.documentElement.dataset.mirrorSudo = sudoEnabled
+      ? 'true'
+      : 'false';
     window.dispatchEvent(
       new CustomEvent<MirrorServiceChangeDetail>(MIRROR_SERVICE_CHANGE_EVENT, {
         detail: { federated: federatedEnabled },
       })
     );
-  }, [federatedEnabled]);
+    window.dispatchEvent(
+      new CustomEvent<MirrorGuideOptionsChangeDetail>(
+        MIRROR_GUIDE_OPTIONS_CHANGE_EVENT,
+        {
+          detail: {
+            federated: federatedEnabled,
+            https: httpsEnabled,
+            sudo: sudoEnabled,
+          },
+        }
+      )
+    );
+  }, [federatedEnabled, httpsEnabled, sudoEnabled]);
 
   return (
     <>
@@ -303,53 +359,83 @@ export default function MirrorzDocument({
         >
           <fieldset>
             <legend>{locale === 'zh' ? '通用选项' : 'General options'}</legend>
-            <label>
-              <input
-                id="mirrorz-use-federated"
-                name="use-federated"
-                type="checkbox"
-                checked={federatedEnabled}
-                onChange={(event) => setFederatedEnabled(event.target.checked)}
-              />
-              {locale === 'zh'
-                ? '使用教育网联合镜像站'
-                : 'Use the CERNET federated mirror'}
-            </label>
-            <label>
-              <input
-                id="mirrorz-use-https"
-                name="use-https"
-                type="checkbox"
-                checked={httpsEnabled}
-                disabled={document.requiredScheme !== null}
-                onChange={(event) => setHttpsEnabled(event.target.checked)}
-              />
-              {document.requiredScheme
-                ? locale === 'zh'
-                  ? `本文档要求使用 ${document.requiredScheme.toUpperCase()}`
-                  : `This guide requires ${document.requiredScheme.toUpperCase()}`
-                : locale === 'zh'
-                  ? '使用 HTTPS'
-                  : 'Use HTTPS'}
-            </label>
-            <label>
-              <input
-                id="mirrorz-include-sudo"
-                name="include-sudo"
-                type="checkbox"
-                checked={sudoEnabled}
-                onChange={(event) => setSudoEnabled(event.target.checked)}
-              />
-              {locale === 'zh' ? '命令包含 sudo' : 'Include sudo in commands'}
-            </label>
+            <MuiThemeProvider>
+              <FormGroup
+                row
+                className="docs-general-options"
+                sx={{ gap: { xs: 0.5, sm: 2 } }}
+              >
+                <FormControlLabel
+                  sx={{ m: 0 }}
+                  control={
+                    <Switch
+                      id="mirrorz-use-federated"
+                      name="use-federated"
+                      checked={federatedEnabled}
+                      onChange={(event) =>
+                        setFederatedEnabled(event.target.checked)
+                      }
+                    />
+                  }
+                  label={
+                    locale === 'zh'
+                      ? '使用教育网联合镜像站'
+                      : 'Use the CERNET federated mirror'
+                  }
+                />
+                <FormControlLabel
+                  sx={{ m: 0 }}
+                  control={
+                    <Switch
+                      id="mirrorz-use-https"
+                      name="use-https"
+                      checked={httpsEnabled}
+                      disabled={document.requiredScheme !== null}
+                      onChange={(event) =>
+                        setHttpsEnabled(event.target.checked)
+                      }
+                    />
+                  }
+                  label={
+                    document.requiredScheme
+                      ? locale === 'zh'
+                        ? `本文档要求使用 ${document.requiredScheme.toUpperCase()}`
+                        : `This guide requires ${document.requiredScheme.toUpperCase()}`
+                      : locale === 'zh'
+                        ? '使用 HTTPS'
+                        : 'Use HTTPS'
+                  }
+                />
+                <FormControlLabel
+                  sx={{ m: 0 }}
+                  control={
+                    <Switch
+                      id="mirrorz-include-sudo"
+                      name="include-sudo"
+                      checked={sudoEnabled}
+                      onChange={(event) => setSudoEnabled(event.target.checked)}
+                    />
+                  }
+                  label={
+                    locale === 'zh'
+                      ? '命令包含 sudo'
+                      : 'Include sudo in commands'
+                  }
+                />
+              </FormGroup>
+            </MuiThemeProvider>
           </fieldset>
         </form>
         <article
           ref={articleRef}
           lang="zh"
           className="prose mirrorz-document"
-          dangerouslySetInnerHTML={{ __html: document.html }}
-        />
+          dangerouslySetInnerHTML={
+            content === undefined ? { __html: document.html } : undefined
+          }
+        >
+          {content}
+        </article>
         {document.controlGroups.map((group) => {
           const target = controlTargets[group.id];
           if (!target) return null;

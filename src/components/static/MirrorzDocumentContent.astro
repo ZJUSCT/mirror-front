@@ -1,0 +1,22 @@
+---
+import type { MDXInstance } from 'astro';
+
+import type { MirrorzDocument } from '../../lib/mirrorz-docs/types';
+
+interface Props {
+  document: MirrorzDocument;
+}
+
+const { document } = Astro.props;
+const overrides = import.meta.glob<{
+  Content: MDXInstance<Record<string, unknown>>['Content'];
+}>('../../content/docs-overrides/*/index.mdx');
+const modulePath = `../../content/docs-overrides/${document.docsId}/index.mdx`;
+const load = document.interactiveOverride ? overrides[modulePath] : undefined;
+if (document.interactiveOverride && !load) {
+  throw new Error(`Missing docs interactive override: ${modulePath}`);
+}
+const Content = load ? (await load()).Content : null;
+---
+
+{Content ? <Content /> : <Fragment set:html={document.html} />}

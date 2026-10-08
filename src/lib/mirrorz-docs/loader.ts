@@ -19,6 +19,12 @@ import { renderTemplateText, templateToken } from './render';
 
 const repositoryRoot = path.resolve(process.cwd());
 const docsRoot = path.join(repositoryRoot, 'vendor', 'mirrorz-docs');
+const docsOverrideRoot = path.join(
+  repositoryRoot,
+  'src',
+  'content',
+  'docs-overrides'
+);
 
 interface RawInput {
   _?: string;
@@ -48,6 +54,56 @@ interface DirectiveOptions {
 
 let mappingPromise: Promise<Record<string, MirrorDocsMapping>> | undefined;
 let titlePromise: Promise<Record<string, string>> | undefined;
+
+async function isFile(filename: string): Promise<boolean> {
+  try {
+    return (await stat(filename)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+async function readConfigObject(
+  filename: string,
+  displayName: string
+): Promise<Record<string, unknown>> {
+  const parsed = parseYaml(await readFile(filename, 'utf8')) as unknown;
+  if (!isObject(parsed)) {
+    throw new Error(`${displayName} must contain an object`);
+  }
+  return parsed;
+}
+
+async function readDocumentConfig(
+  docsId: string
+): Promise<Record<string, unknown>> {
+  return readConfigObject(
+    path.join(docsRoot, docsId, 'zh.yaml'),
+    `${docsId}/zh.yaml`
+  );
+}
+
+async function readDocumentBlocks(
+  docsId: string,
+  blockNames: string[]
+): Promise<string[]> {
+  return Promise.all(
+    blockNames.map((name) =>
+      readFile(path.join(docsRoot, docsId, `${name}.zh.md`), 'utf8')
+    )
+  );
+}
+
+export async function hasDocumentInteractiveOverride(
+  docsId: string,
+  overrideRoot = docsOverrideRoot
+): Promise<boolean> {
+  return isFile(path.join(overrideRoot, docsId, 'index.mdx'));
+}
 
 function escapeHtml(value: string): string {
   return value
@@ -557,12 +613,8 @@ export async function loadMirrorDocsTitles(): Promise<Record<string, string>> {
     ];
     const entries = await Promise.all(
       docsIds.map(async (docsId) => {
-        const source = await readFile(
-          path.join(docsRoot, docsId, 'zh.yaml'),
-          'utf8'
-        );
-        const config = parseYaml(source) as { _?: unknown } | null;
-        if (typeof config?._ !== 'string' || !config._.trim()) {
+        const config = await readDocumentConfig(docsId);
+        if (typeof config._ !== 'string' || !config._.trim()) {
           throw new Error(`${docsId}/zh.yaml has no title`);
         }
         return [docsId, config._] as const;
@@ -580,16 +632,8 @@ export async function loadMirrorzDocument(
   const selected = mapping[routeId];
   if (!selected?.docsId) throw new Error(`no mapped document for ${routeId}`);
 
-  const configPath = path.join(docsRoot, selected.docsId, 'zh.yaml');
-  const parsedConfig = parseYaml(await readFile(configPath, 'utf8')) as unknown;
-  if (
-    !parsedConfig ||
-    typeof parsedConfig !== 'object' ||
-    Array.isArray(parsedConfig)
-  ) {
-    throw new Error(`${selected.docsId}/zh.yaml must contain an object`);
-  }
-  const unknownConfigKey = Object.keys(parsedConfig).find(
+  const rawConfig = await readDocumentConfig(selected.docsId);
+  const unknownConfigKey = Object.keys(rawConfig).find(
     (key) => !['_', 'block', 'filter', 'input'].includes(key)
   );
   if (unknownConfigKey) {
@@ -597,7 +641,7 @@ export async function loadMirrorzDocument(
       `${selected.docsId}/zh.yaml has an unsupported key: ${unknownConfigKey}`
     );
   }
-  const config = parsedConfig as RawDocumentConfig;
+  const config = rawConfig as RawDocumentConfig;
   if (typeof config._ !== 'string' || !config._.trim()) {
     throw new Error(`${selected.docsId}/zh.yaml has no title`);
   }
@@ -644,13 +688,12 @@ export async function loadMirrorzDocument(
     if (candidate.docsId) routeByDocsId.set(candidate.docsId, mirrorId);
   }
 
-  const blocks = await Promise.all(
-    (config.block ?? ['index']).map((block) =>
-      readFile(path.join(docsRoot, selected.docsId!, `${block}.zh.md`), 'utf8')
-    )
+  const blockSources = await readDocumentBlocks(
+    selected.docsId,
+    config.block ?? ['index']
   );
   const compiled = compileDocumentMarkdown(
-    blocks.join('\n\n'),
+    blockSources.join('\n\n'),
     inputs,
     initialVariables,
     routeByDocsId
@@ -665,6 +708,7 @@ export async function loadMirrorzDocument(
     inputs,
     templates: compiled.templates,
     controlGroups: compiled.controlGroups,
+    interactiveOverride: await hasDocumentInteractiveOverride(selected.docsId),
     initialVariables,
     requiredScheme,
     sourceCommit: docsLock.commit,

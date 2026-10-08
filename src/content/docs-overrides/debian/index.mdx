@@ -1,0 +1,55 @@
+import DebianConfig, { DebianOmvConfig } from '~/components/react/DebianConfig';
+import DocumentAccordion from '~/components/react/DocumentAccordion';
+
+大部分 Debian 的软件源配置文件使用传统的 One-Line-Style，路径为 `/etc/apt/sources.list`；但是对于容器镜像，从 Debian 12 开始，其软件源配置文件变更为 DEB822 格式，路径为 `/etc/apt/sources.list.d/debian.sources`。一般情况下，将对应文件中 Debian 默认的源地址 `http://deb.debian.org/` 替换为镜像地址即可。
+
+Debian 10（Buster）及以上版本默认支持 HTTPS 源。如果遇到无法拉取 HTTPS 源的情况，请先使用 HTTP 源并安装通用 CA 证书。
+
+<DocumentAccordion title="我正在使用什么版本的 Debian？" client:load>
+
+可以通过以下命令查看当前系统版本：
+
+```bash
+cat /etc/os-release
+```
+
+例如在 Debian 13 下，文件内容包含：
+
+```conf
+...
+VERSION_ID="13"
+VERSION_CODENAME=trixie
+...
+```
+
+`VERSION_ID` 后面的是版本号，`VERSION_CODENAME` 后面的是代号。代号会用于软件源配置。**请在下面选择符合机器实际情况的版本，并在替换配置前确认代号一致，否则后续更新可能导致系统出现问题。**
+
+</DocumentAccordion>
+
+## 配置内容
+
+将系统自带的软件源配置文件做个备份，再根据 Debian 版本和所需选项生成配置并替换文件内容。Debian 12 及以上版本可以使用 DEB822 格式；Debian 11 使用传统格式。
+
+<DebianConfig client:load />
+
+为了方便快速配置，此处一并附上了 debian-security 的配置。镜像站通常也会提供 debian-security，具体情况可以前往 [Debian Security 帮助](/docs/debian-security/)确认。
+
+一般来说，为了更及时地获得安全更新，不推荐使用镜像站安全更新软件源，因为镜像站往往有同步延迟。请参阅 [Debian Security FAQ](https://www.debian.org/security/faq.en.html#mirror)。
+
+## OpenMediaVault
+
+本节供 [OpenMediaVault 帮助](/docs/OpenMediaVault/)使用。
+
+<DebianOmvConfig client:load />
+
+关于 debian-security 可以参考上文的说明。
+
+## Connection reset by peer
+
+在 apt 2.1.9 及以后的版本中，apt 的 HTTP Pipelining 特性与 Nginx 服务器疑似存在一定的不兼容问题，可能导致高带宽从镜像站下载大量软件包（例如系统升级）时出现偶发的 Connection reset by peer 错误（详见 [Debian bug #973581](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=973581)）。
+
+目前，用户可以通过关闭 HTTP Pipelining 特性解决此问题。如果需要关闭，可以在使用 `apt` 命令时加上 `-o Acquire::http::Pipeline-Depth=0` 参数，或使用以下命令将相关设置加入 apt 系统配置中：
+
+```bash
+echo "Acquire::http::Pipeline-Depth \"0\";" > /etc/apt/apt.conf.d/99nopipelining
+```
