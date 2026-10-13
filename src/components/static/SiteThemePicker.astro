@@ -34,10 +34,7 @@ const { lang = 'zh' } = Astro.props as { lang: 'zh' | 'en' };
             checked={theme.id === 'default'}
           />
           <span class="site-theme-choice-copy">
-            <>
-              <strong>{theme.name[lang]}</strong>
-              <small>{theme.description[lang]}</small>
-            </>
+            <strong>{theme.name[lang]}</strong>
           </span>
           <span class="site-theme-swatches" aria-hidden="true">
             {theme.swatches.map((color) => (
@@ -48,12 +45,5 @@ const { lang = 'zh' } = Astro.props as { lang: 'zh' | 'en' };
       ))
     }
   </fieldset>
-  <p>
-    {
-      lang === 'zh'
-        ? '浅色、深色及跟随系统由配色按钮独立控制。'
-        : 'Light, dark, and system mode are controlled separately by the color button.'
-    }
-  </p>
   <p id="site-theme-status" role="status" aria-live="polite"></p>
 </div>

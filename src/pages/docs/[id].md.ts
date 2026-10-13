@@ -19,6 +19,9 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = ({ props }) =>
-  new Response(exportDocumentMarkdown(props.document as MirrorzDocument), {
-    headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
-  });
+  new Response(
+    exportDocumentMarkdown(props.document as MirrorzDocument, {}, {
+      federated: true,
+    }),
+    { headers: { 'Content-Type': 'text/markdown; charset=utf-8' } }
+  );

@@ -49,8 +49,8 @@ test('repeated block inputs have independent selections in Markdown exports', as
     /^Suites: resolute resolute-updates resolute-backports/m
   );
   assert.match(markdown, /^# Types: deb-src/m);
-  assert.match(markdown, /启用源码源 \(src\): `开启`/);
-  assert.match(markdown, /启用源码源 \(src\): `关闭`/);
+  assert.match(markdown, /> - 启用源码源 \(src\)：`关闭`/);
+  assert.match(markdown, />   - 可选值：`开启`、`关闭`/);
 });
 
 test('global controls retain their authored position and affect local and inline examples', () => {
@@ -124,8 +124,10 @@ test('release options remain local and do not retain stale auxiliary variables',
   );
   const markdown = exportDocumentMarkdown(document, selected, options, true);
   assert.match(markdown, /http:\/\/mirrors.cernet.edu.cn\/debian/);
-  assert.match(markdown, /当前页面选项/);
-  assert.match(markdown, /sudo：关闭/);
+  assert.match(markdown, /> - Debian 版本 \(release\)：`sid`/);
+  assert.match(markdown, />     - `sid`/);
+  assert.match(markdown, /> - sudo：`关闭`/);
+  assert.doesNotMatch(markdown, /原文：|内容语言：|导出选项：|来源：|源提交：/);
 });
 
 test('indented templates preserve append instructions and inline code delimiters', () => {

@@ -7,6 +7,7 @@ FROM node:${NODE_VERSION}-bookworm
 ARG DEV_UID=1000
 ARG DEV_GID=1000
 ARG PNPM_VERSION=10.15.1
+ARG NPM_REGISTRY=https://registry.npmjs.org
 
 ENV ASTRO_TELEMETRY_DISABLED=1 \
     PNPM_HOME=/pnpm \
@@ -14,7 +15,8 @@ ENV ASTRO_TELEMETRY_DISABLED=1 \
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare "pnpm@${PNPM_VERSION}" --activate
+RUN npm config set registry "${NPM_REGISTRY}" && \
+    corepack enable && corepack prepare "pnpm@${PNPM_VERSION}" --activate
 
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=mirror-front-dev-pnpm,target=/pnpm/store \

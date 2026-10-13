@@ -6,11 +6,7 @@ import palettes from './palettes.json';
 export const siteThemes = [
   {
     id: 'default',
-    name: { zh: '默认', en: 'Default' },
-    description: {
-      zh: 'Material 2 · 简洁清晰',
-      en: 'Material 2 · clean and familiar',
-    },
+    name: { zh: 'Material 2', en: 'Material 2' },
     swatches: ['#f0f3f8', '#154a87', '#14704a'],
     stylesheet: '',
     family: '',
@@ -20,7 +16,6 @@ export const siteThemes = [
   {
     id: 'terraria',
     name: { zh: '泰拉瑞亚', en: 'Terraria' },
-    description: { zh: '像素天空与神圣之地', en: 'Pixel skies and the Hallow' },
     swatches: ['#9ed5ff', '#d9b978', '#aa7ad3'],
     stylesheet: terrariaStylesheet,
     family: 'game',
@@ -41,10 +36,6 @@ export const siteThemes = [
   {
     id: 'stardew',
     name: { zh: '星露谷物语', en: 'Stardew Valley' },
-    description: {
-      zh: '田园风光与木质面板',
-      en: 'Country scenery and wooden panels',
-    },
     swatches: ['#bfe4ff', '#d3ae72', '#6fae53'],
     stylesheet: stardewStylesheet,
     family: 'game',

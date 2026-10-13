@@ -3,11 +3,13 @@
 ARG NODE_VERSION=22
 ARG PNPM_VERSION=10.15.1
 ARG DEPLOYMENT_ENV=production
+ARG NPM_REGISTRY=https://registry.npmjs.org
 
 FROM node:${NODE_VERSION}-slim AS build
 
 ARG PNPM_VERSION
 ARG DEPLOYMENT_ENV
+ARG NPM_REGISTRY
 ENV ASTRO_TELEMETRY_DISABLED=1 \
     PNPM_HOME=/pnpm \
     PATH=/pnpm:$PATH \
@@ -15,7 +17,8 @@ ENV ASTRO_TELEMETRY_DISABLED=1 \
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare "pnpm@${PNPM_VERSION}" --activate
+RUN npm config set registry "${NPM_REGISTRY}" && \
+    corepack enable && corepack prepare "pnpm@${PNPM_VERSION}" --activate
 
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \

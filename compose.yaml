@@ -9,16 +9,20 @@ services:
         DEV_GID: ${DEV_GID:-1000}
         NODE_VERSION: '22'
         PNPM_VERSION: 10.15.1
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
     init: true
+    environment:
+      NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
     ports:
       - '4321:4321'
     volumes:
       - .:/app
       - dev-node-modules:/app/node_modules
       - dev-pnpm-store:/pnpm/store
-      - dev-astro:/app/.astro
-      - dev-cache:/app/.cache
-      - dev-dist:/app/dist
+    tmpfs:
+      - /app/.astro:rw,noexec,nosuid,nodev
+      - /app/.cache:rw,noexec,nosuid,nodev
+      - /app/dist:rw,noexec,nosuid,nodev
 
   preview:
     build:
@@ -39,6 +43,3 @@ services:
 volumes:
   dev-node-modules:
   dev-pnpm-store:
-  dev-astro:
-  dev-cache:
-  dev-dist:

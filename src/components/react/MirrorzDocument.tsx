@@ -30,7 +30,6 @@ import {
   renderTemplateText,
   resolveVariables,
 } from '../../lib/mirrorz-docs/render';
-import { exportDocumentMarkdown } from '../../lib/mirrorz-docs/markdown';
 import type {
   DocumentInput,
   MirrorzDocument as MirrorzDocumentData,
@@ -138,8 +137,8 @@ export default function MirrorzDocument({
       ? '已复制'
       : 'Copied'
     : locale === 'zh'
-      ? '复制全文'
-      : 'Copy page';
+      ? '复制 Markdown'
+      : 'Copy Markdown';
   const [copyFallback, setCopyFallback] = useState<string | null>(null);
 
   useEffect(
@@ -157,14 +156,21 @@ export default function MirrorzDocument({
     [httpsEnabled, sudoEnabled, federatedEnabled]
   );
 
-  async function copyPage() {
-    const markdown = exportDocumentMarkdown(
-      document,
-      inputState,
-      options,
-      true,
-      blockStates
-    );
+  async function copyMarkdown() {
+    const markdownUrl = `/docs/${encodeURIComponent(document.routeId)}.md`;
+    let markdown: string;
+    try {
+      const response = await fetch(markdownUrl);
+      if (!response.ok) {
+        throw new Error(`Markdown request failed: ${response.status}`);
+      }
+      markdown = await response.text();
+    } catch {
+      setCopyStatus(
+        locale === 'zh' ? '无法读取 Markdown 文档' : 'Unable to read Markdown'
+      );
+      return;
+    }
     try {
       await copyText(markdown);
       if (copyResetTimer.current !== null) clearTimeout(copyResetTimer.current);
@@ -280,7 +286,7 @@ export default function MirrorzDocument({
               <button
                 type="button"
                 className="guide-export-icon"
-                onClick={copyPage}
+                onClick={copyMarkdown}
                 aria-label={copyLabel}
                 aria-describedby="guide-copy-hint"
               >

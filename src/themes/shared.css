@@ -69,17 +69,11 @@
   flex: none;
 }
 .site-theme-choice-copy {
-  display: grid;
-  gap: 0.125rem;
   flex: 1;
 }
 .site-theme-choice strong {
   font-size: 0.875rem;
   font-weight: 500;
-}
-.site-theme-choice small {
-  color: var(--muted);
-  font-size: 0.75rem;
 }
 .site-theme-swatches {
   display: flex;
@@ -406,9 +400,6 @@
   font-family: var(--theme-display-font);
 }
 :root[data-theme-family='game'] .site-theme-choice strong {
-  line-height: 1.6;
-}
-:root[data-theme-family='game'] .site-theme-choice small {
   line-height: 1.6;
 }
 @media (max-width: 599px) {

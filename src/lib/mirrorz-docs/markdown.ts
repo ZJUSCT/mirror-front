@@ -71,31 +71,49 @@ export function absoluteMarkdownLinks(
   return marked.lexer(markdown).map(transform).join('');
 }
 
-function describeSelections(
+function inputValue(input: DocumentInput, state: InputState): string {
+  const selected = state[input.name];
+  if (input.kind === 'select') {
+    return input.choices[
+      typeof selected === 'number' ? selected : input.defaultIndex
+    ]?.label ?? '（未选择）';
+  }
+  if (input.kind === 'boolean') {
+    return (selected ?? input.defaultValue) ? '开启' : '关闭';
+  }
+  return String(selected ?? input.defaultValue) || '（未填写）';
+}
+
+function describeOptions(
   inputs: DocumentInput[],
-  state: InputState
+  state: InputState,
+  endpoint: string,
+  sudo: boolean
 ): string[] {
-  return inputs.map((input) => {
-    const selected = state[input.name];
-    const value =
-      input.kind === 'select'
-        ? input.choices[
-            typeof selected === 'number' ? selected : input.defaultIndex
-          ]?.label
-        : input.kind === 'boolean'
-          ? (selected ?? input.defaultValue)
-            ? '开启'
-            : '关闭'
-          : String(selected ?? input.defaultValue) || '（未填写）';
-    return `- ${input.title} (${input.name}): ${codeSpan(String(value))}`;
-  });
+  const lines = [
+    '> 可调整选项：',
+    `> - 镜像地址：${codeSpan(endpoint)}`,
+    `> - sudo：${codeSpan(sudo ? '开启' : '关闭')}`,
+  ];
+  for (const input of inputs) {
+    lines.push(`> - ${input.title} (${input.name})：${codeSpan(inputValue(input, state))}`);
+    if (input.kind === 'select') {
+      lines.push('>   - 可选值：');
+      for (const choice of input.choices) {
+        lines.push(`>     - ${codeSpan(choice.label)}`);
+      }
+    } else if (input.kind === 'boolean') {
+      lines.push('>   - 可选值：`开启`、`关闭`');
+    }
+  }
+  return lines;
 }
 
 export function exportDocumentMarkdown(
   document: MirrorzDocument,
   state: InputState = {},
   options: GuideOptions = {},
-  current = false,
+  _current = false,
   blockStates: Record<string, InputState> = {}
 ): string {
   const canonical = `${ZJU_MIRROR_ORIGIN}/docs/${encodeURIComponent(document.routeId)}/`;
@@ -127,21 +145,7 @@ export function exportDocumentMarkdown(
       const caption = template.filepath
         ? `${template.append ? '追加到' : '写入'} ${codeSpan(renderTemplateText(template.filepath, local))}：\n\n`
         : '';
-      const group = document.controlGroups.find(
-        (group) => group.templateId === template.id
-      );
-      const selections = group
-        ? describeSelections(
-            document.inputs.filter((input) =>
-              group.inputNames.includes(input.name)
-            ),
-            { ...state, ...blockStates[template.id] }
-          )
-        : [];
-      const selectionText = selections.length
-        ? `此处选项：\n${selections.join('\n')}\n\n`
-        : '';
-      const rendered = `${selectionText}${caption}${fence}${template.language ?? ''}\n${content}\n${fence}`;
+      const rendered = `${caption}${fence}${template.language ?? ''}\n${content}\n${fence}`;
       body = body.replace(
         new RegExp(`^( *)${token}`, 'gm'),
         (_whole, indent: string) =>
@@ -152,25 +156,12 @@ export function exportDocumentMarkdown(
       );
     }
   }
-  const globalNames = new Set(
-    document.controlGroups
-      .filter((group) => !group.templateId)
-      .flatMap((group) => group.inputNames)
-  );
-  const selections = describeSelections(
-    document.inputs.filter((input) => globalNames.has(input.name)),
-    state
-  );
+  const sudo = options.sudo !== false;
   return [
     `# ${document.title}`,
     '',
-    `原文：${canonical}`,
-    '内容语言：zh（中文）',
-    `导出选项：${current ? '当前页面选项' : '默认选项；可在原文页面调整选项后复制全文'}`,
+    ...describeOptions(document.inputs, state, String(variables.endpoint), sudo),
     '',
-    `- 镜像地址：${codeSpan(String(variables.endpoint))}`,
-    `- sudo：${options.sudo === false ? '关闭' : '开启'}`,
-    ...selections,
     '',
     '> 本站收录所有共享帮助文档；文档存在不代表浙江大学镜像站当前提供该镜像。请查阅 https://mirrors.zju.edu.cn/mirrorz.json 确认当前目录与状态。',
     '> 下列命令使用上述选项，请根据实际系统版本选择；未填写的文本选项需要在原文页面补充。',
@@ -179,10 +170,11 @@ export function exportDocumentMarkdown(
     '',
     '---',
     '',
-    `来源：[ZJUSCT/mirrorz-docs](https://github.com/ZJUSCT/mirrorz-docs/tree/${document.sourceCommit}/${encodeURIComponent(document.docsId)})`,
-    `源提交：${document.sourceCommit}`,
     '许可：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)',
     '文档索引：https://mirrors.zju.edu.cn/llms.txt',
+    ...(options.federated
+      ? ['如仅限浙大校内网络访问，可将 mirrors.cernet.edu.cn 替换为 mirrors.zju.edu.cn。']
+      : []),
     '',
   ].join('\n');
 }

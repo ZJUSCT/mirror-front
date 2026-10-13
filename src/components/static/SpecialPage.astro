@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import StaticCodeBlocks from '../react/StaticCodeBlocks';
 import Statistics from '../react/Statistics';
+import MarkdownActions from '../react/MarkdownActions';
 
 interface Props {
   kind: 'about' | 'history' | 'faq' | 'container-images' | 'statistics';
@@ -15,6 +16,7 @@ const isZh = locale === 'zh';
 const route = `/${kind}/`;
 const canonicalPath = isZh ? route : `/en${route}`;
 const alternatePath = isZh ? `/en${route}` : route;
+const markdownPath = `${isZh ? '' : '/en'}${route.slice(0, -1)}.md`;
 const entryId = `${locale}/${kind}`;
 const entries = await getCollection('specialPages');
 const entry = entries.find(
@@ -40,6 +42,7 @@ const { Content } = await render(entry);
     <section class="article-hero special-hero">
       <h1 class="article-title">{entry.data.title}</h1>
       <p class="special-lead">{entry.data.lead}</p>
+      <MarkdownActions client:load href={markdownPath} locale={locale} />
     </section>
 
     <article class="article-body prose special-body">
