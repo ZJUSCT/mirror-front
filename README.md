@@ -28,6 +28,11 @@ ZJU Mirror 前端是一个使用 Astro 静态生成的网站，通过少量 Reac
     - 我们没有精力为所有镜像维护文档，所以默认使用教育网联合镜像站文档 [MirrorZ Docs](https://github.com/mirrorz-org/mirrorz-docs)。
     - 我们有精力维护部分镜像的文档，放置在 `src/content/docs-overrides` 下覆盖 MirrorZ Docs 中相应的内容。
 
+### 静态投递
+
+活动页面等非镜像静态内容放在 `static/delivery/<活动名>/`，构建时原样复制进
+前端镜像，通过 `/delivery/<活动名>/<文件名>` 访问。
+
 ### AI Agent 友好
 
 按照 [LLMs.txt](https://llmstxt.org/) 提案：

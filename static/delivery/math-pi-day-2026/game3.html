@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>过点作平行线</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f4f1eb;
+    --surface: #ffffff;
+    --ink: #1a1a2e;
+    --ink-dim: #8e8e9a;
+    --ink-light: #c5c5ce;
+    --cut-color: #d64933;
+    --cut-glow: rgba(214,73,51,0.2);
+    --circle-fill: rgba(0,0,0,0.03);
+    --circle-stroke: #1a1a2e;
+    --region-a: rgba(59,130,246,0.25);
+    --region-b: rgba(245,158,11,0.25);
+    --region-c: rgba(16,185,129,0.25);
+    --accent: #d64933;
+    --accent2: #2563eb;
+    --gold: #c9a84c;
+    --radius: 14px;
+    --dot-color: rgba(0,0,0,0.04);
+    --border-dim: rgba(0,0,0,0.06);
+    --border-ctrl: rgba(0,0,0,0.08);
+    --ctrl-bg: rgba(255,255,255,0.85);
+    --switch-bg: rgba(0,0,0,0.05);
+    --btn-active-bg: var(--surface);
+    --reveal-border: rgba(0,0,0,0.15);
+    --reveal-hover-bg: rgba(37,99,235,0.04);
+    --line-color: #2563eb;
+    --line-glow: rgba(37,99,235,0.15);
+    --guess-color: #d64933;
+    --true-color: #16a34a;
+    --line-main: rgba(37,99,235,0.45);
+    --line-glow-fill: rgba(37,99,235,0.1);
+    --line-dot: rgba(37,99,235,0.4);
+    --line-dot-hi: rgba(37,99,235,0.6);
+    --line-dot-bg: rgba(37,99,235,0.2);
+    --snap-ring: rgba(37,99,235,0.3);
+    --snap-fill: rgba(37,99,235,0.35);
+    --loupe-border: rgba(0,0,0,0.15);
+    --loupe-shadow: rgba(0,0,0,0.25);
+    --paper-opacity: 0.3;
+    --accent3: #059669;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121218;
+      --surface: #1e1e2a;
+      --ink: #e4e4ef;
+      --ink-dim: #7a7a8e;
+      --ink-light: #4a4a5a;
+      --cut-color: #ef6a56;
+      --circle-fill: rgba(255,255,255,0.04);
+      --circle-stroke: #a0a0b8;
+      --accent: #ef6a56;
+      --accent2: #60a5fa;
+      --gold: #e0b85c;
+      --dot-color: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --border-ctrl: rgba(255,255,255,0.1);
+      --ctrl-bg: rgba(30,30,42,0.9);
+      --switch-bg: rgba(255,255,255,0.06);
+      --btn-active-bg: var(--surface);
+      --reveal-border: rgba(255,255,255,0.12);
+      --reveal-hover-bg: rgba(96,165,250,0.08);
+      --line-color: #60a5fa;
+      --guess-color: #ef6a56;
+      --true-color: #34d399;
+      --line-main: rgba(96,165,250,0.55);
+      --line-glow-fill: rgba(96,165,250,0.12);
+      --line-dot: rgba(96,165,250,0.5);
+      --line-dot-hi: rgba(96,165,250,0.75);
+      --line-dot-bg: rgba(96,165,250,0.25);
+      --snap-ring: rgba(96,165,250,0.4);
+      --snap-fill: rgba(96,165,250,0.45);
+      --loupe-border: rgba(255,255,255,0.2);
+      --loupe-shadow: rgba(0,0,0,0.6);
+      --paper-opacity: 0;
+      --accent3: #34d399;
+    }
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: var(--paper-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ===== Shared styles ===== */
+  .app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 560px;
+    padding: 12px 16px 40px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+
+  .mode-switch {
+    display: flex;
+    gap: 4px;
+    background: var(--switch-bg);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.1s forwards;
+  }
+
+  .mode-btn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .mode-btn.active {
+    background: var(--btn-active-bg);
+    color: var(--ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .mode-btn:hover:not(.active) { color: var(--ink); }
+
+  .mode-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.15s forwards;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: min(100%, 500px);
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.2s forwards;
+  }
+
+  .canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  .canvas-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  .canvas-hint.hidden { opacity: 0; }
+
+  .canvas-hint-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.4; }
+  .canvas-hint-text { font-size: 14px; color: var(--ink-dim); font-weight: 400; }
+  .canvas-hint-sub { font-size: 11px; color: var(--ink-light); margin-top: 4px; }
+
+  .controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-ctrl);
+    background: var(--ctrl-bg);
+    color: var(--ink-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ctrl-btn svg { width: 16px; height: 16px; }
+
+  .counter-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    background: var(--ctrl-bg);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-dim);
+    backdrop-filter: blur(6px);
+  }
+
+  .counter-badge span { font-weight: 500; }
+
+  .results {
+    width: 100%;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.25s forwards;
+  }
+
+  .results-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-dim);
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+  }
+
+  .results-empty {
+    text-align: center;
+    padding: 12px;
+    color: var(--ink-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .results-content { display: none; }
+  .results-content.visible { display: block; }
+
+  .result-distance {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .result-distance .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .result-distance .value {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .result-distance .value.perfect { color: var(--gold); }
+  .result-distance .value.great { color: #16a34a; }
+  .result-distance .value.good { color: var(--accent2); }
+  .result-distance .value.ok { color: var(--ink-dim); }
+
+  @media (prefers-color-scheme: dark) {
+    .result-distance .value.great { color: #34d399; }
+  }
+
+  /* ===== Game 3: Parallel Line specific ===== */
+  #game3 .counter-badge span { color: var(--accent3); }
+  #game3 .ctrl-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  #game3 .header h1 span { color: var(--accent3); }
+  #game3 .reveal-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+
+  .result-explanation {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-dim);
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+  }
+
+  .result-explanation strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .reveal-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px dashed var(--reveal-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .reveal-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: var(--reveal-hover-bg);
+  }
+
+  /* Loupe */
+  .loupe {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2.5px solid var(--loupe-border);
+    box-shadow: 0 4px 20px var(--loupe-shadow);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    background: var(--bg);
+  }
+
+  .loupe canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .loupe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+    pointer-events: none;
+  }
+
+  .loupe::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 16px; height: 16px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(37,99,235,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+  @media (max-width: 480px) {
+    .app { padding: 10px 12px 12px; }
+    .header h1 { font-size: 22px; }
+    .result-distance .value { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="game3">
+<div class="app">
+  <div class="header">
+    <h1>过点作<span>平行线</span></h1>
+  </div>
+
+  <div class="mode-switch">
+    <button class="mode-btn active" id="g3_easyBtn">简单 · 线间</button>
+    <button class="mode-btn" id="g3_hardBtn">困难 · 线外</button>
+  </div>
+
+  <div class="mode-desc" id="g3_modeDesc">过点 P 用直尺作一条平行于 l₁、l₂ 的直线 · 拖动平移 · 滚轮缩放</div>
+
+  <div class="canvas-container" id="g3_canvasContainer">
+    <canvas id="g3_canvas"></canvas>
+    <div class="canvas-hint" id="g3_hint">
+      <div class="canvas-hint-icon">📏</div>
+      <div class="canvas-hint-text">用直尺画直线</div>
+      <div class="canvas-hint-sub">点击两个点确定一条直线 · 滚轮/双指缩放</div>
+    </div>
+    <div class="counter-badge" id="g3_lineCounter">
+      直线: <span id="g3_lineNum">0</span>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="g3_undoBtn" title="撤销">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+        </svg>
+      </button>
+      <button class="ctrl-btn" id="g3_resetBtn" title="重新开始">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="results-card">
+      <div class="results-empty" id="g3_resultsEmpty">
+        给定两条平行线 l₁、l₂ 和一个点 P，只用无刻度直尺，<br>
+        过 P 画一条平行于 l₁、l₂ 的直线
+      </div>
+      <div class="results-content" id="g3_resultsContent">
+        <div class="result-distance">
+          <div class="label">构造结果</div>
+          <div class="value" id="g3_distValue">--</div>
+        </div>
+        <div class="result-explanation" id="g3_explanation"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Loupe for Game 3 touch -->
+<div class="loupe" id="g3_loupe">
+  <canvas id="g3_loupeCanvas" width="240" height="240"></canvas>
+</div>
+
+<script>
+// ===== Game 3: Parallel Line (with zoom/pan) =====
+(function() {
+  let lines = [];
+  let pendingPoint = null; // world coords
+  let dpr = 1;
+  let mousePos = null;     // world coords
+  let snapTarget = null;   // world coords
+  let solved = false;
+  let mode = 'easy';
+
+  // Camera
+  let zoom = 1;
+  let camX = 0, camY = 0; // world-space center of viewport
+  // Mouse pan
+  let isPanning = false, panBtn = -1;
+  let panStartSX = 0, panStartSY = 0, panStartCamX = 0, panStartCamY = 0;
+  // Touch gesture
+  let activeTouches = [];
+  let gestureMode = 'none'; // 'none' | 'point' | 'pinch'
+  let pinchStartDist = 0, pinchStartZoom = 1;
+  let pinchStartCamX = 0, pinchStartCamY = 0, pinchMidWorld = null;
+
+  const canvas = document.getElementById('g3_canvas');
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('g3_canvasContainer');
+  const hint = document.getElementById('g3_hint');
+  const lineCounterEl = document.getElementById('g3_lineCounter');
+  const resultsEmpty = document.getElementById('g3_resultsEmpty');
+  const resultsContent = document.getElementById('g3_resultsContent');
+  const distValueEl = document.getElementById('g3_distValue');
+  const explanationEl = document.getElementById('g3_explanation');
+  const modeDescEl = document.getElementById('g3_modeDesc');
+  const easyBtn = document.getElementById('g3_easyBtn');
+  const hardBtn = document.getElementById('g3_hardBtn');
+  const resetBtn = document.getElementById('g3_resetBtn');
+  const undoBtn = document.getElementById('g3_undoBtn');
+  const loupeEl = document.getElementById('g3_loupe');
+  const loupeCanvas = document.getElementById('g3_loupeCanvas');
+  const loupeCtx = loupeCanvas.getContext('2d');
+
+  function isDark() { return window.matchMedia('(prefers-color-scheme: dark)').matches; }
+  function getColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  let canvasSize = 0;
+  let lineY1, lineY2, pointP;
+
+  /* ---- coordinate helpers ---- */
+  function toWorld(sx, sy) {
+    return { x: (sx - canvasSize / 2) / zoom + camX, y: (sy - canvasSize / 2) / zoom + camY };
+  }
+  function toScreen(wx, wy) {
+    return { x: (wx - camX) * zoom + canvasSize / 2, y: (wy - camY) * zoom + canvasSize / 2 };
+  }
+  function viewBounds() {
+    const h = canvasSize / (2 * zoom);
+    return { l: camX - h, r: camX + h, t: camY - h, b: camY + h };
+  }
+
+  function initSetup(size) {
+    lineY1 = size * 0.25;
+    lineY2 = size * 0.75;
+    const gap = lineY2 - lineY1;
+    if (mode === 'easy') {
+      const t = Math.random();
+      let ratio = t < 0.5 ? 0.2 + t * 0.5 : 0.55 + (t - 0.5) * 0.5;
+      pointP = { x: size * (0.3 + Math.random() * 0.4), y: lineY1 + gap * ratio };
+    } else {
+      const above = Math.random() < 0.5;
+      const offset = size * (0.06 + Math.random() * 0.08);
+      pointP = { x: size * (0.3 + Math.random() * 0.4), y: above ? lineY1 - offset : lineY2 + offset };
+    }
+    camX = size / 2; camY = size / 2; zoom = 1;
+  }
+
+  let initialized = false;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height);
+    if (size <= 0) return;
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+    canvasSize = size;
+    if (!initialized) { initSetup(size); initialized = true; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function dist(a, b) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
+
+  function screenPos(e, idx) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[idx || 0] || e.changedTouches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  function extendLine(p1, p2) {
+    const dx = p2.x - p1.x, dy = p2.y - p1.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len < 1) return { a: p1, b: p2 };
+    const sc = canvasSize * 4 / len;
+    return { a: { x: p1.x - dx * sc, y: p1.y - dy * sc }, b: { x: p1.x + dx * sc, y: p1.y + dy * sc } };
+  }
+
+  function lineIntersection(l1, l2) {
+    const { a: a1, b: b1 } = extendLine(l1.p1, l1.p2);
+    const { a: a2, b: b2 } = extendLine(l2.p1, l2.p2);
+    const d1x = b1.x - a1.x, d1y = b1.y - a1.y, d2x = b2.x - a2.x, d2y = b2.y - a2.y;
+    const denom = d1x * d2y - d1y * d2x;
+    if (Math.abs(denom) < 0.001) return null;
+    const t = ((a2.x - a1.x) * d2y - (a2.y - a1.y) * d2x) / denom;
+    return { x: a1.x + t * d1x, y: a1.y + t * d1y };
+  }
+
+  function lineHorizontalIntersection(line, yVal) {
+    const dy = line.p2.y - line.p1.y, dx = line.p2.x - line.p1.x;
+    if (Math.abs(dy) < 0.001) return null;
+    const t = (yVal - line.p1.y) / dy;
+    return { x: line.p1.x + t * dx, y: yVal };
+  }
+
+  const SNAP_RADIUS = 14; // screen px
+
+  function getSnapPoints() {
+    const pts = [{ x: pointP.x, y: pointP.y }];
+    for (let i = 0; i < lines.length; i++) {
+      for (let j = i + 1; j < lines.length; j++) {
+        const pt = lineIntersection(lines[i], lines[j]);
+        if (pt) pts.push(pt);
+      }
+    }
+    for (const line of lines) {
+      for (const y of [lineY1, lineY2]) {
+        const pt = lineHorizontalIntersection(line, y);
+        if (pt) pts.push(pt);
+      }
+    }
+    for (const line of lines) { pts.push(line.p1); pts.push(line.p2); }
+    return pts;
+  }
+
+  function findSnap(worldPos) {
+    const r = SNAP_RADIUS / zoom;
+    let best = null, bestD = r;
+    for (const pt of getSnapPoints()) { const d = dist(worldPos, pt); if (d < bestD) { bestD = d; best = pt; } }
+    return best;
+  }
+
+  function getBestLine() {
+    let best = null;
+    for (const line of lines) {
+      const dy = line.p2.y - line.p1.y, dx = line.p2.x - line.p1.x;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len < 1) continue;
+      const ang = Math.atan2(Math.abs(dy), Math.abs(dx));
+      const dP = Math.abs(dy * pointP.x - dx * pointP.y + line.p2.x * line.p1.y - line.p2.y * line.p1.x) / len;
+      if (dP > 6 || ang > 0.06) continue;
+      if (!best || ang < best.angleDev) best = { angleDev: ang, distToP: dP, line };
+    }
+    return best;
+  }
+
+  /* ---- loupe ---- */
+  const LOUPE_SIZE = 120, LOUPE_PX = 240, LOUPE_ZOOM = 2.8, LOUPE_OFFSET_Y = -80;
+
+  function showLoupe(worldPos) {
+    loupeEl.style.display = 'block';
+    const sp = toScreen(worldPos.x, worldPos.y);
+    const rect = canvas.getBoundingClientRect();
+    let lx = rect.left + sp.x - LOUPE_SIZE / 2;
+    let ly = rect.top + sp.y + LOUPE_OFFSET_Y - LOUPE_SIZE / 2;
+    lx = Math.max(4, Math.min(window.innerWidth - LOUPE_SIZE - 4, lx));
+    ly = Math.max(4, Math.min(window.innerHeight - LOUPE_SIZE - 4, ly));
+    loupeEl.style.left = lx + 'px'; loupeEl.style.top = ly + 'px';
+    renderLoupe(worldPos);
+  }
+
+  function hideLoupe() { loupeEl.style.display = 'none'; }
+
+  function renderLoupe(wc) {
+    const vr = LOUPE_SIZE / 2 / LOUPE_ZOOM;
+    loupeCtx.clearRect(0, 0, LOUPE_PX, LOUPE_PX);
+    loupeCtx.save();
+    loupeCtx.beginPath(); loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, LOUPE_PX / 2, 0, Math.PI * 2); loupeCtx.clip();
+    loupeCtx.fillStyle = getColor('--bg'); loupeCtx.fillRect(0, 0, LOUPE_PX, LOUPE_PX);
+    const s = LOUPE_PX / (vr * 2);
+    loupeCtx.translate(LOUPE_PX / 2, LOUPE_PX / 2); loupeCtx.scale(s, s); loupeCtx.translate(-wc.x, -wc.y);
+    drawWorld(loupeCtx, s, false);
+    loupeCtx.restore();
+    loupeCtx.save();
+    loupeCtx.beginPath(); loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, 3, 0, Math.PI * 2);
+    loupeCtx.strokeStyle = getColor('--accent3'); loupeCtx.lineWidth = 1.5; loupeCtx.stroke();
+    loupeCtx.beginPath(); loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, 1, 0, Math.PI * 2);
+    loupeCtx.fillStyle = getColor('--accent3'); loupeCtx.fill();
+    loupeCtx.restore();
+  }
+
+  /* ---- drawing (world space) ---- */
+  function drawWorld(c, ez, drawSnap) {
+    // ez = effective zoom (for keeping UI elements constant screen size)
+    const dark = isDark();
+    const vb = viewBounds();
+    const inv = 1 / ez; // world-space size of 1 screen pixel
+
+    // Grid
+    c.save(); c.fillStyle = getColor('--dot-color');
+    const gs = 30;
+    const gx0 = Math.floor((vb.l - gs) / gs) * gs;
+    const gy0 = Math.floor((vb.t - gs) / gs) * gs;
+    const dr = Math.max(0.4, 0.8 * inv);
+    for (let x = gx0; x <= vb.r + gs; x += gs)
+      for (let y = gy0; y <= vb.b + gs; y += gs) { c.beginPath(); c.arc(x, y, dr, 0, Math.PI * 2); c.fill(); }
+    c.restore();
+
+    // Parallel lines
+    const pC = dark ? 'rgba(160,160,184,0.8)' : 'rgba(26,26,46,0.7)';
+    const pG = dark ? 'rgba(160,160,184,0.1)' : 'rgba(26,26,46,0.06)';
+    const pL = vb.l - 50, pR = vb.r + 50;
+    for (const yV of [lineY1, lineY2]) {
+      c.save(); c.strokeStyle = pG; c.lineWidth = 6 * inv;
+      c.beginPath(); c.moveTo(pL, yV); c.lineTo(pR, yV); c.stroke(); c.restore();
+      c.save(); c.strokeStyle = pC; c.lineWidth = 2 * inv;
+      c.beginPath(); c.moveTo(pL, yV); c.lineTo(pR, yV); c.stroke(); c.restore();
+    }
+
+    // Labels
+    c.save();
+    const ls = Math.max(8, 12 * inv);
+    c.font = '600 ' + ls + 'px "Noto Sans SC", sans-serif';
+    c.fillStyle = dark ? 'rgba(160,160,184,0.6)' : 'rgba(26,26,46,0.4)';
+    c.fillText('l\u2081', vb.l + 8 * inv, lineY1 - 8 * inv);
+    c.fillText('l\u2082', vb.l + 8 * inv, lineY2 - 8 * inv);
+    c.restore();
+
+    // Point P
+    c.save();
+    c.beginPath(); c.arc(pointP.x, pointP.y, 8 * inv, 0, Math.PI * 2);
+    c.fillStyle = dark ? 'rgba(239,106,86,0.15)' : 'rgba(214,73,51,0.12)'; c.fill();
+    c.beginPath(); c.arc(pointP.x, pointP.y, 4 * inv, 0, Math.PI * 2);
+    c.fillStyle = getColor('--guess-color'); c.fill();
+    c.font = '600 ' + Math.max(9, 13 * inv) + 'px "Noto Sans SC", sans-serif';
+    c.fillStyle = getColor('--guess-color');
+    c.fillText('P', pointP.x + 10 * inv, pointP.y + 5 * inv);
+    c.restore();
+
+    // User lines
+    for (const ln of lines) {
+      const ext = extendLine(ln.p1, ln.p2);
+      c.save(); c.strokeStyle = getColor('--line-glow-fill'); c.lineWidth = 6 * inv; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke(); c.restore();
+      c.save(); c.strokeStyle = getColor('--line-main'); c.lineWidth = 1.5 * inv; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke(); c.restore();
+    }
+
+    // Intersection dots
+    const dO = 3.5 * inv, dI = 1.5 * inv;
+    c.save();
+    for (let i = 0; i < lines.length; i++) for (let j = i + 1; j < lines.length; j++) {
+      const pt = lineIntersection(lines[i], lines[j]);
+      if (pt) {
+        c.beginPath(); c.arc(pt.x, pt.y, dO, 0, Math.PI * 2); c.fillStyle = getColor('--line-dot-bg'); c.fill();
+        c.beginPath(); c.arc(pt.x, pt.y, dI, 0, Math.PI * 2); c.fillStyle = getColor('--line-dot-hi'); c.fill();
+      }
+    }
+    for (const ln of lines) for (const yV of [lineY1, lineY2]) {
+      const pt = lineHorizontalIntersection(ln, yV);
+      if (pt) {
+        c.beginPath(); c.arc(pt.x, pt.y, dO, 0, Math.PI * 2); c.fillStyle = getColor('--line-dot-bg'); c.fill();
+        c.beginPath(); c.arc(pt.x, pt.y, dI, 0, Math.PI * 2); c.fillStyle = getColor('--line-dot-hi'); c.fill();
+      }
+    }
+    c.restore();
+
+    // Pending + preview
+    if (pendingPoint) {
+      c.save(); c.beginPath(); c.arc(pendingPoint.x, pendingPoint.y, 4 * inv, 0, Math.PI * 2);
+      c.fillStyle = getColor('--line-dot'); c.fill(); c.restore();
+      if (mousePos) {
+        const ext = extendLine(pendingPoint, mousePos);
+        c.save(); c.setLineDash([4 * inv, 4 * inv]);
+        c.strokeStyle = dark ? 'rgba(96,165,250,0.3)' : 'rgba(37,99,235,0.25)'; c.lineWidth = 1 * inv;
+        c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke(); c.restore();
+      }
+    }
+
+    // Definition points
+    c.save();
+    for (const ln of lines) for (const p of [ln.p1, ln.p2]) {
+      c.beginPath(); c.arc(p.x, p.y, 3 * inv, 0, Math.PI * 2); c.fillStyle = getColor('--line-dot'); c.fill();
+    }
+    c.restore();
+
+    // Snap indicator
+    if (drawSnap && snapTarget) {
+      c.save();
+      c.beginPath(); c.arc(snapTarget.x, snapTarget.y, SNAP_RADIUS * inv, 0, Math.PI * 2);
+      c.strokeStyle = getColor('--snap-ring'); c.lineWidth = inv; c.setLineDash([3 * inv, 3 * inv]); c.stroke();
+      c.beginPath(); c.arc(snapTarget.x, snapTarget.y, 4 * inv, 0, Math.PI * 2);
+      c.fillStyle = getColor('--snap-fill'); c.fill();
+      c.restore();
+    }
+  }
+
+  function updateBadge() {
+    const zTxt = (zoom > 1.01 || zoom < 0.99) ? ' \u00b7 ' + zoom.toFixed(1) + '\u00d7' : '';
+    lineCounterEl.innerHTML = '\u76f4\u7ebf: <span>' + lines.length + '</span>' + zTxt;
+  }
+
+  function draw() {
+    ctx.save();
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    ctx.translate(canvasSize / 2, canvasSize / 2);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-camX, -camY);
+    drawWorld(ctx, zoom, true);
+    ctx.restore();
+    canvas.style.cursor = isPanning ? 'grabbing' : 'crosshair';
+    updateBadge();
+  }
+
+  /* ---- zoom helpers ---- */
+  function zoomAt(sx, sy, factor) {
+    const wb = toWorld(sx, sy);
+    zoom = Math.max(0.5, Math.min(12, zoom * factor));
+    camX = wb.x - (sx - canvasSize / 2) / zoom;
+    camY = wb.y - (sy - canvasSize / 2) / zoom;
+    draw();
+  }
+  function resetZoom() { zoom = 1; camX = canvasSize / 2; camY = canvasSize / 2; draw(); }
+
+  /* ---- mouse events ---- */
+  const PAN_THRESHOLD = 4; // px moved before drag becomes pan
+  let mouseDownSP = null;  // screen pos at mousedown
+  let mouseIsDown = false;
+
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const sp = screenPos(e);
+    zoomAt(sp.x, sp.y, e.deltaY < 0 ? 1.18 : 1 / 1.18);
+  }, { passive: false });
+
+  canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  canvas.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    const sp = screenPos(e);
+    if (e.button === 0) {
+      // left click: might be click or drag-to-pan
+      mouseIsDown = true;
+      mouseDownSP = sp;
+      panStartCamX = camX; panStartCamY = camY;
+      isPanning = false;
+    } else if (e.button === 1 || e.button === 2) {
+      // middle/right: always pan
+      isPanning = true; panBtn = e.button; mouseIsDown = true;
+      mouseDownSP = sp;
+      panStartCamX = camX; panStartCamY = camY;
+      draw();
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!mouseIsDown) {
+      // hover: update snap/preview
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+      if (sx < 0 || sy < 0 || sx > canvasSize || sy > canvasSize) return;
+      const wp = toWorld(sx, sy);
+      snapTarget = findSnap(wp);
+      if (pendingPoint) { mousePos = snapTarget || wp; draw(); }
+      else if (lines.length > 0 || snapTarget) { draw(); }
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+    if (!isPanning && mouseDownSP) {
+      const dx = sx - mouseDownSP.x, dy = sy - mouseDownSP.y;
+      if (Math.sqrt(dx * dx + dy * dy) > PAN_THRESHOLD) {
+        isPanning = true;
+      }
+    }
+    if (isPanning) {
+      camX = panStartCamX - (sx - mouseDownSP.x) / zoom;
+      camY = panStartCamY - (sy - mouseDownSP.y) / zoom;
+      draw();
+    } else {
+      // still within threshold: update preview
+      const wp = toWorld(sx, sy);
+      snapTarget = findSnap(wp);
+      if (pendingPoint) { mousePos = snapTarget || wp; draw(); }
+    }
+  });
+
+  window.addEventListener('mouseup', (e) => {
+    if (!mouseIsDown) return;
+    mouseIsDown = false;
+    if (isPanning) {
+      isPanning = false; draw();
+    } else if (e.button === 0) {
+      // was a click (no significant drag)
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+      const wp = toWorld(sx, sy);
+      const p = findSnap(wp) || wp;
+      if (!pendingPoint) { pendingPoint = p; hint.classList.add('hidden'); }
+      else {
+        if (dist(pendingPoint, p) > 5 / zoom) {
+          lines.push({ p1: pendingPoint, p2: p });
+          checkAndShowResult();
+        }
+        pendingPoint = null; mousePos = null; snapTarget = null;
+      }
+      draw();
+    }
+    mouseDownSP = null;
+  });
+
+  /* ---- touch events ---- */
+  function getTouchList(e) {
+    const r = canvas.getBoundingClientRect();
+    const out = [];
+    for (let i = 0; i < e.touches.length; i++) {
+      out.push({ sx: e.touches[i].clientX - r.left, sy: e.touches[i].clientY - r.top, id: e.touches[i].identifier });
+    }
+    return out;
+  }
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    activeTouches = getTouchList(e);
+    if (activeTouches.length >= 2) {
+      // switch to pinch/pan
+      gestureMode = 'pinch';
+      hideLoupe();
+      const a = activeTouches[0], b = activeTouches[1];
+      const mx = (a.sx + b.sx) / 2, my = (a.sy + b.sy) / 2;
+      pinchStartDist = Math.sqrt((a.sx - b.sx) ** 2 + (a.sy - b.sy) ** 2);
+      pinchStartZoom = zoom;
+      pinchStartCamX = camX; pinchStartCamY = camY;
+      pinchMidWorld = toWorld(mx, my);
+    } else {
+      gestureMode = 'point';
+      const wp = toWorld(activeTouches[0].sx, activeTouches[0].sy);
+      snapTarget = findSnap(wp);
+      mousePos = snapTarget || wp;
+      if (pendingPoint) draw();
+      showLoupe(snapTarget || wp);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    activeTouches = getTouchList(e);
+    if (gestureMode === 'pinch' && activeTouches.length >= 2) {
+      const a = activeTouches[0], b = activeTouches[1];
+      const d = Math.sqrt((a.sx - b.sx) ** 2 + (a.sy - b.sy) ** 2);
+      const mx = (a.sx + b.sx) / 2, my = (a.sy + b.sy) / 2;
+      zoom = Math.max(0.5, Math.min(12, pinchStartZoom * (d / pinchStartDist)));
+      // keep pinchMidWorld at the screen midpoint
+      camX = pinchMidWorld.x - (mx - canvasSize / 2) / zoom;
+      camY = pinchMidWorld.y - (my - canvasSize / 2) / zoom;
+      draw();
+    } else if (gestureMode === 'point' && activeTouches.length === 1) {
+      const wp = toWorld(activeTouches[0].sx, activeTouches[0].sy);
+      snapTarget = findSnap(wp);
+      const dp = snapTarget || wp;
+      if (pendingPoint) { mousePos = dp; draw(); } else { draw(); }
+      showLoupe(dp);
+    }
+    // if was point and now 2 fingers -> upgrade to pinch
+    if (gestureMode === 'point' && activeTouches.length >= 2) {
+      gestureMode = 'pinch'; hideLoupe();
+      const a = activeTouches[0], b = activeTouches[1];
+      pinchStartDist = Math.sqrt((a.sx - b.sx) ** 2 + (a.sy - b.sy) ** 2);
+      pinchStartZoom = zoom; pinchStartCamX = camX; pinchStartCamY = camY;
+      pinchMidWorld = toWorld((a.sx + b.sx) / 2, (a.sy + b.sy) / 2);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const prev = activeTouches;
+    activeTouches = getTouchList(e);
+    if (gestureMode === 'point' && activeTouches.length === 0 && prev.length > 0) {
+      hideLoupe();
+      const sp = prev[0];
+      const wp = toWorld(sp.sx, sp.sy);
+      const p = findSnap(wp) || wp;
+      if (!pendingPoint) { pendingPoint = p; hint.classList.add('hidden'); }
+      else {
+        if (dist(pendingPoint, p) > 5 / zoom) {
+          lines.push({ p1: pendingPoint, p2: p });
+          checkAndShowResult();
+        }
+        pendingPoint = null; mousePos = null; snapTarget = null;
+      }
+      draw();
+    }
+    if (activeTouches.length === 0) gestureMode = 'none';
+    else if (activeTouches.length === 1 && gestureMode === 'pinch') {
+      // went from 2 fingers to 1: stay in pinch (prevent accidental point placement)
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchcancel', (e) => { e.preventDefault(); activeTouches = []; gestureMode = 'none'; hideLoupe(); }, { passive: false });
+
+  /* ---- game logic ---- */
+  function checkAndShowResult() {
+    const best = getBestLine();
+    if (best && !solved) {
+      solved = true;
+      const deg = best.angleDev * 180 / Math.PI;
+      let cls = 'ok', label = '';
+      if (deg < 0.3) { cls = 'perfect'; label = '完美！精确的平行线！'; }
+      else if (deg < 1) { cls = 'great'; label = '非常好！几乎完全平行'; }
+      else { cls = 'good'; label = '不错！偏离 ' + deg.toFixed(1) + '°'; }
+      distValueEl.textContent = label; distValueEl.className = 'value ' + cls;
+      explanationEl.innerHTML = '你用了 <strong>' + lines.length + '</strong> 条直线完成了构造！' +
+        (lines.length <= 9 ? '<br>这是非常高效的构造方法。' :
+         lines.length <= 13 ? '<br>不错的尝试！理论上最少需要约 8 条线。' :
+         '<br>试试能否用更少的线完成？理论最少约 8 条。');
+      resultsEmpty.style.display = 'none';
+      resultsContent.classList.add('visible');
+      resultsContent.classList.remove('pop-in'); void resultsContent.offsetWidth; resultsContent.classList.add('pop-in');
+      draw();
+    }
+  }
+
+  function setMode(m) {
+    mode = m;
+    easyBtn.classList.toggle('active', m === 'easy');
+    hardBtn.classList.toggle('active', m === 'hard');
+    modeDescEl.textContent = m === 'easy'
+      ? '过点 P 用直尺作一条平行于 l₁、l₂ 的直线'
+      : '过点 P 用直尺作一条平行于 l₁、l₂ 的直线（P 在线外）';
+    reset();
+  }
+
+  function reset() {
+    lines = []; pendingPoint = null; mousePos = null;
+    solved = false; snapTarget = null;
+    hint.classList.remove('hidden');
+    resultsEmpty.style.display = '';
+    resultsContent.classList.remove('visible');
+    initialized = false;
+    resize();
+  }
+
+  function undo() {
+    if (pendingPoint) { pendingPoint = null; mousePos = null; }
+    else if (lines.length > 0) {
+      lines.pop();
+      if (lines.length === 0) hint.classList.remove('hidden');
+      if (solved && !getBestLine()) {
+        solved = false;
+        resultsEmpty.style.display = ''; resultsContent.classList.remove('visible');
+      }
+    }
+    draw();
+  }
+
+  easyBtn.addEventListener('click', () => setMode('easy'));
+  hardBtn.addEventListener('click', () => setMode('hard'));
+  resetBtn.addEventListener('click', reset);
+  undoBtn.addEventListener('click', undo);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') reset();
+    if (e.key === 'z' && (e.ctrlKey || e.metaKey)) undo();
+    if (e.key === '0') resetZoom();
+    if (e.key === 'Escape') { pendingPoint = null; mousePos = null; snapTarget = null; draw(); }
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
+</body>
+</html>

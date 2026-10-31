@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>寻找圆心</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f4f1eb;
+    --surface: #ffffff;
+    --ink: #1a1a2e;
+    --ink-dim: #8e8e9a;
+    --ink-light: #c5c5ce;
+    --cut-color: #d64933;
+    --cut-glow: rgba(214,73,51,0.2);
+    --circle-fill: rgba(0,0,0,0.03);
+    --circle-stroke: #1a1a2e;
+    --region-a: rgba(59,130,246,0.25);
+    --region-b: rgba(245,158,11,0.25);
+    --region-c: rgba(16,185,129,0.25);
+    --accent: #d64933;
+    --accent2: #2563eb;
+    --gold: #c9a84c;
+    --radius: 14px;
+    --dot-color: rgba(0,0,0,0.04);
+    --border-dim: rgba(0,0,0,0.06);
+    --border-ctrl: rgba(0,0,0,0.08);
+    --ctrl-bg: rgba(255,255,255,0.85);
+    --switch-bg: rgba(0,0,0,0.05);
+    --btn-active-bg: var(--surface);
+    --reveal-border: rgba(0,0,0,0.15);
+    --reveal-hover-bg: rgba(37,99,235,0.04);
+    --line-color: #2563eb;
+    --line-glow: rgba(37,99,235,0.15);
+    --guess-color: #d64933;
+    --true-color: #16a34a;
+    --line-main: rgba(37,99,235,0.45);
+    --line-glow-fill: rgba(37,99,235,0.1);
+    --line-dot: rgba(37,99,235,0.4);
+    --line-dot-hi: rgba(37,99,235,0.6);
+    --line-dot-bg: rgba(37,99,235,0.2);
+    --snap-ring: rgba(37,99,235,0.3);
+    --snap-fill: rgba(37,99,235,0.35);
+    --loupe-border: rgba(0,0,0,0.15);
+    --loupe-shadow: rgba(0,0,0,0.25);
+    --paper-opacity: 0.3;
+    --accent3: #059669;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121218;
+      --surface: #1e1e2a;
+      --ink: #e4e4ef;
+      --ink-dim: #7a7a8e;
+      --ink-light: #4a4a5a;
+      --cut-color: #ef6a56;
+      --circle-fill: rgba(255,255,255,0.04);
+      --circle-stroke: #a0a0b8;
+      --accent: #ef6a56;
+      --accent2: #60a5fa;
+      --gold: #e0b85c;
+      --dot-color: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --border-ctrl: rgba(255,255,255,0.1);
+      --ctrl-bg: rgba(30,30,42,0.9);
+      --switch-bg: rgba(255,255,255,0.06);
+      --btn-active-bg: var(--surface);
+      --reveal-border: rgba(255,255,255,0.12);
+      --reveal-hover-bg: rgba(96,165,250,0.08);
+      --line-color: #60a5fa;
+      --guess-color: #ef6a56;
+      --true-color: #34d399;
+      --line-main: rgba(96,165,250,0.55);
+      --line-glow-fill: rgba(96,165,250,0.12);
+      --line-dot: rgba(96,165,250,0.5);
+      --line-dot-hi: rgba(96,165,250,0.75);
+      --line-dot-bg: rgba(96,165,250,0.25);
+      --snap-ring: rgba(96,165,250,0.4);
+      --snap-fill: rgba(96,165,250,0.45);
+      --loupe-border: rgba(255,255,255,0.2);
+      --loupe-shadow: rgba(0,0,0,0.6);
+      --paper-opacity: 0;
+      --accent3: #34d399;
+    }
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: var(--paper-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ===== Shared styles ===== */
+  .app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 560px;
+    padding: 12px 16px 40px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+
+  .mode-switch {
+    display: flex;
+    gap: 4px;
+    background: var(--switch-bg);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.1s forwards;
+  }
+
+  .mode-btn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .mode-btn.active {
+    background: var(--btn-active-bg);
+    color: var(--ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .mode-btn:hover:not(.active) { color: var(--ink); }
+
+  .mode-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.15s forwards;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: min(100%, 500px);
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.2s forwards;
+  }
+
+  .canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  .canvas-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  .canvas-hint.hidden { opacity: 0; }
+
+  .canvas-hint-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.4; }
+  .canvas-hint-text { font-size: 14px; color: var(--ink-dim); font-weight: 400; }
+  .canvas-hint-sub { font-size: 11px; color: var(--ink-light); margin-top: 4px; }
+
+  .controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-ctrl);
+    background: var(--ctrl-bg);
+    color: var(--ink-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ctrl-btn svg { width: 16px; height: 16px; }
+
+  .counter-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    background: var(--ctrl-bg);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-dim);
+    backdrop-filter: blur(6px);
+  }
+
+  .counter-badge span { font-weight: 500; }
+
+  .results {
+    width: 100%;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.25s forwards;
+  }
+
+  .results-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-dim);
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+  }
+
+  .results-empty {
+    text-align: center;
+    padding: 12px;
+    color: var(--ink-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .results-content { display: none; }
+  .results-content.visible { display: block; }
+
+  /* ===== Game 2: find-center specific ===== */
+  #game2 .counter-badge span { color: var(--accent2); }
+  #game2 .ctrl-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  #game2 .header h1 span { color: var(--accent2); }
+
+  .result-distance {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .result-distance .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .result-distance .value {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .result-distance .value.perfect { color: var(--gold); }
+  .result-distance .value.great { color: #16a34a; }
+  .result-distance .value.good { color: var(--accent2); }
+  .result-distance .value.ok { color: var(--ink-dim); }
+
+  @media (prefers-color-scheme: dark) {
+    .result-distance .value.great { color: #34d399; }
+  }
+
+  .result-explanation {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-dim);
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+  }
+
+  .result-explanation strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .reveal-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px dashed var(--reveal-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .reveal-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: var(--reveal-hover-bg);
+  }
+
+  /* Loupe */
+  .loupe {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2.5px solid var(--loupe-border);
+    box-shadow: 0 4px 20px var(--loupe-shadow);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    background: var(--bg);
+  }
+
+  .loupe canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .loupe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+    pointer-events: none;
+  }
+
+  .loupe::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 16px; height: 16px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(37,99,235,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+  @media (max-width: 480px) {
+    .app { padding: 10px 12px 12px; }
+    .header h1 { font-size: 22px; }
+    .result-distance .value { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="game2">
+  <div class="header">
+    <h1>寻找<span>圆心</span></h1>
+  </div>
+
+  <div class="mode-switch">
+    <button class="mode-btn active" id="g2_drawBtn">画直线</button>
+    <button class="mode-btn" id="g2_guessBtn">标圆心</button>
+  </div>
+
+  <div class="mode-desc" id="g2_modeDesc">用无刻度直尺画直线，尝试找到圆心的位置</div>
+
+  <div class="canvas-container" id="g2_canvasContainer">
+    <canvas id="g2_canvas"></canvas>
+    <div class="canvas-hint" id="g2_hint">
+      <div class="canvas-hint-icon"></div>
+      <div class="canvas-hint-text">画直线来寻找圆心</div>
+      <div class="canvas-hint-sub">点击两个点确定一条直线</div>
+    </div>
+    <div class="counter-badge" id="g2_lineCounter">
+      直线: <span id="g2_lineNum">0</span>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="g2_undoBtn" title="撤销">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+        </svg>
+      </button>
+      <button class="ctrl-btn" id="g2_resetBtn" title="重新开始">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="results-card">
+      <div class="results-empty" id="g2_resultsEmpty">
+        只有一把没有刻度的直尺，你能找到圆心吗？<br>
+        先画几条直线试试，再切换到「标圆心」模式点击你认为的圆心位置
+      </div>
+      <div class="results-content" id="g2_resultsContent">
+        <div class="result-distance">
+          <div class="label">偏离距离</div>
+          <div class="value" id="g2_distValue">--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loupe for Game 2 touch -->
+<div class="loupe" id="g2_loupe">
+  <canvas id="g2_loupeCanvas" width="240" height="240"></canvas>
+</div>
+
+<script>
+// ===== Game 2: Find Center =====
+(function() {
+  let tool = 'draw';
+  let lines = [];
+  let pendingPoint = null;
+  let guessPoint = null;
+  let showAnswer = false;
+  let dpr = 1;
+  let mousePos = null;
+
+  const canvas = document.getElementById('g2_canvas');
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('g2_canvasContainer');
+  const hint = document.getElementById('g2_hint');
+  const lineNumEl = document.getElementById('g2_lineNum');
+  const resultsEmpty = document.getElementById('g2_resultsEmpty');
+  const resultsContent = document.getElementById('g2_resultsContent');
+  const distValueEl = document.getElementById('g2_distValue');
+  const modeDescEl = document.getElementById('g2_modeDesc');
+  const drawBtn = document.getElementById('g2_drawBtn');
+  const guessBtn = document.getElementById('g2_guessBtn');
+  const resetBtn = document.getElementById('g2_resetBtn');
+  const undoBtn = document.getElementById('g2_undoBtn');
+  const loupeEl = document.getElementById('g2_loupe');
+  const loupeCanvas = document.getElementById('g2_loupeCanvas');
+  const loupeCtx = loupeCanvas.getContext('2d');
+
+  function isDark() { return window.matchMedia('(prefers-color-scheme: dark)').matches; }
+  function getColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  let canvasSize = 0;
+  let cx, cy, cr;
+
+  function initCircle(size) { cx = size / 2; cy = size / 2; cr = size * 0.38; }
+
+  let initialized = false;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height);
+    if (size <= 0) return;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    canvasSize = size;
+    if (!initialized) { initCircle(size); initialized = true; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function dist(a, b) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] || e.changedTouches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  function extendLine(p1, p2) {
+    const dx = p2.x - p1.x, dy = p2.y - p1.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len < 1) return { a: p1, b: p2 };
+    const scale = canvasSize * 2 / len;
+    return { a: { x: p1.x - dx * scale, y: p1.y - dy * scale }, b: { x: p1.x + dx * scale, y: p1.y + dy * scale } };
+  }
+
+  function lineIntersection(l1, l2) {
+    const { a: a1, b: b1 } = extendLine(l1.p1, l1.p2);
+    const { a: a2, b: b2 } = extendLine(l2.p1, l2.p2);
+    const d1x = b1.x - a1.x, d1y = b1.y - a1.y;
+    const d2x = b2.x - a2.x, d2y = b2.y - a2.y;
+    const denom = d1x * d2y - d1y * d2x;
+    if (Math.abs(denom) < 0.001) return null;
+    const t = ((a2.x - a1.x) * d2y - (a2.y - a1.y) * d2x) / denom;
+    return { x: a1.x + t * d1x, y: a1.y + t * d1y };
+  }
+
+  const SNAP_RADIUS = 14;
+
+  function lineCircleIntersection(line, ox, oy, r) {
+    const dx = line.p2.x - line.p1.x, dy = line.p2.y - line.p1.y;
+    const fx = line.p1.x - ox, fy = line.p1.y - oy;
+    const a = dx * dx + dy * dy;
+    const b = 2 * (fx * dx + fy * dy);
+    const c = fx * fx + fy * fy - r * r;
+    let disc = b * b - 4 * a * c;
+    if (disc < 0) return [];
+    disc = Math.sqrt(disc);
+    const results = [];
+    for (const t of [(-b - disc) / (2 * a), (-b + disc) / (2 * a)]) {
+      results.push({ x: line.p1.x + t * dx, y: line.p1.y + t * dy });
+    }
+    return results;
+  }
+
+  function getSnapPoints() {
+    const pts = [];
+    const w = canvasSize;
+    for (let i = 0; i < lines.length; i++) {
+      for (let j = i + 1; j < lines.length; j++) {
+        const pt = lineIntersection(lines[i], lines[j]);
+        if (pt && pt.x >= -10 && pt.x <= w + 10 && pt.y >= -10 && pt.y <= w + 10) pts.push(pt);
+      }
+    }
+    for (const line of lines) {
+      const hits = lineCircleIntersection(line, cx, cy, cr);
+      for (const h of hits) pts.push(h);
+    }
+    for (const line of lines) { pts.push(line.p1); pts.push(line.p2); }
+    return pts;
+  }
+
+  function findSnap(pos) {
+    const pts = getSnapPoints();
+    let best = null, bestD = SNAP_RADIUS;
+    for (const pt of pts) { const d = dist(pos, pt); if (d < bestD) { bestD = d; best = pt; } }
+    return best;
+  }
+
+  let snapTarget = null;
+
+  // Loupe
+  const LOUPE_SIZE = 120, LOUPE_PX = 240, LOUPE_ZOOM = 2.8, LOUPE_OFFSET_Y = -80;
+  let isTouching = false, touchRawPos = null;
+
+  function showLoupe(canvasPos) {
+    loupeEl.style.display = 'block';
+    const rect = canvas.getBoundingClientRect();
+    const vpX = rect.left + canvasPos.x;
+    const vpY = rect.top + canvasPos.y;
+    let loupeX = vpX - LOUPE_SIZE / 2;
+    let loupeY = vpY + LOUPE_OFFSET_Y - LOUPE_SIZE / 2;
+    loupeX = Math.max(4, Math.min(window.innerWidth - LOUPE_SIZE - 4, loupeX));
+    loupeY = Math.max(4, Math.min(window.innerHeight - LOUPE_SIZE - 4, loupeY));
+    loupeEl.style.left = loupeX + 'px';
+    loupeEl.style.top = loupeY + 'px';
+    renderLoupe(canvasPos);
+  }
+
+  function hideLoupe() { loupeEl.style.display = 'none'; }
+
+  function renderLoupe(center) {
+    const viewRadius = LOUPE_SIZE / 2 / LOUPE_ZOOM;
+    loupeCtx.clearRect(0, 0, LOUPE_PX, LOUPE_PX);
+    loupeCtx.save();
+    loupeCtx.beginPath();
+    loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, LOUPE_PX / 2, 0, Math.PI * 2);
+    loupeCtx.clip();
+    loupeCtx.fillStyle = getColor('--bg');
+    loupeCtx.fillRect(0, 0, LOUPE_PX, LOUPE_PX);
+    const s = LOUPE_PX / (viewRadius * 2);
+    loupeCtx.translate(LOUPE_PX / 2, LOUPE_PX / 2);
+    loupeCtx.scale(s, s);
+    loupeCtx.translate(-center.x, -center.y);
+    drawScene(loupeCtx, false);
+    loupeCtx.restore();
+
+    loupeCtx.save();
+    loupeCtx.beginPath();
+    loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, 3, 0, Math.PI * 2);
+    loupeCtx.strokeStyle = getColor('--accent2');
+    loupeCtx.lineWidth = 1.5;
+    loupeCtx.stroke();
+    loupeCtx.beginPath();
+    loupeCtx.arc(LOUPE_PX / 2, LOUPE_PX / 2, 1, 0, Math.PI * 2);
+    loupeCtx.fillStyle = getColor('--accent2');
+    loupeCtx.fill();
+    loupeCtx.restore();
+  }
+
+  function drawScene(c, drawSnapIndicator) {
+    const w = canvasSize;
+    const dark = isDark();
+
+    c.save();
+    c.fillStyle = getColor('--dot-color');
+    const gridStep = 30;
+    for (let x = gridStep; x < w; x += gridStep) {
+      for (let y = gridStep; y < w; y += gridStep) {
+        c.beginPath(); c.arc(x, y, 0.8, 0, Math.PI * 2); c.fill();
+      }
+    }
+    c.restore();
+
+    c.save();
+    c.beginPath(); c.arc(cx, cy, cr, 0, Math.PI * 2);
+    c.fillStyle = getColor('--circle-fill'); c.fill();
+    c.restore();
+
+    c.save();
+    c.beginPath(); c.arc(cx, cy, cr, 0, Math.PI * 2);
+    c.strokeStyle = getColor('--circle-stroke'); c.lineWidth = 2; c.stroke();
+    c.restore();
+
+    for (const line of lines) {
+      const ext = extendLine(line.p1, line.p2);
+      c.save();
+      c.strokeStyle = getColor('--line-glow-fill'); c.lineWidth = 6; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke();
+      c.restore();
+      c.save();
+      c.strokeStyle = getColor('--line-main'); c.lineWidth = 1.5; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke();
+      c.restore();
+    }
+
+    c.save();
+    for (let i = 0; i < lines.length; i++) {
+      for (let j = i + 1; j < lines.length; j++) {
+        const pt = lineIntersection(lines[i], lines[j]);
+        if (pt && pt.x >= -10 && pt.x <= w + 10 && pt.y >= -10 && pt.y <= w + 10) {
+          c.beginPath(); c.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2);
+          c.fillStyle = getColor('--line-dot-bg'); c.fill();
+          c.beginPath(); c.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+          c.fillStyle = getColor('--line-dot-hi'); c.fill();
+        }
+      }
+    }
+    c.restore();
+
+    c.save();
+    for (const line of lines) {
+      const hits = lineCircleIntersection(line, cx, cy, cr);
+      for (const pt of hits) {
+        c.beginPath(); c.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2);
+        c.fillStyle = getColor('--line-dot-bg'); c.fill();
+        c.beginPath(); c.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+        c.fillStyle = getColor('--line-dot-hi'); c.fill();
+      }
+    }
+    c.restore();
+
+    if (pendingPoint && tool === 'draw') {
+      c.save();
+      c.beginPath(); c.arc(pendingPoint.x, pendingPoint.y, 4, 0, Math.PI * 2);
+      c.fillStyle = getColor('--line-dot'); c.fill();
+      c.restore();
+      if (mousePos) {
+        const ext = extendLine(pendingPoint, mousePos);
+        c.save();
+        c.setLineDash([4, 4]);
+        c.strokeStyle = dark ? 'rgba(96,165,250,0.3)' : 'rgba(37,99,235,0.25)';
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(ext.a.x, ext.a.y); c.lineTo(ext.b.x, ext.b.y); c.stroke();
+        c.restore();
+      }
+    }
+
+    c.save();
+    for (const line of lines) {
+      for (const p of [line.p1, line.p2]) {
+        c.beginPath(); c.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        c.fillStyle = getColor('--line-dot'); c.fill();
+      }
+    }
+    c.restore();
+
+    if (guessPoint) {
+      c.save();
+      const s = 8;
+      c.strokeStyle = getColor('--guess-color'); c.lineWidth = 2.5; c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(guessPoint.x - s, guessPoint.y - s); c.lineTo(guessPoint.x + s, guessPoint.y + s);
+      c.moveTo(guessPoint.x + s, guessPoint.y - s); c.lineTo(guessPoint.x - s, guessPoint.y + s);
+      c.stroke();
+      c.restore();
+    }
+
+    if (showAnswer) {
+      c.save();
+      c.beginPath(); c.arc(cx, cy, 6, 0, Math.PI * 2);
+      c.fillStyle = dark ? 'rgba(52,211,153,0.2)' : 'rgba(22,163,106,0.2)'; c.fill();
+      c.beginPath(); c.arc(cx, cy, 3, 0, Math.PI * 2);
+      c.fillStyle = getColor('--true-color'); c.fill();
+      c.font = '600 11px "Noto Sans SC", sans-serif';
+      c.fillStyle = getColor('--true-color');
+      c.fillText('圆心', cx + 10, cy + 4);
+      c.restore();
+      if (guessPoint) {
+        c.save();
+        c.setLineDash([3, 3]);
+        c.strokeStyle = dark ? 'rgba(239,106,86,0.4)' : 'rgba(214,73,51,0.4)';
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(guessPoint.x, guessPoint.y); c.lineTo(cx, cy); c.stroke();
+        c.restore();
+      }
+    }
+
+    if (drawSnapIndicator && snapTarget) {
+      c.save();
+      c.beginPath(); c.arc(snapTarget.x, snapTarget.y, SNAP_RADIUS, 0, Math.PI * 2);
+      c.strokeStyle = getColor('--snap-ring'); c.lineWidth = 1; c.setLineDash([3, 3]); c.stroke();
+      c.beginPath(); c.arc(snapTarget.x, snapTarget.y, 4, 0, Math.PI * 2);
+      c.fillStyle = getColor('--snap-fill'); c.fill();
+      c.restore();
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    drawScene(ctx, true);
+    canvas.style.cursor = tool === 'draw' ? 'crosshair' : 'pointer';
+  }
+
+  function handleClick(e) {
+    e.preventDefault();
+    const raw = getPos(e);
+    const p = findSnap(raw) || raw;
+    if (tool === 'draw') {
+      if (!pendingPoint) { pendingPoint = p; hint.classList.add('hidden'); }
+      else {
+        if (dist(pendingPoint, p) > 5) { lines.push({ p1: pendingPoint, p2: p }); lineNumEl.textContent = lines.length; }
+        pendingPoint = null; mousePos = null; snapTarget = null;
+      }
+      draw();
+    } else if (tool === 'guess') {
+      guessPoint = p; showAnswer = true; showResult(); draw();
+    }
+  }
+
+  function handleMove(e) {
+    const raw = getPos(e);
+    snapTarget = findSnap(raw);
+    if (tool === 'draw' && pendingPoint) { mousePos = snapTarget || raw; draw(); }
+    else if (tool === 'guess' || (tool === 'draw' && lines.length > 0)) { draw(); }
+  }
+
+  function handleTouchStart(e) {
+    e.preventDefault();
+    isTouching = true;
+    const raw = getPos(e);
+    touchRawPos = raw;
+    snapTarget = findSnap(raw);
+    mousePos = snapTarget || raw;
+    if (pendingPoint) draw();
+    showLoupe(snapTarget || raw);
+  }
+
+  function handleTouchMove(e) {
+    e.preventDefault();
+    if (!isTouching) return;
+    const raw = getPos(e);
+    touchRawPos = raw;
+    snapTarget = findSnap(raw);
+    const displayPos = snapTarget || raw;
+    if (tool === 'draw' && pendingPoint) { mousePos = displayPos; draw(); } else { draw(); }
+    showLoupe(displayPos);
+  }
+
+  function handleTouchEnd(e) {
+    e.preventDefault();
+    if (!isTouching) return;
+    isTouching = false;
+    hideLoupe();
+    if (!touchRawPos) return;
+    const p = snapTarget || touchRawPos;
+    if (tool === 'draw') {
+      if (!pendingPoint) { pendingPoint = p; hint.classList.add('hidden'); }
+      else {
+        if (dist(pendingPoint, p) > 5) { lines.push({ p1: pendingPoint, p2: p }); lineNumEl.textContent = lines.length; }
+        pendingPoint = null; mousePos = null; snapTarget = null;
+      }
+      draw();
+    } else if (tool === 'guess') {
+      guessPoint = p; showAnswer = true; showResult(); draw();
+    }
+    touchRawPos = null;
+  }
+
+  function showResult() {
+    const d = dist(guessPoint, { x: cx, y: cy });
+    const ratio = d / cr;
+    const pct = (ratio * 100).toFixed(1);
+    let cls = 'ok';
+    if (ratio < 0.02) cls = 'perfect';
+    else if (ratio < 0.08) cls = 'great';
+    else if (ratio < 0.2) cls = 'good';
+    distValueEl.textContent = ratio < 0.02 ? '几乎完美!' : `偏离 ${pct}% 半径`;
+    distValueEl.className = 'value ' + cls;
+    resultsEmpty.style.display = 'none';
+    resultsContent.classList.add('visible');
+    resultsContent.classList.remove('pop-in');
+    void resultsContent.offsetWidth;
+    resultsContent.classList.add('pop-in');
+  }
+
+  function setTool(t) {
+    tool = t;
+    drawBtn.classList.toggle('active', t === 'draw');
+    guessBtn.classList.toggle('active', t === 'guess');
+    pendingPoint = null; mousePos = null; snapTarget = null;
+    modeDescEl.textContent = t === 'draw' ? '用无刻度直尺画直线，尝试找到圆心的位置' : '点击你认为的圆心位置';
+    draw();
+  }
+
+  function reset() {
+    lines = []; pendingPoint = null; mousePos = null; guessPoint = null;
+    showAnswer = false; snapTarget = null;
+    lineNumEl.textContent = '0';
+    hint.classList.remove('hidden');
+    resultsEmpty.style.display = '';
+    resultsEmpty.innerHTML = '只有一把没有刻度的直尺，你能找到圆心吗？<br>先画几条直线试试，再切换到「标圆心」模式点击你认为的圆心位置';
+    resultsContent.classList.remove('visible');
+    initCircle(canvasSize);
+    setTool('draw');
+    draw();
+  }
+
+  function undo() {
+    if (pendingPoint) { pendingPoint = null; mousePos = null; }
+    else if (guessPoint && showAnswer) { guessPoint = null; showAnswer = false; resultsEmpty.style.display = ''; resultsContent.classList.remove('visible'); }
+    else if (lines.length > 0) { lines.pop(); lineNumEl.textContent = lines.length; if (lines.length === 0) hint.classList.remove('hidden'); }
+    draw();
+  }
+
+  drawBtn.addEventListener('click', () => setTool('draw'));
+  guessBtn.addEventListener('click', () => setTool('guess'));
+  resetBtn.addEventListener('click', reset);
+  undoBtn.addEventListener('click', undo);
+  canvas.addEventListener('click', handleClick);
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+  canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+  canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+  canvas.addEventListener('touchcancel', (e) => { e.preventDefault(); isTouching = false; hideLoupe(); }, { passive: false });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') reset();
+    if (e.key === 'z' && (e.ctrlKey || e.metaKey)) undo();
+    if (e.key === 'Escape') { pendingPoint = null; mousePos = null; snapTarget = null; draw(); }
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
+</body>
+</html>

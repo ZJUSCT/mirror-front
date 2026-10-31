@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>徒手切圆</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f4f1eb;
+    --surface: #ffffff;
+    --ink: #1a1a2e;
+    --ink-dim: #8e8e9a;
+    --ink-light: #c5c5ce;
+    --cut-color: #d64933;
+    --cut-glow: rgba(214,73,51,0.2);
+    --circle-fill: rgba(0,0,0,0.03);
+    --circle-stroke: #1a1a2e;
+    --region-a: rgba(59,130,246,0.25);
+    --region-b: rgba(245,158,11,0.25);
+    --region-c: rgba(16,185,129,0.25);
+    --accent: #d64933;
+    --accent2: #2563eb;
+    --gold: #c9a84c;
+    --radius: 14px;
+    --dot-color: rgba(0,0,0,0.04);
+    --border-dim: rgba(0,0,0,0.06);
+    --border-ctrl: rgba(0,0,0,0.08);
+    --ctrl-bg: rgba(255,255,255,0.85);
+    --switch-bg: rgba(0,0,0,0.05);
+    --btn-active-bg: var(--surface);
+    --reveal-border: rgba(0,0,0,0.15);
+    --reveal-hover-bg: rgba(37,99,235,0.04);
+    --line-color: #2563eb;
+    --line-glow: rgba(37,99,235,0.15);
+    --guess-color: #d64933;
+    --true-color: #16a34a;
+    --line-main: rgba(37,99,235,0.45);
+    --line-glow-fill: rgba(37,99,235,0.1);
+    --line-dot: rgba(37,99,235,0.4);
+    --line-dot-hi: rgba(37,99,235,0.6);
+    --line-dot-bg: rgba(37,99,235,0.2);
+    --snap-ring: rgba(37,99,235,0.3);
+    --snap-fill: rgba(37,99,235,0.35);
+    --paper-opacity: 0.3;
+    --accent3: #059669;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121218;
+      --surface: #1e1e2a;
+      --ink: #e4e4ef;
+      --ink-dim: #7a7a8e;
+      --ink-light: #4a4a5a;
+      --cut-color: #ef6a56;
+      --circle-fill: rgba(255,255,255,0.04);
+      --circle-stroke: #a0a0b8;
+      --accent: #ef6a56;
+      --accent2: #60a5fa;
+      --gold: #e0b85c;
+      --dot-color: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --border-ctrl: rgba(255,255,255,0.1);
+      --ctrl-bg: rgba(30,30,42,0.9);
+      --switch-bg: rgba(255,255,255,0.06);
+      --btn-active-bg: var(--surface);
+      --reveal-border: rgba(255,255,255,0.12);
+      --reveal-hover-bg: rgba(96,165,250,0.08);
+      --line-color: #60a5fa;
+      --guess-color: #ef6a56;
+      --true-color: #34d399;
+      --line-main: rgba(96,165,250,0.55);
+      --line-glow-fill: rgba(96,165,250,0.12);
+      --line-dot: rgba(96,165,250,0.5);
+      --line-dot-hi: rgba(96,165,250,0.75);
+      --line-dot-bg: rgba(96,165,250,0.25);
+      --snap-ring: rgba(96,165,250,0.4);
+      --snap-fill: rgba(96,165,250,0.45);
+      --paper-opacity: 0;
+      --accent3: #34d399;
+    }
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: var(--paper-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ===== Shared styles ===== */
+  .app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 560px;
+    padding: 12px 16px 40px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+
+  .mode-switch {
+    display: flex;
+    gap: 4px;
+    background: var(--switch-bg);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.1s forwards;
+  }
+
+  .mode-btn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .mode-btn.active {
+    background: var(--btn-active-bg);
+    color: var(--ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .mode-btn:hover:not(.active) { color: var(--ink); }
+
+  .mode-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.15s forwards;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: min(100%, 500px);
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.2s forwards;
+  }
+
+  .canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  .canvas-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  .canvas-hint.hidden { opacity: 0; }
+
+  .canvas-hint-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.4; }
+  .canvas-hint-text { font-size: 14px; color: var(--ink-dim); font-weight: 400; }
+  .canvas-hint-sub { font-size: 11px; color: var(--ink-light); margin-top: 4px; }
+
+  .controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-ctrl);
+    background: var(--ctrl-bg);
+    color: var(--ink-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ctrl-btn svg { width: 16px; height: 16px; }
+
+  .counter-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    background: var(--ctrl-bg);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-dim);
+    backdrop-filter: blur(6px);
+  }
+
+  .counter-badge span { font-weight: 500; }
+
+  .results {
+    width: 100%;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.25s forwards;
+  }
+
+  .results-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-dim);
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+  }
+
+  .results-empty {
+    text-align: center;
+    padding: 12px;
+    color: var(--ink-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .results-content { display: none; }
+  .results-content.visible { display: block; }
+
+  /* ===== Game 1: circle-cut specific ===== */
+  .counter-badge span { color: var(--accent); }
+
+  .result-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .score-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .score-value.perfect { color: var(--gold); }
+  .score-value.great { color: #16a34a; }
+  .score-value.good { color: var(--accent); }
+  .score-value.ok { color: var(--ink-dim); }
+
+  .grade-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    padding: 4px 14px;
+    border-radius: 10px;
+  }
+
+  .grade-badge.s-plus { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+  .grade-badge.s { background: #fef3c7; color: #92400e; }
+  .grade-badge.a { background: #dcfce7; color: #166534; }
+  .grade-badge.b { background: #fee2e2; color: #991b1b; }
+  .grade-badge.c { background: #f3f4f6; color: #6b7280; }
+
+  .areas-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 14px;
+    gap: 2px;
+  }
+
+  .area-segment {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .area-segment:nth-child(1) { background: rgba(59,130,246,0.6); }
+  .area-segment:nth-child(2) { background: rgba(245,158,11,0.6); }
+  .area-segment:nth-child(3) { background: rgba(16,185,129,0.6); }
+
+  .areas-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+
+  .area-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .area-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .area-dot.a { background: rgba(59,130,246,0.6); }
+  .area-dot.b { background: rgba(245,158,11,0.6); }
+  .area-dot.c { background: rgba(16,185,129,0.6); }
+
+  .rank-row {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+
+  .rank-row .rank-label {
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+
+  .rank-row .rank-value {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: opacity 0.3s;
+  }
+
+  .rank-row .rank-value.loading {
+    opacity: 0.3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .score-value.great { color: #34d399; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+  @media (max-width: 480px) {
+    .app { padding: 10px 12px 12px; }
+    .header h1 { font-size: 22px; }
+    .score-value { font-size: 30px; }
+    .grade-badge { font-size: 22px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1 style="color: var(--accent);">徒手<span>切</span>圆</h1>
+  </div>
+
+  <div class="mode-switch">
+    <button class="mode-btn active" id="g1_easyBtn">简单 · 二等分</button>
+    <button class="mode-btn" id="g1_hardBtn">困难 · 三等分</button>
+  </div>
+
+  <div class="mode-desc" id="g1_modeDesc">画一条曲线穿过圆，将它切成面积相等的两半</div>
+
+  <div class="canvas-container" id="g1_canvasContainer">
+    <canvas id="g1_canvas"></canvas>
+    <div class="canvas-hint" id="g1_hint">
+      <div class="canvas-hint-icon">✂️</div>
+      <div class="canvas-hint-text">在圆上画一刀</div>
+      <div class="canvas-hint-sub">从圆外开始，穿过圆，到圆外结束</div>
+    </div>
+    <div class="counter-badge" id="g1_cutCounter">
+      切割: <span id="g1_cutNum">0</span> / <span id="g1_cutMax">1</span>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="g1_undoBtn" title="撤销上一刀">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+        </svg>
+      </button>
+      <button class="ctrl-btn" id="g1_resetBtn" title="重新开始">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="results-card">
+      <div class="results-empty" id="g1_resultsEmpty">画一刀切开圆，看看你能切多均匀</div>
+      <div class="results-content" id="g1_resultsContent">
+        <div class="result-top">
+          <div class="score-section">
+            <div class="score-label">均匀度</div>
+            <div class="score-value" id="g1_scoreValue">—</div>
+          </div>
+          <div class="grade-badge" id="g1_gradeBadge">—</div>
+        </div>
+        <div class="areas-bar" id="g1_areasBar"></div>
+        <div class="areas-labels" id="g1_areasLabels"></div>
+        <div class="rank-row" id="g1_rankRow" style="display:none">
+          <span class="rank-label">超过了</span>
+          <span class="rank-value loading" id="g1_rankValue">…</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://mp.weixin.qq.com/s/GI9jxiIHnD1rKatwlFp-Nw" target="_blank" rel="noopener" style="
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-dim);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent2);
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.3s forwards;
+  " onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--border-dim)'">
+    了解 π day →
+  </a>
+
+</div>
+
+<script>
+// ===== Game 1: Circle Cut =====
+(function() {
+  let mode = 'easy';
+  let cuts = [];
+  let currentCut = [];
+  let isDrawing = false;
+  let phase = 'drawing';
+  let dpr = 1;
+
+  const canvas = document.getElementById('g1_canvas');
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('g1_canvasContainer');
+  const hint = document.getElementById('g1_hint');
+  const cutNumEl = document.getElementById('g1_cutNum');
+  const cutMaxEl = document.getElementById('g1_cutMax');
+  const resultsEmpty = document.getElementById('g1_resultsEmpty');
+  const resultsContent = document.getElementById('g1_resultsContent');
+  const scoreValueEl = document.getElementById('g1_scoreValue');
+  const gradeBadgeEl = document.getElementById('g1_gradeBadge');
+  const areasBarEl = document.getElementById('g1_areasBar');
+  const areasLabelsEl = document.getElementById('g1_areasLabels');
+  const rankRow = document.getElementById('g1_rankRow');
+  const rankValueEl = document.getElementById('g1_rankValue');
+  const LEADERBOARD_API = 'https://2026-pi-day.math.haoxx.me';
+  const modeDescEl = document.getElementById('g1_modeDesc');
+  const easyBtn = document.getElementById('g1_easyBtn');
+  const hardBtn = document.getElementById('g1_hardBtn');
+  const resetBtn = document.getElementById('g1_resetBtn');
+  const undoBtn = document.getElementById('g1_undoBtn');
+
+  let cx, cy, cr;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height);
+    if (size <= 0) return;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    cx = size / 2;
+    cy = size / 2;
+    cr = size * 0.38;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function dist(a, b) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
+  function isInsideCircle(p) { return dist(p, { x: cx, y: cy }) <= cr; }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  function draw() {
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    ctx.clearRect(0, 0, w, h);
+
+    if (phase === 'done' && cuts.length > 0) drawColoredRegions();
+
+    if (phase !== 'done') {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.03)';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--circle-stroke').trim();
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+
+    for (const cut of cuts) drawCut(cut, false);
+    if (currentCut.length > 1) drawCut(currentCut, true);
+  }
+
+  function drawCut(pts, isActive) {
+    if (pts.length < 2) return;
+    ctx.save();
+    ctx.strokeStyle = isActive ? 'rgba(214,73,51,0.15)' : 'rgba(214,73,51,0.08)';
+    ctx.lineWidth = isActive ? 8 : 6;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = isActive ? 'rgba(214,73,51,0.9)' : 'rgba(214,73,51,0.6)';
+    ctx.lineWidth = isActive ? 2.5 : 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+    ctx.restore();
+
+    if (isActive && pts.length > 0) {
+      const last = pts[pts.length - 1];
+      ctx.save();
+      ctx.fillStyle = 'rgba(214,73,51,0.8)';
+      ctx.beginPath();
+      ctx.arc(last.x, last.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawColoredRegions() {
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    const regionColors = [
+      'rgba(59,130,246,0.18)',
+      'rgba(245,158,11,0.18)',
+      'rgba(16,185,129,0.18)'
+    ];
+    const regionData = computeRegions();
+    if (!regionData) return;
+    const { labelMap, regionCount, mapW, mapH } = regionData;
+
+    for (let r = 0; r < regionCount; r++) {
+      ctx.save();
+      const tmpCanvas = document.createElement('canvas');
+      tmpCanvas.width = mapW;
+      tmpCanvas.height = mapH;
+      const tmpCtx = tmpCanvas.getContext('2d');
+      const imgData = tmpCtx.createImageData(mapW, mapH);
+      const colors = [[59, 130, 246], [245, 158, 11], [16, 185, 129]];
+      const c = colors[r % 3];
+      for (let i = 0; i < labelMap.length; i++) {
+        if (labelMap[i] === r) {
+          imgData.data[i * 4] = c[0];
+          imgData.data[i * 4 + 1] = c[1];
+          imgData.data[i * 4 + 2] = c[2];
+          imgData.data[i * 4 + 3] = 50;
+        }
+      }
+      tmpCtx.putImageData(imgData, 0, 0);
+      ctx.drawImage(tmpCanvas, 0, 0, w, h);
+      ctx.restore();
+    }
+  }
+
+  function computeRegions() {
+    const w = canvas.width / dpr;
+    const RES = 300;
+    const scale = RES / w;
+    const sCx = cx * scale, sCy = cy * scale, sCr = cr * scale;
+    const bitmap = new Uint8Array(RES * RES);
+
+    for (let y = 0; y < RES; y++) {
+      for (let x = 0; x < RES; x++) {
+        const dx = x - sCx, dy = y - sCy;
+        if (dx * dx + dy * dy <= sCr * sCr) bitmap[y * RES + x] = 1;
+      }
+    }
+
+    for (const cut of cuts) {
+      for (let i = 1; i < cut.length; i++) {
+        drawLineOnBitmap(bitmap, RES, cut[i-1].x * scale, cut[i-1].y * scale, cut[i].x * scale, cut[i].y * scale, 2);
+      }
+    }
+
+    const labels = new Int16Array(RES * RES).fill(-1);
+    let regionId = 0;
+    const regionSizes = [];
+
+    for (let y = 0; y < RES; y++) {
+      for (let x = 0; x < RES; x++) {
+        const idx = y * RES + x;
+        if (bitmap[idx] === 1 && labels[idx] === -1) {
+          regionSizes.push(floodFill(bitmap, labels, RES, x, y, regionId));
+          regionId++;
+        }
+      }
+    }
+
+    if (regionId < 2) return null;
+
+    const targetCount = mode === 'easy' ? 2 : 3;
+    const indexed = regionSizes.map((s, i) => ({ size: s, id: i }));
+    indexed.sort((a, b) => b.size - a.size);
+    const topRegions = indexed.slice(0, targetCount);
+
+    const remapLabels = new Int16Array(RES * RES).fill(-1);
+    for (let i = 0; i < topRegions.length; i++) {
+      const oldId = topRegions[i].id;
+      for (let j = 0; j < labels.length; j++) {
+        if (labels[j] === oldId) remapLabels[j] = i;
+      }
+    }
+
+    return {
+      labelMap: remapLabels,
+      regionCount: topRegions.length,
+      sizes: topRegions.map(r => r.size),
+      totalCircle: topRegions.reduce((s, r) => s + r.size, 0),
+      mapW: RES, mapH: RES
+    };
+  }
+
+  function drawLineOnBitmap(bitmap, res, x0, y0, x1, y1, val) {
+    const thickness = 2;
+    const dx = x1 - x0, dy = y1 - y0;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const steps = Math.max(Math.ceil(len * 2), 1);
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      const px = Math.round(x0 + dx * t);
+      const py = Math.round(y0 + dy * t);
+      for (let oy = -thickness; oy <= thickness; oy++) {
+        for (let ox = -thickness; ox <= thickness; ox++) {
+          const nx = px + ox, ny = py + oy;
+          if (nx >= 0 && nx < res && ny >= 0 && ny < res) bitmap[ny * res + nx] = val;
+        }
+      }
+    }
+  }
+
+  function floodFill(bitmap, labels, res, sx, sy, id) {
+    const stack = [sx + sy * res];
+    let count = 0;
+    labels[sy * res + sx] = id;
+    while (stack.length > 0) {
+      const idx = stack.pop();
+      count++;
+      const x = idx % res, y = (idx - x) / res;
+      for (const [nx, ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]) {
+        if (nx >= 0 && nx < res && ny >= 0 && ny < res) {
+          const ni = ny * res + nx;
+          if (bitmap[ni] === 1 && labels[ni] === -1) { labels[ni] = id; stack.push(ni); }
+        }
+      }
+    }
+    return count;
+  }
+
+  function validateCut(pts) {
+    if (pts.length < 5) return false;
+    let enteredCircle = false, exitedCircle = false, wasInside = false;
+    for (const p of pts) {
+      const inside = isInsideCircle(p);
+      if (!wasInside && inside) enteredCircle = true;
+      if (wasInside && !inside && enteredCircle) exitedCircle = true;
+      wasInside = inside;
+    }
+    if (enteredCircle && !isInsideCircle(pts[pts.length - 1])) exitedCircle = true;
+    return enteredCircle && exitedCircle;
+  }
+
+  function startDraw(e) {
+    const maxCuts = mode === 'easy' ? 1 : 2;
+    if (phase === 'done' || cuts.length >= maxCuts) {
+      // allow immediate retry
+      cuts = []; phase = 'drawing';
+      resultsEmpty.style.display = ''; resultsContent.classList.remove('visible');
+      rankRow.style.display = 'none';
+    }
+    e.preventDefault();
+    isDrawing = true;
+    currentCut = [getPos(e)];
+    hint.classList.add('hidden');
+    draw();
+  }
+
+  function moveDraw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    const last = currentCut[currentCut.length - 1];
+    if (dist(p, last) > 2) { currentCut.push(p); draw(); }
+  }
+
+  function endDraw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    isDrawing = false;
+    if (!validateCut(currentCut)) { currentCut = []; draw(); return; }
+    cuts.push([...currentCut]);
+    currentCut = [];
+    const maxCuts = mode === 'easy' ? 1 : 2;
+    cutNumEl.textContent = cuts.length;
+    if (cuts.length >= maxCuts) {
+      phase = 'done';
+      setTimeout(() => { calculateAndShow(); draw(); }, 100);
+    } else { draw(); }
+  }
+
+  function calculateAndShow() {
+    const regionData = computeRegions();
+    if (!regionData) { resultsEmpty.textContent = '切割无效，请重试'; return; }
+    const { sizes, totalCircle, regionCount } = regionData;
+    const targetCount = mode === 'easy' ? 2 : 3;
+    if (regionCount < targetCount) { resultsEmpty.textContent = '未能将圆切成' + targetCount + '份，请重试'; return; }
+
+    const ideal = totalCircle / targetCount;
+    const percentages = sizes.map(s => (s / totalCircle) * 100);
+    const deviations = sizes.map(s => Math.abs(s - ideal) / ideal);
+    const avgDev = deviations.reduce((a, b) => a + b, 0) / deviations.length;
+    const score = Math.max(0, (1 - avgDev) * 100);
+
+    let grade, gradeClass;
+    if (score >= 99) { grade = 'S+'; gradeClass = 's-plus'; }
+    else if (score >= 97) { grade = 'S'; gradeClass = 's'; }
+    else if (score >= 93) { grade = 'A'; gradeClass = 'a'; }
+    else if (score >= 85) { grade = 'B'; gradeClass = 'b'; }
+    else { grade = 'C'; gradeClass = 'c'; }
+
+    let scoreClass = 'ok';
+    if (score >= 99) scoreClass = 'perfect';
+    else if (score >= 95) scoreClass = 'great';
+    else if (score >= 85) scoreClass = 'good';
+
+    scoreValueEl.textContent = score.toFixed(1) + '%';
+    scoreValueEl.className = 'score-value ' + scoreClass;
+    gradeBadgeEl.textContent = grade;
+    gradeBadgeEl.className = 'grade-badge ' + gradeClass;
+
+    areasBarEl.innerHTML = '';
+    const areaColors = ['a', 'b', 'c'];
+    const areaNames = ['A', 'B', 'C'];
+    for (let i = 0; i < targetCount; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'area-segment';
+      seg.style.width = percentages[i] + '%';
+      areasBarEl.appendChild(seg);
+    }
+
+    areasLabelsEl.innerHTML = '';
+    for (let i = 0; i < targetCount; i++) {
+      const label = document.createElement('div');
+      label.className = 'area-label';
+      label.innerHTML = `<div class="area-dot ${areaColors[i]}"></div>${areaNames[i]}: ${percentages[i].toFixed(1)}%`;
+      areasLabelsEl.appendChild(label);
+    }
+
+    resultsEmpty.style.display = 'none';
+    resultsContent.classList.add('visible');
+    resultsContent.classList.remove('pop-in');
+    void resultsContent.offsetWidth;
+    resultsContent.classList.add('pop-in');
+
+    // Submit score to leaderboard
+    rankRow.style.display = 'flex';
+    rankValueEl.textContent = '…';
+    rankValueEl.className = 'rank-value loading';
+    fetch(LEADERBOARD_API + '/api/score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: Math.round(score * 10) / 10, mode }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        rankValueEl.textContent = d.percentile.toFixed(1) + '% 的玩家';
+        rankValueEl.className = 'rank-value';
+      })
+      .catch(() => {
+        rankRow.style.display = 'none';
+      });
+  }
+
+  function setMode(m) {
+    mode = m;
+    easyBtn.classList.toggle('active', m === 'easy');
+    hardBtn.classList.toggle('active', m === 'hard');
+    cutMaxEl.textContent = m === 'easy' ? '1' : '2';
+    modeDescEl.textContent = m === 'easy'
+      ? '画一条曲线穿过圆，将它切成面积相等的两半'
+      : '画两条曲线穿过圆，将它切成面积相等的三份';
+    reset();
+  }
+
+  function reset() {
+    cuts = []; currentCut = []; isDrawing = false; phase = 'drawing';
+    cutNumEl.textContent = '0';
+    hint.classList.remove('hidden');
+    resultsEmpty.style.display = '';
+    resultsEmpty.textContent = '画一刀切开圆，看看你能切多均匀';
+    resultsContent.classList.remove('visible');
+    rankRow.style.display = 'none';
+    draw();
+  }
+
+  function undo() {
+    if (phase === 'done') { phase = 'drawing'; resultsEmpty.style.display = ''; resultsContent.classList.remove('visible'); }
+    if (cuts.length > 0) { cuts.pop(); cutNumEl.textContent = cuts.length; draw(); }
+    if (cuts.length === 0) hint.classList.remove('hidden');
+  }
+
+  easyBtn.addEventListener('click', () => setMode('easy'));
+  hardBtn.addEventListener('click', () => setMode('hard'));
+  resetBtn.addEventListener('click', reset);
+  undoBtn.addEventListener('click', undo);
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', (e) => { if (isDrawing) endDraw(e); });
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  canvas.addEventListener('touchend', endDraw, { passive: false });
+  canvas.addEventListener('touchcancel', endDraw, { passive: false });
+
+  canvas.style.cursor = 'crosshair';
+
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
+</body>
+</html>
