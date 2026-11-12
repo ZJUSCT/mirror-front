@@ -5,7 +5,7 @@ import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { parse as parseYaml } from 'yaml';
 
-import docsLock from '../../../mirrorz-docs.lock.json';
+import { mirrorzDocsCommit } from '../../../scripts/mirrorz-docs-source.mjs';
 import { ZJU_MIRROR_ORIGIN } from '../mirror-endpoint';
 import type {
   DocumentInput,
@@ -54,6 +54,7 @@ interface DirectiveOptions {
 
 let mappingPromise: Promise<Record<string, MirrorDocsMapping>> | undefined;
 let titlePromise: Promise<Record<string, string>> | undefined;
+let sourceCommit: string | undefined;
 
 async function isFile(filename: string): Promise<boolean> {
   try {
@@ -711,6 +712,6 @@ export async function loadMirrorzDocument(
     interactiveOverride: await hasDocumentInteractiveOverride(selected.docsId),
     initialVariables,
     requiredScheme,
-    sourceCommit: docsLock.commit,
+    sourceCommit: (sourceCommit ??= mirrorzDocsCommit(repositoryRoot)),
   };
 }

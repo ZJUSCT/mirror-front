@@ -13,6 +13,7 @@ services:
     init: true
     environment:
       NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+      MIRRORZ_DOCS_COMMIT: ${MIRRORZ_DOCS_COMMIT:-}
     ports:
       - '4321:4321'
     volumes:
@@ -29,6 +30,7 @@ services:
       context: .
       args:
         DEPLOYMENT_ENV: ${DEPLOYMENT_ENV:-production}
+        MIRRORZ_DOCS_COMMIT: ${MIRRORZ_DOCS_COMMIT:-}
     image: mirror-front:preview
     read_only: true
     cap_drop:

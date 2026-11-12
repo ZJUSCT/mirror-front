@@ -1,37 +1,24 @@
-name: Build images
+name: Build mirror-front
 
 on:
   pull_request:
-    paths-ignore:
-      - 'charts/**'
-      - '.github/workflows/chart.yml'
   workflow_dispatch:
   push:
     branches: [main]
-    paths-ignore:
-      - 'charts/**'
-      - '.github/workflows/chart.yml'
 
 concurrency:
-  group: images-${{ github.ref }}
+  group: mirror-front-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    name: Build ${{ matrix.image }}
+    name: Build mirror-front
     runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        include:
-          - image: mirror-front
-            context: .
-          - image: mirror-front-statistics-exporter
-            context: ./statistics-exporter
     env:
-      IMAGE_NAME: ghcr.io/zjusct/${{ matrix.image }}
+      IMAGE_NAME: ghcr.io/zjusct/mirror-front
     steps:
       - uses: actions/checkout@v5
         with:
@@ -40,6 +27,16 @@ jobs:
       - name: Resolve image tag
         id: source
         run: echo "short=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Read mirrorz-docs gitlink
+        id: docs
+        run: |
+          commit=$(node scripts/mirrorz-docs-source.mjs)
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -54,7 +51,9 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: ${{ matrix.context }}
+          context: .
+          build-args: |
+            MIRRORZ_DOCS_COMMIT=${{ steps.docs.outputs.commit }}
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.source.outputs.short }}
@@ -62,8 +61,8 @@ jobs:
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
-          cache-from: type=gha,scope=${{ matrix.image }}-${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.image }}-${{ github.ref_name }}
+          cache-from: type=gha,scope=mirror-front-${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=mirror-front-${{ github.ref_name }}
           provenance: false
 
       - name: Clean up old images
@@ -72,6 +71,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ZJUSCT
-          package: ${{ matrix.image }}
+          package: mirror-front
           keep-n-tagged: 10
           delete-untagged: true
