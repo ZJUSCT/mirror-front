@@ -25,6 +25,8 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY . .
+ARG MIRRORZ_DOCS_COMMIT
+ENV MIRRORZ_DOCS_COMMIT=$MIRRORZ_DOCS_COMMIT
 RUN pnpm check && pnpm test:docs && pnpm build
 RUN chmod -R a=rX dist
 
